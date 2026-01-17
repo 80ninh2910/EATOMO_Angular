@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { margin: 0; padding: 20px; background: #f7f4ee; }
+        .dashboard-content { max-width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-content">
+        <!-- KPI row -->
+        <div class="kpis">
+            <div class="card kpi">
+                <div class="kpi-title">Total Sales</div>
+                <div class="kpi-value" id="kpi-sales">₫<span id="kpi-sales-val">2.4M</span></div>
+                <div class="kpi-meta">Last 7 days • <span class="up">+12.4%</span></div>
+            </div>
+
+            <div class="card kpi">
+                <div class="kpi-title">Total Orders</div>
+                <div class="kpi-value"><span id="kpi-orders-val">15.2K</span></div>
+                <div class="kpi-meta">Last 7 days • <span class="up">+8.2%</span></div>
+            </div>
+
+            <div class="card kpi">
+                <div class="kpi-title">Pending & Cancelled</div>
+                <div class="kpi-value"><span id="kpi-pending">127</span> / <span id="kpi-cancel">23</span></div>
+                <div class="kpi-meta">Last 7 days</div>
+            </div>
+
+            <div class="card kpi">
+                <div class="kpi-title">Active Users</div>
+                <div class="kpi-value" id="kpi-users">8.9K</div>
+                <div class="kpi-meta">Users in last 30 minutes</div>
+            </div>
+        </div>
+
+        <!-- MAIN GRID -->
+        <div class="grid">
+            <!-- left column -->
+             <div class="col-left">
+                 <div class="card chart-card">
+                     <div class="card-head">
+                         <h3>Sales Report - This Week</h3>
+                         <div class="segmented">
+                             <button class="seg-btn active" data-period="this">This week</button>
+                             <button class="seg-btn" data-period="last">Last week</button>
+                         </div>
+                     </div>
+                     <canvas id="lineChart" height="160"></canvas>
+                 </div>
+                 <div class="card list-card" style="margin-top: 20px;">
+                     <h3>Top Products</h3>
+                     <ul id="top-products">
+                         <!-- filled by JS -->
+                     </ul>
+                 </div>
+             </div>
+
+            <!-- right column -->
+            <aside class="col-right">
+                <div class="card summary-card">
+                    <h3>Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="addNewOrder()"> New Order</button>
+                        <button class="action-btn" onclick="viewReports()">View Reports</button>
+                        <button class="action-btn" onclick="manageMenu()">Manage Menu</button>
+                        <button class="action-btn" onclick="customerSupport()">Customer Support</button>
+                    </div>
+                </div>
+                <br/>
+                <div class="card sales-by-country">
+                    <h3>Sales by Region</h3>
+                    <canvas id="barChart" height="140"></canvas>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Recent Transactions table -->
+        <div class="card table-card">
+            <div class="card-head">
+                <h3>Recent Transactions</h3>
+                <div>
+                    <button class="ghost small" id="exportBtn">Export</button>
+                    <button class="ghost small" id="filterBtn">Filter</button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table id="tx-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load data and initialize dashboard
+        document.addEventListener('DOMContentLoaded', async () => {
+            const data = await fetch('../../json/admin_data.json').then(r => r.json()).catch(() => null);
+            
+            if (data) {
+                // Populate KPIs
+                document.getElementById('kpi-sales-val').textContent = data.kpis.sales;
+                document.getElementById('kpi-orders-val').textContent = data.kpis.orders;
+                document.getElementById('kpi-pending').textContent = data.kpis.pending;
+                document.getElementById('kpi-cancel').textContent = data.kpis.cancelled;
+                document.getElementById('kpi-users').textContent = data.kpis.activeUsers;
+
+                // Top products
+                const ul = document.getElementById('top-products');
+                data.topProducts.slice(0, 6).forEach(p => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<img src="${p.img}" alt="${p.title}"><div>
+                        <strong>${p.title}</strong><div class="muted">${p.price} • ${p.sales} sold</div>
+                    </div>`;
+                    ul.appendChild(li);
+                });
+
+                // Transactions table
+                const tbody = document.querySelector('#tx-table tbody');
+                data.transactions.slice(0, 10).forEach((t, i) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${t.id}</td><td>${t.customer}</td><td>${t.date}</td><td>${statusBadge(t.status)}</td><td>${t.amount}</td><td><button class="ghost small">View</button></td>`;
+                    tbody.appendChild(tr);
+                });
+
+                // Charts
+                initLineChart(data.report);
+                initBarChart(data.salesByCountry);
+            }
+
+            // Segmented buttons
+            document.querySelectorAll('.seg-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+        });
+
+        function statusBadge(status) {
+            const colors = {
+                'completed': '#10b981',
+                'pending': '#f59e0b',
+                'processing': '#3b82f6',
+                'cancelled': '#ef4444'
+            };
+            return `<span style="background: ${colors[status] || '#6b7280'}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px;">${status.toUpperCase()}</span>`;
+        }
+
+        function initLineChart(reportData) {
+            const ctx = document.getElementById('lineChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: reportData.labels,
+                    datasets: [{
+                        label: 'Sales (₫000)',
+                        data: reportData.sales,
+                        borderColor: 'rgb(122, 32, 92)',
+                        backgroundColor: 'rgba(122, 32, 92, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        function initBarChart(salesData) {
+            const ctx = document.getElementById('barChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: salesData.map(d => d.country),
+                    datasets: [{
+                        label: 'Sales %',
+                        data: salesData.map(d => d.sales),
+                        backgroundColor: salesData.map(d => d.color),
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        // Quick action functions
+        function addNewOrder() { alert('Add New Order functionality'); }
+        function viewReports() { alert('View Reports functionality'); }
+        function manageMenu() { alert('Manage Menu functionality'); }
+        function customerSupport() { alert('Customer Support functionality'); }
+    </script>
+</body>
+</html>

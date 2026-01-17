@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us – Soumaki - Your healthy food soulmate</title>
+    <link rel="stylesheet" href="../css/about-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!--Header-->
+    <header class="header" id="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-info">
+                    <span>📍 UEL | Faculty of Information System | E-Commerce.</span>
+                    <span>📍 669 QL1A, khu phố 6, Thủ Đức, Hồ Chí Minh.</span>
+                    <span>📞 Hotline: 1900 xxxx</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <nav class="navbar">
+                    <div class="logo" id="backToTop">
+                        <h1>
+                            <img src="../images/index/image-removebg-preview (36).png" class="imgs">
+                                EATOMO
+                        </h1>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <a href="our-bowls.html" class="nav-link" onclick="navigateToPage('bowls')">Our Bowls</a>
+                <a href="stores.html" class="nav-link" onclick="navigateToPage('stores')">Stores</a>
+                <a href="orders.html" class="nav-link" onclick="navigateToPage('delivery')">Cart</a>
+                <a href="about-us.html" class="nav-link" onclick="navigateToPage('about')">About Us</a>
+                <a href="faqs.html" class="nav-link" onclick="navigateToPage('contact')">FAQs</a>
+                    </ul>
+                    <div class="nav-actions">
+                        <!-- Order button removed on About page to match other pages -->
+                        <button class="mobile-toggle" id="mobileToggle">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!--Hero Section-->
+    <section class="hero-about">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content" data-aos="fade-up">
+                <h1 class="hero-title">Our Story</h1>
+                <p class="hero-subtitle">Where passion meets perfection</p>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+        </div>
+    </section>
+
+    <!--Brand Story Section-->
+    <section class="brand-story">
+        <div class="container">
+            <div class="story-grid">
+                <div class="story-content" data-aos="fade-right">
+                    <span class="section-label">Who We Are</span>
+                    <h2 class="section-title">Your Healthy Food Soulmate</h2>
+                    <p class="story-text">
+                        At Soumaki, we believe that healthy eating should never compromise on taste. 
+                        Born from a passion for wellness and culinary excellence, we've created a space 
+                        where nutrition meets indulgence.
+                    </p>
+                    <p class="story-text">
+                        Every bowl we craft tells a story of dedication, quality ingredients, and 
+                        innovative cooking techniques that preserve the natural goodness of food while 
+                        delivering unforgettable flavors.
+                    </p>
+                    <div class="story-stats">
+                        <div class="stat-item">
+                            <h3 class="stat-number">100%</h3>
+                            <p class="stat-label">Fresh Ingredients</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 class="stat-number">90%</h3>
+                            <p class="stat-label">Nutrients Retained</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 class="stat-number">1000+</h3>
+                            <p class="stat-label">Happy Customers</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="story-image" data-aos="fade-left">
+                    <img src="../images/index/bowl t.webp" alt="Soumaki Restaurant">
+                    <div class="image-decoration"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Sous-vide Section-->
+    <section class="sousvide-section">
+        <div class="container">
+            <div class="sousvide-grid">
+                <div class="sousvide-image" data-aos="fade-right">
+                    <img src="../images/about/sous-vide-cooking.jpg" alt="Sous-vide Cooking">
+                    <div class="image-badge">
+                        <span class="badge-icon">🔥</span>
+                        <span class="badge-text">Precision Cooking</span>
+                    </div>
+                </div>
+                <div class="sousvide-content" data-aos="fade-left">
+                    <span class="section-label">Our Technique</span>
+                    <h2 class="section-title">The Art of Sous-vide</h2>
+                    <p class="sousvide-description">
+                        Sous-vide bathes your meat in a warm, precise water bath, gently coaxing it 
+                        to perfection for hours. <strong>90% of the meat's volume and nutrients are retained</strong> 
+                        compared to other cooking techniques.
+                    </p>
+                    <p class="sousvide-description">
+                        Each bite is a symphony of textures — impossibly tender, unbelievably juicy, 
+                        bursting with natural essence. No more dry, bland, and boring meats here, 
+                        <strong>heavenly only</strong>.
+                    </p>
+                    <div class="technique-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Precise Temperature</h4>
+                            <p>Controlled cooking for perfect results</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Maximum Juiciness</h4>
+                            <p>Locks in moisture and flavor</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-drumstick-bite"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Tender Perfection</h4>
+                            <p>Melt-in-your-mouth texture</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Values Section-->
+    <section class="values-section">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-label">Our Values</span>
+                <h2 class="section-title">What We Stand For</h2>
+            </div>
+            <div class="values-grid">
+                <div class="value-card card1" data-aos="fade-up" data-aos-delay="100">
+                    <div class="value-icon"><i class="fas fa-seedling"></i></div>
+                    <h3 class="value-title">Fresh & Natural</h3>
+                    <p class="value-description">
+                    We source only the freshest, highest-quality ingredients from trusted local suppliers.
+                    </p>
+                </div>
+
+                <div class="value-card card2" data-aos="fade-up" data-aos-delay="200">
+                    <div class="value-icon"><i class="fas fa-heart"></i></div>
+                    <h3 class="value-title">Made with Love</h3>
+                    <p class="value-description">
+                    Every bowl is crafted with care and passion by our dedicated culinary team.
+                    </p>
+                </div>
+
+                <div class="value-card card3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="value-icon"><i class="fas fa-bullseye"></i></div>
+                    <h3 class="value-title">Health Focused</h3>
+                    <p class="value-description">
+                    Nutrition is at the heart of everything we do, without compromising on taste.
+                    </p>
+                </div>
+
+                <div class="value-card card4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="value-icon"><i class="fas fa-recycle"></i></div>
+                    <h3 class="value-title">Sustainable</h3>
+                    <p class="value-description">
+                    We're committed to eco-friendly practices and reducing our environmental impact.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Team Section--> 
+    <section class="team-section">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-label">Meet The Team</span>
+                <h2 class="section-title">The People Behind EATOMO</h2>
+            </div>
+            <div class="team-grid">
+                <div class="team-member" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="member-image">
+                        <img src="../images/about/Ninh.jpg" alt="Head Chef">
+                        <div class="member-overlay">
+                            <div class="member-social">
+                                <a href="#" class="social-link">LinkedIn</a>
+                                <a href="https://www.instagram.com/niqa0192/" class="social-link">Instagram</a>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="member-name">Quách An Ninh - K234111444</h3>
+                    <p class="member-role">Head Chef & Co-Founder</p>
+                </div>
+                <div class="team-member" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="member-image">
+                        <img src="../images/about/Vinh.jpg" alt="Nutritionist">
+                        <div class="member-overlay">
+                            <div class="member-social">
+                                <a href="#" class="social-link">LinkedIn</a>
+                                <a href="https://www.instagram.com/qdinnh/" class="social-link">Instagram</a>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="member-name">Đoàn Quốc Vinh - K234111458</h3>
+                    <p class="member-role">Chief Nutritionist</p>
+                </div>
+                <div class="team-member" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="member-image">
+                        <img src="../images/about/Thịnh.jpg" alt="Manager">
+                        <div class="member-overlay">
+                            <div class="member-social">
+                                <a href="#" class="social-link">LinkedIn</a>
+                                <a href="https://www.instagram.com/qdinnh/" class="social-link">Instagram</a>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="member-name">Nguyễn Quốc Thịnh - K234111..</h3>
+                    <p class="member-role">Operations Manager</p>
+                </div>
+                <div class="team-member" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="member-image">
+                        <img src="../images/about/Khuyen.jpg" alt="Nutritionist">
+                        <div class="member-overlay">
+                            <div class="member-social">
+                                <a href="#" class="social-link">LinkedIn</a>
+                                <a href="https://www.instagram.com/qdinnh/" class="social-link">Instagram</a>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="member-name">Ngọc Khuyến</h3>
+                    <p class="member-role">Chief Nutritionist</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--CTA Section-->
+     
+    <section class="cta-section">
+        <div class="cta-overlay"></div>
+        <div class="container">
+            <div class="cta-content" data-aos="fade-up">
+                <h2 class="cta-title">Ready to Experience Soumaki?</h2>
+                <p class="cta-description">Visit us today and discover your new favorite healthy bowl</p>
+                <div class="cta-buttons">
+                    <button class="btn-secondary">View Menu</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--Dish Section-->
+    <div class="dish-section">
+    <h2>Our philosophy
+        <p/> to healthy eating</h2>
+    <p>CLICK TO EXPLORE</p>
+
+    <div class="dish-container">
+        <img src="../images/about/FUll.webp" alt="Soumaki Bowl" class="dish-image">
+
+        <!-- Nút mũi tên hoặc dấu cộng -->
+        <div class="hotspot" id="spot1" style="top: 40%; left: 30%;">+</div>
+        <div class="hotspot" id="spot2" style="top: 80%; left: 55%;">+</div>
+        <div class="hotspot" id="spot3" style="top: 40%; right: 25%;">+</div>
+        <!-- Phần mô tả ẩn -->
+        <div class="description" id="desc1">
+        <h3>Protein powerhouse</h3>
+            <p>Forget fading energy! Our bowls pack a protein punch, helping you feel stronger and ready to rock your day, yet conquer the gym and gain muscle.</p>
+    </div>
+
+        <div class="description" id="desc2">
+        <h3>Veggie wonderland</h3>
+        <p>Greens aren’t just good, they’re digestion-boosting, blood pressure-lowering superheroes. Think glowing skin, a happy gut, and a healthy heart—all thanks to the green goodness.</p>
+        </div>
+
+        <div class="description" id="desc3">
+        <h3>Carbs done right</h3>
+        <p>Carbs get a bad rap, but here’s the truth: they’re your body’s go-to energy source. No need to cut them out entirely, choose the right ones to keep you moving throughout the day.</p>
+        </div>
+    </div>
+    </div>
+
+    <!--Footer-->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3 class="footer-title">EATOMO</h3>
+                    <p class="footer-text">Your healthy food soulmate</p>
+                    <div class="social-links">
+                        <a href="#" class="social-icon">Facebook</a>
+                        <a href="#" class="social-icon">Instagram</a>
+                        <a href="#" class="social-icon">TikTok</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about-us.html">About Us</a></li>
+                        <li><a href="#menu">Menu</a></li>
+                        <li><a href="#locations">Locations</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Contact</h4>
+                    <ul class="footer-links">
+                        <li>Hotline: 1900 xxxx</li>
+                        <li>Email: hello@EATOMO.com.vn</li>
+                        <li>Store 1: 123 Nguyen Hue, D1</li>
+                        <li>Store 2: 456 Le Loi, D3</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Opening Hours</h4>
+                    <ul class="footer-links">
+                        <li>Monday - Friday: 10:00 - 22:00</li>
+                        <li>Saturday - Sunday: 09:00 - 23:00</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EATOMO. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/about-script.js"></script>
+</body>
+</html>

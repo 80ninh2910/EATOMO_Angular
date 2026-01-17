@@ -1,0 +1,51 @@
+{
+  "categories": [
+    {
+      "id": "signature",
+      "name": "Signature Bowls",
+      "items": [
+        {
+          "id": "bowl1",
+          "name": "Classic Poke Bowl",
+          "description": "Fresh tuna, salmon, cucumber, edamame, seaweed salad, rice",
+          "price": 129000,
+          "image": "../images/bowl/classic-poke.jpg"
+        },
+        {
+          "id": "bowl2",
+          "name": "Spicy Salmon Bowl",
+          "description": "Spicy salmon, avocado, mango, jalapeno, spicy mayo, rice",
+          "price": 139000,
+          "image": "../images/bowl/spicy-salmon.jpg"
+        },
+        {
+          "id": "bowl3",
+          "name": "Veggie Delight Bowl",
+          "description": "Tofu, avocado, cucumber, carrots, edamame, brown rice",
+          "price": 119000,
+          "image": "../images/bowl/veggie-delight.jpg"
+        }
+      ]
+    },
+    {
+      "id": "seasonal",
+      "name": "Seasonal Specials",
+      "items": [
+        {
+          "id": "special1",
+          "name": "Summer Fresh Bowl",
+          "description": "Mango tuna, cucumber, red onion, cilantro, citrus sauce",
+          "price": 149000,
+          "image": "../images/bowl/summer-fresh.jpg"
+        },
+        {
+          "id": "special2",
+          "name": "Dragon Roll Bowl",
+          "description": "Eel, avocado, cucumber, tempura flakes, unagi sauce",
+          "price": 159000,
+          "image": "../images/bowl/dragon-roll.jpg"
+        }
+      ]
+    }
+  ]
+}

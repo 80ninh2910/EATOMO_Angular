@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Own – Soumaki - Your healthy food soulmate</title>
+    <link rel="stylesheet" href="../css/build-your-own-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="background-color: rgb(241, 236, 224);">
+<!-- Top Banner -->
+    <div class="top-banner">
+        <p>UEL | Faculty of Information System | E-Commerce.</p>
+        <p>Visit our store at 669 QL1A, khu phố 6, Thủ Đức, Hồ Chí Minh.</p>
+        <p>Open from 10AM–9PM everyday.</p>
+    </div>
+
+    <!-- Header -->
+     
+    <header class="header">
+        <div class="container">
+            <div class="logo" id="backToTop">
+                <a href="index.html" class="sub-nav-link">
+                <h1>
+                   <img src="../images/index/image-removebg-preview (36).png">
+                    EATOMO
+                </h1>
+                </a>
+            </div>
+            <nav class="nav">
+                <a href="our-bowls.html" class="nav-link" onclick="navigateToPage('bowls')">Our Bowls</a>
+                <a href="#" class="nav-link" onclick="navigateToPage('stores')">Stores</a>
+                <a href="orders.html" class="nav-link" onclick="navigateToPage('delivery')">Cart</a>
+                <a href="#" class="nav-link" onclick="navigateToPage('about')">About Us</a>
+                <a href="faqs.html" class="nav-link" onclick="navigateToPage('contact')">FAQs</a>
+            </nav>
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Sub Navigation -->
+    <div class="sub-nav">
+        <div class="container">
+            <div class="sub-nav-links">
+                <a href="build-your-own.html" class="sub-nav-link active">Build your own</a>
+                <a href="our-bowls.html" class="sub-nav-link">Sou-made bowls</a>
+            </div>
+        </div>
+    </div>
+    
+    <!--Adver section-->
+    <section class="adv-showcase">
+    
+    <div class="adv-container">
+        <img src="../images/build-your-own/Low-calories-jpg.webp" alt="Ad 1" class="adv-img">
+        <img src="../images/build-your-own/High-protein-jpg.webp" alt="Ad 2" class="adv-img">
+        <img src="../images/build-your-own/Vegan-jpg.webp" alt="Ad 3" class="adv-img">
+        <img src="../images/build-your-own/Balanced-jpg.webp" alt="Ad 4" class="adv-img">
+        <img src="../images/build-your-own/Low-calories-jpg.webp" alt="Ad 5" class="adv-img">
+    </div>
+    <div class="adv-content">
+        <h2 class="adv-title">You will find yourself between us!</h2>
+        <p class="adv-text">Discover the balance between nature and flavor in every bite.</p>
+        <button class="adv-btn">Explore Now</button>
+        <img src="../images/build-your-own/Visual-Line.svg" alt="" class="green">
+    </div>
+    
+    </section>
+
+
+    <!--Selection Ing-->
+    <div class="container">
+        <div class="build-section">
+            <div class="selection-container">
+                <div class="selection-step">
+                    <h2>1 Select Protein</h2>
+                    <div class="selection-options">
+                        <div class="option" data-category="protein" data-name="Full sous vide top blade beef steak" data-calories="250" data-protein="30" data-carbs="0" data-fat="15">
+                            <img src="../images/build-your-own/Top-blade-beef-steak-300x300.png" alt="Beef">
+                            <p>Full sous vide top blade beef steak</p>
+                        </div>
+                        <div class="option" data-category="protein" data-name="Full sous vide original chicken breast" data-calories="180" data-protein="35" data-carbs="0" data-fat="5">
+                            <img src="../images/build-your-own/Original-chicken-breast-300x300.png" alt="Chicken">
+                            <p>Full sous vide original chicken breast</p>
+                        </div>
+                        <div class="option" data-category="protein" data-name="Sous vide lemon pepper prawn" data-calories="120" data-protein="25" data-carbs="2" data-fat="3">
+                            <img src="../images/build-your-own/Lemon-pepper-prawn-300x300.png" alt="Prawn">
+                            <p>Sous vide lemon pepper prawn</p>
+                        </div>
+                        <div class="option" data-category="protein" data-name="Sous vide Norwegian salmon" data-calories="220" data-protein="22" data-carbs="0" data-fat="14">
+                            <img src="../images/build-your-own/Basa-fish-300x300.png" alt="Salmon">
+                            <p>Sous vide Norwegian salmon</p>
+                        </div>
+                         <div class="option large">
+                            <img src="../images/build-your-own/High-protein-jpg.webp" alt="Featured Dish">
+                            <div class="overlay">
+                            <h1>TRY IT!</h1>
+                        </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="selection-step">
+                    <h2>2 Select Carbs</h2>
+                    <div class="selection-options">
+                        <div class="option" data-category="carbs" data-name="White rice" data-calories="150" data-protein="3" data-carbs="30" data-fat="1">
+                            <img src="../images/build-your-own/White-Rice-300x300.png" alt="White Rice">
+                            <p>White rice</p>
+                        </div>
+                        <div class="option" data-category="carbs" data-name="Brown rice" data-calories="170" data-protein="4" data-carbs="35" data-fat="2">
+                            <img src="../images/build-your-own/Brown-Rice--300x300.png" alt="Brown Rice">
+                            <p>Brown rice</p>
+                        </div>
+                        <div class="option" data-category="carbs" data-name="Sweet potato" data-calories="130" data-protein="2" data-carbs="25" data-fat="0">
+                            <img src="../images/build-your-own/Sweet-potato-300x300.png" alt="Sweet Potato">
+                            <p>Sweet potato</p>
+                        </div>
+                        <div class="option" data-category="carbs" data-name="Cold soba" data-calories="120" data-protein="5" data-carbs="24" data-fat="1">
+                            <img src="../images/build-your-own/Cold-soba-300x300.png" alt="Cold Soba">
+                            <p>Cold soba</p>
+                        </div>
+                        <div class="option" data-category="carbs" data-name="Donburi-white-rice" data-calories="120" data-protein="5" data-carbs="24" data-fat="1">
+                            <img src="../images/build-your-own/Donburi-white-rice-.png" alt="Donburi-white-rice">
+                            <p>Donburi white rice</p>
+                        </div>
+                        <div class="option" data-category="carbs" data-name="Fusilli pasta" data-calories="120" data-protein="5" data-carbs="24" data-fat="1">
+                            <img src="../images/build-your-own/Fusilli-pasta--300x300.png" alt="Fusilli pasta">
+                            <p>Fusilli pasta</p>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+
+                <div class="selection-step">
+                    <h2>3 Select Side</h2>
+                    <div class="selection-options">
+                        <div class="option" data-category="side" data-name="Purple cabbage" data-calories="30" data-protein="1" data-carbs="5" data-fat="0">
+                            <img src="../images/build-your-own/resize_2-06-300x300.png" alt="Purple Cabbage">
+                            <p>Purple cabbage</p>
+                        </div>
+                        <div class="option" data-category="side" data-name="Avocado" data-calories="120" data-protein="2" data-carbs="6" data-fat="10">
+                            <img src="../images/build-your-own/Avocado-300x300.png" alt="Avocado">
+                            <p>Avocado</p>
+                        </div>
+                        <div class="option" data-category="side" data-name="Broccoli" data-calories="40" data-protein="3" data-carbs="7" data-fat="0">
+                            <img src="../images/build-your-own/Broccoli--300x300.png"alt="Broccoli">
+                            <p>Broccoli</p>
+                        </div>
+                        <div class="option" data-category="side" data-name="Edamame" data-calories="80" data-protein="8" data-carbs="8" data-fat="3">
+                            <img src="../images/build-your-own/Edamame-300x300.png" alt="Edamame">
+                            <p>Edamame</p>
+                        </div>
+                        <div class="option" data-category="side" data-name="Salad and nuts" data-calories="80" data-protein="8" data-carbs="8" data-fat="3">
+                            <img src="../images/build-your-own/Salad-and-nuts-300x300.png" alt="Salad and nuts">
+                            <p>Salad and nuts</p>
+                        </div>
+                        <div class="option" data-category="side" data-name="Baked cherry tomato" data-calories="80" data-protein="8" data-carbs="8" data-fat="3">
+                            <img src="../images/build-your-own/Baked-cherry-tomato-300x300.png" alt="Baked cherry tomato">
+                            <p>Baked cherry tomato</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="selection-step">
+                    <h2>4 Select Sauce</h2>
+                    <div class="selection-options">
+                        <div class="option" data-category="sauce" data-name="Japanese" data-calories="50" data-protein="0" data-carbs="10" data-fat="2">
+                            <img src="../images/build-your-own/Japanese-300x300.png"  alt="Japanese">
+                            <p>Japanese</p>
+                        </div>
+                        <div class="option" data-category="sauce" data-name="Thai sweet chilli" data-calories="60" data-protein="0" data-carbs="15" data-fat="0">
+                            <img src="../images/build-your-own/Thai-sweet-chilli-300x300.png"  alt="Thai Sweet Chilli">
+                            <p>Thai sweet chilli</p>
+                        </div>
+                        <div class="option" data-category="sauce" data-name="Wasabi soy" data-calories="40" data-protein="1" data-carbs="8" data-fat="1">
+                            <img src="../images/build-your-own/Cilantro-lime-300x300 (1).png"  alt="Wasabi Soy">
+                            <p>Wasabi soy</p>
+                        </div>
+                        <div class="option" data-category="sauce" data-name="Honey & soy" data-calories="70" data-protein="0" data-carbs="17" data-fat="0">
+                            <img src="../images/build-your-own/Honey-soy-300x300.png" alt="Honey & Soy">
+                            <p>Honey & soy</p>
+                        </div>
+                        <div class="option" data-category="sauce" data-name="VN sauce" data-calories="70" data-protein="0" data-carbs="17" data-fat="0">
+                            <img src="../images/build-your-own/Viet-Fish-Sauce-300x300.png" alt="Honey & Soy">
+                            <p>VietNamese Sauce</p>
+                        </div>
+                        <div class="option" data-category="sauce" data-name="Honey & soy" data-calories="70" data-protein="0" data-carbs="17" data-fat="0">
+                            <img src="../images/build-your-own/Olive-oil-herb-300x300.png" alt="Honey & Soy">
+                            <p>Olive oli and herb</p>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="nutrition-info">
+                <div class="nutrition-item">
+                    <span id="calories-count">0</span>
+                    <span>Calories</span>
+                </div>
+                <div class="nutrition-item">
+                    <span id="protein-count">0</span>
+                    <span>Protein</span>
+                </div>
+                <div class="nutrition-item">
+                    <span id="carbs-count">0</span>
+                    <span>Carbs</span>
+                </div>
+                <div class="nutrition-item">
+                    <span id="fat-count">0</span>
+                    <span>Fat</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-section">
+            <h2>Your bowl</h2>
+            <p>Get creative by mixing and matching ingredients and sauces to craft your unique, healthy bowl of comfort while keeping track of calories.</p>
+            
+            <div class="selected-items">
+                <div class="selected-item" id="selected-protein">
+                    <h4>Protein <span>0</span></h4>
+                    <p>Select a protein</p>
+                </div>
+                <div class="selected-item" id="selected-carbs">
+                    <h4>Carbs <span>0</span></h4>
+                    <p>Select a carb</p>
+                </div>
+                <div class="selected-item" id="selected-side">
+                    <h4>Side <span>0</span></h4>
+                    <p>Select a side</p>
+                </div>
+                <div class="selected-item" id="selected-sauce">
+                    <h4>Sauce <span>0</span></h4>
+                    <p>Select a sauce</p>
+                </div>
+            </div>
+
+            <div class="summary-nutrition">
+                <p><span id="summary-calories">0</span> Calories</p>
+                <p><span id="summary-protein">0</span> Protein</p>
+                <p><span id="summary-carbs">0</span> Carbs</p>
+                <p><span id="summary-fat">0</span> Fat</p>
+            </div>
+
+            <div class="action-buttons">
+                <button id="clear-selections">Clear selections</button>
+                <button id="download-recipe">Download recipe</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/build-your-own-script.js"></script>
+</body>
+</html>

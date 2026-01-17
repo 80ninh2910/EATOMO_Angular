@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Management</title>
+    <link rel="stylesheet" href="../../css/admin.css">
+    <style>
+        body { margin: 0; padding: 20px; background: #f7f4ee; }
+        .menu-content { max-width: 100%; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .menu-item-card { background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .menu-item-image { width: 100%; height: 200px; object-fit: cover; }
+        .menu-item-content { padding: 20px; }
+        .menu-item-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+        .menu-item-name { font-size: 1.2rem; font-weight: bold; color: #333; margin: 0; }
+        .menu-item-price { font-size: 1.1rem; font-weight: bold; color: #7A205C; }
+        .menu-item-category { background: #f0f0f0; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; color: #666; }
+        .menu-item-description { color: #666; margin: 10px 0; }
+        .menu-item-macros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+        .macro-item { text-align: center; padding: 8px; background: #f8f9fa; border-radius: 6px; }
+        .macro-value { font-weight: bold; color: #7A205C; }
+        .macro-label { font-size: 0.8rem; color: #666; }
+        .menu-item-actions { display: flex; gap: 8px; margin-top: 15px; }
+        .action-btn { padding: 6px 12px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
+        .action-btn:hover { background: #f5f5f5; }
+        .action-btn.primary { background: #7A205C; color: white; border-color: #7A205C; }
+        .action-btn.primary:hover { background: #5a1640; }
+        .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
+        .filter-bar select, .filter-bar input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; }
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .status-active { background: #10b981; color: white; }
+        .status-inactive { background: #ef4444; color: white; }
+        /* Edit Price Modal */
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-backdrop.show { display: flex; }
+        .modal { background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 420px; max-width: 92vw; }
+        .modal header { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .modal header h3 { margin: 0; font-size: 1rem; }
+        .modal .modal-body { padding: 16px 20px; }
+        .modal .modal-actions { padding: 16px 20px; border-top: 1px solid #eee; display: flex; gap: 10px; justify-content: flex-end; }
+        .modal .close-btn { background: transparent; border: none; font-size: 20px; cursor: pointer; }
+        .field { display: grid; gap: 6px; margin-bottom: 12px; }
+        .field label { font-size: 0.9rem; color: #555; }
+        .field input { padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .error-text { color: #ef4444; font-size: 0.85rem; display: none; }
+        .error-text.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="menu-content">
+        <div class="card">
+            <div class="card-head">
+                <h2>Menu Management</h2>
+                <div>
+                    <button class="ghost">Export Menu</button>
+                    <button class="ghost primary">Add New Item</button>
+                </div>
+            </div>
+            
+            <div class="filter-bar">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="Low Calorie">Low Calorie</option>
+                    <option value="Balanced">Balanced</option>
+                    <option value="High Protein">High Protein</option>
+                    <option value="Vegetarian">Vegetarian</option>
+                </select>
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="Search menu items...">
+                <button class="ghost" onclick="applyFilters()">Apply Filters</button>
+            </div>
+
+            <div class="menu-grid" id="menuGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Price Modal -->
+    <div class="modal-backdrop" id="editPriceModal">
+        <div class="modal">
+            <header>
+                <h3>Chỉnh sửa giá sản phẩm</h3>
+                <button class="close-btn" aria-label="Close" onclick="closeEditPriceModal()">&times;</button>
+            </header>
+            <div class="modal-body">
+                <div class="field">
+                    <label>Tên sản phẩm</label>
+                    <input type="text" id="editItemName" disabled>
+                </div>
+                <div class="field">
+                    <label>Giá (VND)</label>
+                    <input type="number" id="editItemPrice" min="1000" step="1000" placeholder="Ví dụ: 95000">
+                    <div class="error-text" id="editPriceError">Vui lòng nhập giá hợp lệ &gt;= 1,000</div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="action-btn" onclick="closeEditPriceModal()">Hủy</button>
+                <button class="action-btn primary" onclick="saveEditedPrice()">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State for admin menu
+        let ADMIN_MENU_DATA = null;
+        let PRICE_OVERRIDES = {};
+        let CURRENT_EDIT_ID = null;
+
+        function formatVND(amount) {
+            try {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(amount) || 0);
+            } catch (e) {
+                const n = Number(amount) || 0;
+                return '₫' + n.toLocaleString('vi-VN');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load overrides from localStorage
+            try {
+                PRICE_OVERRIDES = JSON.parse(localStorage.getItem('adminPriceOverrides') || '{}');
+            } catch (e) { PRICE_OVERRIDES = {}; }
+            await loadMenuItems();
+        });
+
+        async function loadMenuItems() {
+            try {
+                const data = await fetch('../../json/admin_data.json').then(r => r.json()).catch(() => null);
+                
+                if (data && data.menuItems) {
+                    ADMIN_MENU_DATA = data;
+                    const menuGrid = document.getElementById('menuGrid');
+                    menuGrid.innerHTML = '';
+                    
+                    data.menuItems.forEach(item => {
+                        const effectivePrice = PRICE_OVERRIDES[item.id] != null ? PRICE_OVERRIDES[item.id] : item.price;
+                        const menuCard = document.createElement('div');
+                        menuCard.className = 'menu-item-card';
+                        menuCard.innerHTML = `
+                            <img src="${item.image}" alt="${item.name}" class="menu-item-image">
+                            <div class="menu-item-content">
+                                <div class="menu-item-header">
+                                    <div>
+                                        <h3 class="menu-item-name">${item.name}</h3>
+                                        <span class="menu-item-category">${item.category}</span>
+                                    </div>
+                                    <div class="menu-item-price">${formatVND(effectivePrice)}</div>
+                                </div>
+                                
+                                <div class="menu-item-description">
+                                    ${item.description || 'Fresh and healthy bowl with balanced nutrition.'}
+                                </div>
+                                
+                                <div class="menu-item-macros">
+                                    <div class="macro-item">
+                                        <div class="macro-value">${item.calories}</div>
+                                        <div class="macro-label">Calories</div>
+                                    </div>
+                                    <div class="macro-item">
+                                        <div class="macro-value">${item.protein}g</div>
+                                        <div class="macro-label">Protein</div>
+                                    </div>
+                                    <div class="macro-item">
+                                        <div class="macro-value">${item.carbs}g</div>
+                                        <div class="macro-label">Carbs</div>
+                                    </div>
+                                    <div class="macro-item">
+                                        <div class="macro-value">${item.fat}g</div>
+                                        <div class="macro-label">Fat</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="menu-item-actions">
+                                    <button class="action-btn" onclick="editItem(${item.id})">Edit Price</button>
+                                    <button class="action-btn" onclick="toggleStatus(${item.id})">Toggle Status</button>
+                                    <button class="action-btn" onclick="duplicateItem(${item.id})">Duplicate</button>
+                                    <button class="action-btn" onclick="deleteItem(${item.id})" style="color: #ef4444;">Delete</button>
+                                </div>
+                            </div>
+                        `;
+                        menuGrid.appendChild(menuCard);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading menu items:', error);
+            }
+        }
+
+        function applyFilters() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            
+            const menuCards = document.querySelectorAll('.menu-item-card');
+            
+            menuCards.forEach(card => {
+                const category = card.querySelector('.menu-item-category').textContent;
+                const name = card.querySelector('.menu-item-name').textContent.toLowerCase();
+                
+                let show = true;
+                
+                if (categoryFilter && category !== categoryFilter) show = false;
+                if (searchInput && !name.includes(searchInput)) show = false;
+                // Note: Status filter would need to be implemented with actual status data
+                
+                card.style.display = show ? '' : 'none';
+            });
+        }
+
+        function editItem(itemId) {
+            if (!ADMIN_MENU_DATA || !ADMIN_MENU_DATA.menuItems) return;
+            const item = ADMIN_MENU_DATA.menuItems.find(i => i.id === itemId);
+            if (!item) return;
+            CURRENT_EDIT_ID = itemId;
+            const currentPrice = PRICE_OVERRIDES[itemId] != null ? PRICE_OVERRIDES[itemId] : item.price;
+            document.getElementById('editItemName').value = item.name;
+            document.getElementById('editItemPrice').value = Number(currentPrice) || '';
+            document.getElementById('editPriceError').classList.remove('show');
+            document.getElementById('editPriceModal').classList.add('show');
+        }
+
+        function closeEditPriceModal() {
+            document.getElementById('editPriceModal').classList.remove('show');
+            CURRENT_EDIT_ID = null;
+        }
+
+        function saveEditedPrice() {
+            const priceInput = document.getElementById('editItemPrice');
+            const err = document.getElementById('editPriceError');
+            const raw = priceInput.value.trim();
+            const val = Number(raw);
+            if (!raw || isNaN(val) || val < 1000) { err.classList.add('show'); return; }
+            err.classList.remove('show');
+            if (CURRENT_EDIT_ID == null) return;
+            PRICE_OVERRIDES[CURRENT_EDIT_ID] = Math.round(val);
+            try { localStorage.setItem('adminPriceOverrides', JSON.stringify(PRICE_OVERRIDES)); } catch (e) {}
+            closeEditPriceModal();
+            // Re-render to reflect new price
+            loadMenuItems();
+            alert('Đã cập nhật giá sản phẩm');
+        }
+
+        function toggleStatus(itemId) {
+            alert(`Toggle status for item: ${itemId}`);
+        }
+
+        function duplicateItem(itemId) {
+            alert(`Duplicate item: ${itemId}`);
+        }
+
+        function deleteItem(itemId) {
+            if (confirm(`Are you sure you want to delete item ${itemId}?`)) {
+                alert(`Item ${itemId} deleted`);
+                loadMenuItems(); // Reload to show changes
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EatClean Admin — Dashboard</title>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">
+          <!-- simple SVG icon -->
+          <img src="../images/index/image-removebg-preview (36).png">
+          <p class="muted">Admin</p>
+
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-page="dashboard"><span class="dot"></span>Dashboard</button>
+        <button class="nav-item" data-page="orders"><span class="dot"></span>Orders</button>
+        <button class="nav-item" data-page="customers"><span class="dot"></span>Customers</button>
+        <button class="nav-item" data-page="menu"><span class="dot"></span>Menu</button>
+        <button class="nav-item" data-page="analytics"><span class="dot"></span>Analytics</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="profile">
+          <img src="https://i.pravatar.cc/48?img=12" alt="admin">
+          <div>
+            <strong>Manager</strong>
+            <div class="muted">admin@eatclean.vn</div>
+          </div>
+        </div>
+        <button class="ghost">Sign out</button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="search">
+          <input type="search" id="search" placeholder="Search data, users, or orders..." />
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" id="theme-toggle" title="Toggle theme">🌙</button>
+          <div class="notif icon-btn" title="Notifications">🔔 <span class="badge" id="notif-count">3</span></div>
+          <button class="logout-btn" id="adminLogoutBtn" title="Logout">🚪 Logout</button>
+          <img class="avatar" src="https://i.pravatar.cc/36?img=32" alt="me">
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="content">
+        <div class="content-frame">
+          <iframe id="contentFrame" src="pages/dashboard.html" frameborder="0"></iframe>
+        </div>
+      </section>
+
+      <!-- footer / tiny -->
+      <footer class="footer">
+        © <span id="year"></span> EatClean • Dashboard
+      </footer>
+    </main>
+  </div>
+
+  <!-- JS -->
+  <script src="../js/login.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

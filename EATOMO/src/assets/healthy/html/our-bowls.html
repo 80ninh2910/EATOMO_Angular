@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Bowls – Soumaki - Your healthy food soulmate</title>
+    <link rel="stylesheet" href="../css/our-bowls-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="../js/menu-data.js"></script>
+</head>
+<body>
+    <!-- Top Banner -->
+    <div class="top-banner">
+        <p>UEL | Faculty of Information System | E-Commerce.</p>
+        <p>Visit our store at 669 QL1A, khu phố 6, Thủ Đức, Hồ Chí Minh.</p>
+        <p>Open from 10AM–9PM everyday.</p>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo" id="backToTop">
+                <a href="index.html" class="sub-nav-link">
+                <h1>
+                   <img src="../images/index/image-removebg-preview (36).png">
+                    EATOMO
+                </h1>
+                </a>
+            </div>
+            <nav class="nav">
+                <a href="our-bowls.html" class="nav-link" onclick="navigateToPage('bowls')">Our Bowls</a>
+                <a href="stores.html" class="nav-link" onclick="navigateToPage('stores')">Stores</a>
+                <a href="orders.html" class="nav-link" onclick="navigateToPage('delivery')">Cart</a>
+                <a href="about-us.html" class="nav-link" onclick="navigateToPage('about')">About Us</a>
+                <a href="faqs.html" class="nav-link" onclick="navigateToPage('contact')">FAQs</a>
+            </nav>
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Sub Navigation -->
+    <div class="sub-nav">
+        <div class="container">
+            <div class="sub-nav-links">
+                <a href="build-your-own.html" class="sub-nav-link">Build your own</a>
+                <a href="our-bowls.html" class="sub-nav-link active">Sou-made bowls</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-bowls">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Sou-made bowls of your choice</h1>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">All</button>
+                    <button class="filter-tab" data-filter="low-cal">Low calories</button>
+                    <button class="filter-tab" data-filter="balanced">Balanced</button>
+                    <button class="filter-tab" data-filter="high-protein">High protein</button>
+                    <button class="filter-tab" data-filter="vegetarian">Vegetarian</button>
+                </div>
+                <a href="#" class="btn btn-primary" onclick="viewFullMenu()">View full menu</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Added to Bag Modal -->
+    <div class="modal" id="addedToBagModal">
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <h2>My Bag</h2>
+            </div>
+            <div class="cart-summary">
+                <div class="cart-items">
+                    <!-- Cart items will be dynamically added here -->
+                </div>
+                <div class="cart-total">
+                    <p>Total Items: <span id="totalItems">0</span></p>
+                    <p>Total Price: $<span id="totalPrice">0.00</span></p>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="continue-shopping">Continue Shopping</button>
+                <button class="view-bag">View My Bag</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Calories Section -->
+    <section class="bowls-section" id="low-cal">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Low calories</h2>
+                <p class="section-description">Ideal options with less than 350kcal for effective weight loss or control</p>
+            </div>
+            <div class="bowls-grid" data-category="low-cal">
+                <!-- L1 -->
+                <div class="bowl-card" data-bowl="L1">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b1.jpg" alt="L1 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('L1')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">274 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">L1</h3>
+                        <p class="bowl-description">Half beef steak, sweet potato, cauliflower, pickles</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l1',
+                            name: 'L1 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">25</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">27</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">7</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- L2 -->
+                <div class="bowl-card" data-bowl="L2">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b2.jpg" alt="L2 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('L2')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">331 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">L2</h3>
+                        <p class="bowl-description">Salmon, sweet potato, mixed veggies, pak choi</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l2',
+                            name: 'L2 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">24</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">26</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">15</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- L3 -->
+                <div class="bowl-card" data-bowl="L3">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b3.jpg" alt="L3 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('L3')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">341 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">L3</h3>
+                        <p class="bowl-description">Prawns, Japanese cold soba, onsen egg, pickles</p>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">32</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">35</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">8</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- L4 -->
+                <div class="bowl-card" data-bowl="L4">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b4.jpg" alt="L4 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('L4')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">285 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">L4</h3>
+                        <p class="bowl-description">Half chicken breast, baby potato, mixed veggies, pak choi</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l4',
+                            name: 'L4 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">33</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">23</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">7</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- L5 -->
+                <div class="bowl-card" data-bowl="L5">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b5.jpg" alt="L5 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('L5')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">351 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">L5</h3>
+                        <p class="bowl-description">Half cajun chicken, Japanese cold soba, pickles, cauliflower</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l5',
+                            name: 'L5 Bowl',
+                            image: '../images/index/bowl-b5.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">39</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">40</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">4</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- L6 -->
+                <div class="bowl-card" data-bowl="L6">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b6.jpg" alt="L6 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('L6')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">311 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">L6</h3>
+                        <p class="bowl-description">Tuna, baby potato, sweet corn, mixed veggies</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l6',
+                            name: 'L6 Bowl',
+                            image: '../images/index/bowl-b6.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">34</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">32</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">5</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- L7 -->
+                <div class="bowl-card" data-bowl="L7">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b1.jpg" alt="L7 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('L7')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">373 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">L7</h3>
+                        <p class="bowl-description">Half cajun chicken breast, brown rice, beetroot, tomato</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l7',
+                            name: 'L7 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">35</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">45</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">6</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- L8 -->
+                <div class="bowl-card" data-bowl="L8">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b2.jpg" alt="L8 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('L8')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">439 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">L8</h3>
+                        <p class="bowl-description">Basa fish, Japanese cold soba, avocado</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l8',
+                            name: 'L8 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">33</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">40</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">16</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- L9 -->
+                <div class="bowl-card" data-bowl="L9">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b3.jpg" alt="L9 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('L9')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">341 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">L9</h3>
+                        <p class="bowl-description">Half beef steak, sweet potato, pak choi, broccoli, mix veggies</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l9',
+                            name: 'L9 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">27</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">33</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">11</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- L10 -->
+                <div class="bowl-card" data-bowl="L10">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b4.jpg" alt="L10 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('L10')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">351 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">L10</h3>
+                        <p class="bowl-description">Duck breast, pumpkin, broccoli, spinach</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l10',
+                            name: 'L10 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">35</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">16</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">16</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Balanced Section -->
+    <section class="bowls-section" id="balanced">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Balanced</h2>
+                <p class="section-description">Best for health fanatics, with the right portions of fat, carbs and protein, between 350 and 550kcal</p>
+            </div>
+            <div class="bowls-grid" data-category="balanced">
+                <!-- B1 -->
+                <div class="bowl-card" data-bowl="B1">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b1.jpg" alt="B1 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B1')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">434 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B1</h3>
+                        <p class="bowl-description">Tuna, donburi brown rice, beetroot, broccoli</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b1',
+                            name: 'B1 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">43</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">48</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">8</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B2 -->
+                <div class="bowl-card" data-bowl="B2">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b2.jpg" alt="B2 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B2')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">438 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B2</h3>
+                        <p class="bowl-description">Half beef steak, pasta, mushroom, pak choi, pickles, onsen egg</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b2',
+                            name: 'B2 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">35</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">38</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">16</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B3 -->
+                <div class="bowl-card" data-bowl="B3">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b3.jpg" alt="B3 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B3')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">435 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B3</h3>
+                        <p class="bowl-description">Prawns, Japanese cold soba, French bean, tofu</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b3',
+                            name: 'B3 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">41</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">54</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">6</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B4 -->
+                <div class="bowl-card" data-bowl="B4">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b4.jpg" alt="B4 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B4')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">508 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B4</h3>
+                        <p class="bowl-description">Salmon, pasta, spinach, salad and mix nuts</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b4',
+                            name: 'B4 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">31</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">42</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">24</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B5 -->
+                <div class="bowl-card" data-bowl="B5">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b5.jpg" alt="B5 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B5')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">485 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B5</h3>
+                        <p class="bowl-description">Duck breast, donburi brown rice, pickles</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b5',
+                            name: 'B5 Bowl',
+                            image: '../images/index/bowl-b5.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">40</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">36</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">20</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B6 -->
+                <div class="bowl-card" data-bowl="B6">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b6.jpg" alt="B6 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B6')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">455 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B6</h3>
+                        <p class="bowl-description">Salmon, donburi brown rice, spinach</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b6',
+                            name: 'B6 Bowl',
+                            image: '../images/index/bowl-b6.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">32</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">38</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">20</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B7 -->
+                <div class="bowl-card" data-bowl="B7">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b1.jpg" alt="B7 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B7')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">586 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B7</h3>
+                        <p class="bowl-description">Duck breast, donburi white rice, mix veggies, spinach</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b7',
+                            name: 'B7 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">42</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">49</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">25</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B8 -->
+                <div class="bowl-card" data-bowl="B8">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b2.jpg" alt="B8 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B8')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">442 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B8</h3>
+                        <p class="bowl-description">Basa fish, donburi brown rice, spinach, cabbage</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b8',
+                            name: 'B8 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">37</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">43</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">14</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B9 -->
+                <div class="bowl-card" data-bowl="B9">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b3.jpg" alt="B9 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B9')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">488 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B9</h3>
+                        <p class="bowl-description">Half original chicken, prawns, donburi brown rice, French bean</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b9',
+                            name: 'B9 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">58</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">39</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">11</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B10 -->
+                <div class="bowl-card" data-bowl="B10">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b4.jpg" alt="B10 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B10')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">557 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B10</h3>
+                        <p class="bowl-description">Full beef steak, donburi brown rice, cauliflower</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b10',
+                            name: 'B10 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">54</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">41</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">20</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B11 -->
+                <div class="bowl-card" data-bowl="B11">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b5.jpg" alt="B11 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B11')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">437 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B11</h3>
+                        <p class="bowl-description">Tuna, donburi white rice, broccoli, pickles</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b11',
+                            name: 'B11 Bowl',
+                            image: '../images/index/bowl-b5.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">42</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">52</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">7</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B12 -->
+                <div class="bowl-card" data-bowl="B12">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b6.jpg" alt="B12 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B12')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">542 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B12</h3>
+                        <p class="bowl-description">Full cajun chicken, brown rice, sweet corn, tomato</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b12',
+                            name: 'B12 Bowl',
+                            image: '../images/index/bowl-b6.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">65</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">52</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">8</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B13 -->
+                <div class="bowl-card" data-bowl="B13">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b1.jpg" alt="B13 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B13')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">440 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B13</h3>
+                        <p class="bowl-description">Full cajun chicken, baby potato, spinach, broccoli</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b13',
+                            name: 'B13 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">64</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">27</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">9</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B14 -->
+                <div class="bowl-card" data-bowl="B14">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b2.jpg" alt="B14 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B14')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">441 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B14</h3>
+                        <p class="bowl-description">Basa fish, donburi brown rice, cabbage, tomato</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b14',
+                            name: 'B14 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">36</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">46</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">12</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B15 -->
+                <div class="bowl-card" data-bowl="B15">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b3.jpg" alt="B15 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('B15')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">515 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">B15</h3>
+                        <p class="bowl-description">Half beef steak, prawns, soba, cauliflower, pickles, onsen egg</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b15',
+                            name: 'B15 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">55</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">41</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">15</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- High Protein Section -->
+    <section class="bowls-section" id="high-protein">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">High protein</h2>
+                <p class="section-description">Highly recommended for muscle gain and after workout with over 550kcal, most wanted by the gym enthusiasts</p>
+            </div>
+            <div class="bowls-grid" data-category="high-protein">
+                <!-- H1 -->
+                <div class="bowl-card" data-bowl="H1">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b1.jpg" alt="H1 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('H1')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">562 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">H1</h3>
+                        <p class="bowl-description">Half original chicken, half beef steak, donburi brown rice, spinach</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h1',
+                            name: 'H1 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">62</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">38</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">18</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- H2 -->
+                <div class="bowl-card" data-bowl="H2">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b2.jpg" alt="H2 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('H2')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">615 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">H2</h3>
+                        <p class="bowl-description">Half beef steak, prawns, donburi white rice, baby potato, broccoli</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h2',
+                            name: 'H2 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">53</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">69</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">14</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- H3 -->
+                <div class="bowl-card" data-bowl="H3">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b3.jpg" alt="H3 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('H3')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">560 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">H3</h3>
+                        <p class="bowl-description">Basa fish, Japanese cold soba, avocado, mixed veggies, onsen egg</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h3',
+                            name: 'H3 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">39</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">44</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">25</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- H4 -->
+                <div class="bowl-card" data-bowl="H4">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b4.jpg" alt="H4 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('H4')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">584 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">H4</h3>
+                        <p class="bowl-description">Duck breast, prawns, sweet potato, edamame, onsen egg</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h4',
+                            name: 'H4 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">66</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">33</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">21</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- H5 -->
+                <div class="bowl-card" data-bowl="H5">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b5.jpg" alt="H5 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('H5')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">720 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">H5</h3>
+                        <p class="bowl-description">Half beef steak, full chicken breast, donburi brown rice, pumpkin, french bean</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h5',
+                            name: 'H5 Bowl',
+                            image: '../images/index/bowl-b5.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">91</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">46</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">19</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- H6 -->
+                <div class="bowl-card" data-bowl="H6">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b6.jpg" alt="H6 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('H6')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">611 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">H6</h3>
+                        <p class="bowl-description">Full original chicken, fusilli pasta, avocado, beetroot</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h6',
+                            name: 'H6 Bowl',
+                            image: '../images/index/bowl-b6.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">65</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">45</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">19</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- H7 -->
+                <div class="bowl-card" data-bowl="H7">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b1.jpg" alt="H7 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('H7')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">583 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">H7</h3>
+                        <p class="bowl-description">Half beef steak, half cajun chicken breast, donburi brown, sweet corn</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h7',
+                            name: 'H7 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">62</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">47</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">16</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- H8 -->
+                <div class="bowl-card" data-bowl="H8">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b2.jpg" alt="H8 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('H8')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">649 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">H8</h3>
+                        <p class="bowl-description">Full beef steak, donburi brown rice, baby potato, broccoli</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h8',
+                            name: 'H8 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">56</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">60</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">21</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- H9 -->
+                <div class="bowl-card" data-bowl="H9">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b3.jpg" alt="H9 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('H9')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">611 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">H9</h3>
+                        <p class="bowl-description">Full beef steak, donburi white rice, sweet corn</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h9',
+                            name: 'H9 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">54</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">56</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">19</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- H10 -->
+                <div class="bowl-card" data-bowl="H10">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b4.jpg" alt="H10 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('H10')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">617 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">H10</h3>
+                        <p class="bowl-description">Half cajun chicken breast, salmon, donburi white rice, tomato</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h10',
+                            name: 'H10 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">60</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">50</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">20</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vegetarian Section -->
+    <section class="bowls-section" id="vegetarian">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Vegetarian</h2>
+                <p class="section-description">Vegetarian bowls are flavorful with green goodness and balanced in macronutrients</p>
+            </div>
+            <div class="bowls-grid" data-category="vegetarian">
+                <!-- V1 -->
+                <div class="bowl-card" data-bowl="V1">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b1.jpg" alt="V1 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('V1')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">377 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">V1</h3>
+                        <p class="bowl-description">Brown rice, cauliflower, mixed veggies, edamame, mushroom</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-v1',
+                            name: 'V1 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">18</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">55</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">10</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- V2 -->
+                <div class="bowl-card" data-bowl="V2">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b2.jpg" alt="V2 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('V2')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">536 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">V2</h3>
+                        <p class="bowl-description">Japanese cold soba, cabbage, chickpeas, beetroot, avocado</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-v2',
+                            name: 'V2 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">19</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">74</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">18</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- V3 -->
+                <div class="bowl-card" data-bowl="V3">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b3.jpg" alt="V3 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('V3')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">520 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">V3</h3>
+                        <p class="bowl-description">White rice, sweet potato, avocado, sweet corn, spinach</p>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">11</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">84</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">16</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- V4 -->
+                <div class="bowl-card" data-bowl="V4">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b4.jpg" alt="V4 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('V4')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">520 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">V4</h3>
+                        <p class="bowl-description">Brown rice, chickpeas, tomato, avocado, french bean</p>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">16</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">75</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">18</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- V5 -->
+                <div class="bowl-card" data-bowl="V5">
+                    <div class="bowl-image">
+                        <img src="../images/index/bowl-b5.jpg" alt="V5 Bowl">
+                        <button class="download-recipe" onclick="downloadRecipe('V5')">Download recipe</button>
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bowl-calories">
+                            <span class="calories-badge">530 CALORIES</span>
+                        </div>
+                        <h3 class="bowl-name">V5</h3>
+                        <p class="bowl-description">Tofu, pasta, broccoli, edamame, purple cabbage, beetroot</p>
+                        <div class="bowl-macros">
+                            <div class="macro">
+                                <span class="macro-value">33</span>
+                                <span class="macro-label">PROTEIN</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">85</span>
+                                <span class="macro-label">CARBS</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">7</span>
+                                <span class="macro-label">FAT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>SOUMAKI</h3>
+                    <p>Your healthy food soulmate since 2020.</p>
+                    <div class="contact-info">
+                        <p><i class="fas fa-phone"></i> 0326238700</p>
+                        <p><i class="fas fa-envelope"></i> info@soumaki.com.vn</p>
+                        <p><i class="fas fa-clock"></i> We're here for you at 10AM – 9PM, every day</p>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#" onclick="navigateToPage('calculator')">Calories calculator</a></li>
+                        <li><a href="our-bowls.html">Our bowls</a></li>
+                        <li><a href="about-us.html" onclick="navigateToPage('about')">About us</a></li>
+                        <li><a href="#" onclick="navigateToPage('catering')">Catering</a></li>
+                        <li><a href="#" onclick="navigateToPage('stores')">Stores</a></li>
+                        <li><a href="#" onclick="showFAQs()">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Our Locations</h4>
+                    <ul>
+                        <li>42 Ly Tu Trong (District 1)</li>
+                        <li>S27-1, Sky Garden 1 (District 7)</li>
+                        <li>250 Nguyen Van Huong (District 2)</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#" onclick="openSocialMedia('facebook')"><i class="fab fa-facebook"></i> Facebook</a>
+                        <a href="#" onclick="openSocialMedia('instagram')"><i class="fab fa-instagram"></i> Instagram</a>
+                        <a href="#" onclick="openSocialMedia('tiktok')"><i class="fab fa-tiktok"></i> TikTok</a>
+                    </div>
+                    <div class="delivery-info">
+                        <p><strong>A healthy meal at your doorstep?</strong></p>
+                        <p>We're available on Grab, Now, Baemin</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2025 Soumaki. All rights reserved.</p>
+                    <div class="footer-links">
+                        <a href="#">Delivery</a>
+                        <a href="#">Blogs</a>
+                        <a href="#">Privacy policy</a>
+                        <a href="#">Terms & conditions</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/our-bowls-script.js"></script>
+    <script src="../js/orders.js"></script>
+    <script>
+    // Wire bowl cards to add-to-cart flow
+    document.addEventListener('DOMContentLoaded', function () {
+        // price map (defaults provided if not listed)
+        const priceMap = {
+            'L1': 14.99,'L2': 15.49,'L3': 16.99,'L4': 13.99,'L5': 15.99,
+            'L6': 14.49,'L7': 16.49,'L8': 17.99,'L9': 15.99,'L10':16.99,
+            'B1': 18.99,'B2': 17.49,'B3': 16.49
+        };
+
+        function getPriceFor(bowlId) {
+            return priceMap[bowlId] || 14.99;
+        }
+
+        // Helper: format VND
+        function formatVND(amount) {
+            try {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+            } catch (e) {
+                return amount + ' VND';
+            }
+        }
+
+        document.querySelectorAll('.bowl-card').forEach(card => {
+            card.style.cursor = 'pointer';
+        card.addEventListener('click', function (e) {
+            // ignore clicks on download recipe button or on the add-to-bag/add-to-cart buttons
+            if (e.target.closest('.download-recipe') || e.target.closest('.add-to-bag-btn') || e.target.closest('.add-to-cart') || e.target.closest('.add-to-bag')) return;
+
+                const bowlId = card.dataset.bowl || ('bowl-' + Math.random().toString(36).slice(2,7));
+                const nameEl = card.querySelector('.bowl-name');
+                const imgEl = card.querySelector('img');
+                const name = nameEl ? nameEl.textContent.trim() : bowlId;
+                const image = imgEl ? imgEl.src : '';
+                const price = getPriceFor(bowlId);
+
+                // Normalize price to integer VND so orders page calculates correctly.
+                // Rule: if price looks like a small decimal (e.g. 12.99) assume it's a unit price
+                // and convert to VND by multiplying by 10000 (produces typical VND price like 129900).
+                // If price is already a large integer (>1000) assume it's already in VND.
+                const priceVND = (typeof price === 'number' && price < 1000) ? Math.round(price * 10000) : Math.round(price || 0);
+
+                // Add to cart without browser confirm dialog (less intrusive)
+
+                const item = { id: bowlId, name: name, price: priceVND, image: image };
+
+                if (window.GBCart && typeof window.GBCart.addToCart === 'function') {
+                    // Use the global cart manager which expects price in VND integers
+                    window.GBCart.addToCart(item);
+                    // showCartModal is provided by our-bowls-script.js to display the cart modal
+                    if (typeof showCartModal === 'function') showCartModal();
+                } else {
+                    // fallback: store minimal item in localStorage under the same key used by orders.js ('cart')
+                    const key = 'cart';
+                    const raw = localStorage.getItem(key);
+                    const cart = raw ? JSON.parse(raw) : [];
+                    const existing = cart.find(i => i.id === bowlId);
+                    if (existing) existing.qty = (existing.qty || 0) + 1; else cart.push(Object.assign({ qty: 1 }, item));
+                    localStorage.setItem(key, JSON.stringify(cart));
+                    if (typeof showCartModal === 'function') showCartModal();
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

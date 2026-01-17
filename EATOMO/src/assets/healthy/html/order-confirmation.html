@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Soumaki</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/order-confirmation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <main class="confirmation-container">
+        <div class="confirmation-card">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>Thank You for Your Order!</h1>
+            <p class="order-id">Order ID: <span id="displayOrderId">--</span></p>
+            
+            <div class="order-details">
+                <h2>Order Details</h2>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <h3>Delivery Information</h3>
+                        <div id="deliveryInfo">
+                            <p class="customer-name">--</p>
+                            <p class="delivery-address">--</p>
+                            <p class="contact-number">--</p>
+                        </div>
+                    </div>
+                    
+                    </div>
+                
+                <div class="order-total">
+                    <div class="total-row">
+                        <span>Order Total:</span>
+                        <span id="subtotal">--</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Shipping Fee:</span>
+                        <span id="deliveryFee">--</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Final Payment:</span>
+                        <span id="total">--</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="index.html" class="primary-button">Return to Home</a>
+                <a href="orders.html" class="secondary-button">View My Orders</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: info@soumaki.com</p>
+                <p>Phone: (123) 456-7890</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="about-us.html">About Us</a></li>
+                    <li><a href="faqs.html">FAQs</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Soumaki. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/order-confirmation.js"></script>
+</body>
+</html>

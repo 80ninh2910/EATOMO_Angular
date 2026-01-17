@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Management</title>
+    <link rel="stylesheet" href="../../css/admin.css">
+    <style>
+        body { margin: 0; padding: 20px; background: #f7f4ee; }
+        .orders-content { max-width: 100%; }
+        .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
+        .filter-bar select, .filter-bar input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; }
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .status-completed { background: #10b981; color: white; }
+        .status-pending { background: #f59e0b; color: white; }
+        .status-processing { background: #3b82f6; color: white; }
+        .status-cancelled { background: #ef4444; color: white; }
+        .action-buttons { display: flex; gap: 8px; }
+        .action-btn { padding: 4px 8px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .action-btn:hover { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <div class="orders-content">
+        <div class="card">
+            <div class="card-head">
+                <h2>Orders Management</h2>
+                <div>
+                    <button class="ghost">Export All</button>
+                    <button class="ghost">Add Order</button>
+                </div>
+            </div>
+            
+            <div class="filter-bar">
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="completed">Completed</option>
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="Search by Order ID or Customer...">
+                <input type="date" id="dateFilter">
+                <button class="ghost" onclick="applyFilters()">Apply Filters</button>
+            </div>
+
+            <div class="table-wrap">
+                <table id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Items</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadOrders();
+        });
+
+        async function loadOrders() {
+            try {
+                const data = await fetch('../../json/admin_data.json').then(r => r.json()).catch(() => null);
+                
+                if (data && data.transactions) {
+                    const tbody = document.getElementById('ordersTableBody');
+                    tbody.innerHTML = '';
+                    
+                    data.transactions.forEach((order, index) => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${order.id}</td>
+                            <td>${order.customer}</td>
+                            <td>${order.date}</td>
+                            <td><span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span></td>
+                            <td>${order.amount}</td>
+                            <td>${Math.floor(Math.random() * 5) + 1} items</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn" onclick="viewOrder('${order.id}')">View</button>
+                                    <button class="action-btn" onclick="editOrder('${order.id}')">Edit</button>
+                                    <button class="action-btn" onclick="updateStatus('${order.id}')">Update</button>
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
+        }
+
+        function applyFilters() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            const rows = document.querySelectorAll('#ordersTableBody tr');
+            
+            rows.forEach(row => {
+                const status = row.querySelector('.status-badge').textContent.toLowerCase();
+                const orderId = row.cells[0].textContent.toLowerCase();
+                const customer = row.cells[1].textContent.toLowerCase();
+                const date = row.cells[2].textContent;
+                
+                let show = true;
+                
+                if (statusFilter && status !== statusFilter) show = false;
+                if (searchInput && !orderId.includes(searchInput) && !customer.includes(searchInput)) show = false;
+                if (dateFilter && !date.includes(dateFilter)) show = false;
+                
+                row.style.display = show ? '' : 'none';
+            });
+        }
+
+        function viewOrder(orderId) {
+            alert(`View order details for: ${orderId}`);
+        }
+
+        function editOrder(orderId) {
+            alert(`Edit order: ${orderId}`);
+        }
+
+        function updateStatus(orderId) {
+            const newStatus = prompt(`Update status for order ${orderId}:\n1. completed\n2. pending\n3. processing\n4. cancelled`);
+            if (newStatus) {
+                alert(`Order ${orderId} status updated to: ${newStatus}`);
+                loadOrders(); // Reload to show changes
+            }
+        }
+    </script>
+</body>
+</html>

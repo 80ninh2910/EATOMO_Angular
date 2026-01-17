@@ -1,0 +1,32 @@
+{
+  "reviews": [
+    {
+      "name": "Tram Le",
+      "date": "January 18, 2024",
+      "stars": 5,
+      "content": "A rare find in town for healthy and nutritious food with DIY build your own bowl concept.",
+      "source": "Customer from Google"
+    },
+    {
+      "name": "James Nguyen",
+      "date": "February 4, 2024",
+      "stars": 4,
+      "content": "Great variety of choices, fresh ingredients, and friendly staff.",
+      "source": "Customer from Facebook"
+    },
+    {
+      "name": "Mina Tran",
+      "date": "March 1, 2024",
+      "stars": 5,
+      "content": "I love the atmosphere and how customizable the menu is. Highly recommended!",
+      "source": "Customer from Instagram"
+    },
+    {
+      "name": "David Pham",
+      "date": "April 5, 2024",
+      "stars": 5,
+      "content": "Healthy meals with great service! Definitely coming back again.",
+      "source": "Customer from TripAdvisor"
+    }
+  ]
+}

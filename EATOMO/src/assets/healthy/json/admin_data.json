@@ -1,0 +1,392 @@
+{
+  "kpis": {
+    "sales": "2.4M",
+    "orders": "15.2K",
+    "pending": "127",
+    "cancelled": "23",
+    "activeUsers": "8.9K"
+  },
+  "topProducts": [
+    {
+      "title": "B1 Healthy Bowl",
+      "price": "89,000 VND",
+      "img": "../../images/index/bowl-b1.jpg",
+      "sales": 1247,
+      "revenue": "111,083,000"
+    },
+    {
+      "title": "B2 Balanced Bowl",
+      "price": "95,000 VND",
+      "img": "../../images/index/bowl-b2.jpg",
+      "sales": 892,
+      "revenue": "84,740,000"
+    },
+    {
+      "title": "B3 Low-Cal Bowl",
+      "price": "87,000 VND",
+      "img": "../../images/index/bowl-b3.jpg",
+      "sales": 1156,
+      "revenue": "100,572,000"
+    },
+    {
+      "title": "B4 Protein Bowl",
+      "price": "92,000 VND",
+      "img": "../../images/index/bowl-b4.jpg",
+      "sales": 743,
+      "revenue": "68,356,000"
+    },
+    {
+      "title": "B5 High-Protein Bowl",
+      "price": "98,000 VND",
+      "img": "../../images/index/bowl-b5.jpg",
+      "sales": 634,
+      "revenue": "62,132,000"
+    },
+    {
+      "title": "B6 Vegetarian Bowl",
+      "price": "85,000 VND",
+      "img": "../../images/index/bowl-b6.jpg",
+      "sales": 1089,
+      "revenue": "92,565,000"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "ORD-2025-001",
+      "customer": "Nguyễn Minh Anh",
+      "date": "2025-10-25 14:30",
+      "status": "completed",
+      "amount": "267,000 VND"
+    },
+    {
+      "id": "ORD-2025-002",
+      "customer": "Trần Thị Bình",
+      "date": "2025-10-25 13:15",
+      "status": "pending",
+      "amount": "189,000 VND"
+    },
+    {
+      "id": "ORD-2025-003",
+      "customer": "Lê Văn Cường",
+      "date": "2025-10-25 12:45",
+      "status": "completed",
+      "amount": "356,000 VND"
+    },
+    {
+      "id": "ORD-2025-004",
+      "customer": "Phạm Thị Dung",
+      "date": "2025-10-25 11:20",
+      "status": "processing",
+      "amount": "178,000 VND"
+    },
+    {
+      "id": "ORD-2025-005",
+      "customer": "Hoàng Minh Em",
+      "date": "2025-10-25 10:55",
+      "status": "completed",
+      "amount": "234,000 VND"
+    },
+    {
+      "id": "ORD-2025-006",
+      "customer": "Vũ Thị Phương",
+      "date": "2025-10-25 09:30",
+      "status": "cancelled",
+      "amount": "156,000 VND"
+    },
+    {
+      "id": "ORD-2025-007",
+      "customer": "Đặng Văn Giang",
+      "date": "2025-10-25 08:45",
+      "status": "completed",
+      "amount": "298,000 VND"
+    },
+    {
+      "id": "ORD-2025-008",
+      "customer": "Bùi Thị Hoa",
+      "date": "2025-10-24 18:20",
+      "status": "completed",
+      "amount": "201,000 VND"
+    },
+    {
+      "id": "ORD-2025-009",
+      "customer": "Ngô Minh Ích",
+      "date": "2025-10-24 17:15",
+      "status": "pending",
+      "amount": "167,000 VND"
+    },
+    {
+      "id": "ORD-2025-010",
+      "customer": "Đinh Thị Kim",
+      "date": "2025-10-24 16:30",
+      "status": "completed",
+      "amount": "289,000 VND"
+    }
+  ],
+  "report": {
+    "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "sales": [45000, 52000, 48000, 61000, 55000, 72000, 68000],
+    "orders": [120, 145, 132, 168, 156, 198, 185]
+  },
+  "salesByCountry": [
+    {
+      "country": "Vietnam",
+      "sales": 85,
+      "color": "rgba(122, 32, 92, 0.8)"
+    },
+    {
+      "country": "Thailand",
+      "sales": 12,
+      "color": "rgba(255, 107, 107, 0.8)"
+    },
+    {
+      "country": "Singapore",
+      "sales": 8,
+      "color": "rgba(74, 144, 226, 0.8)"
+    },
+    {
+      "country": "Malaysia",
+      "sales": 5,
+      "color": "rgba(46, 204, 113, 0.8)"
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "name": "Nguyễn Minh Anh",
+      "email": "minhanh.nguyen@email.com",
+      "phone": "0901234567",
+      "totalOrders": 15,
+      "totalSpent": "2,340,000 VND",
+      "lastOrder": "2025-10-25",
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "name": "Trần Thị Bình",
+      "email": "thibinh.tran@email.com",
+      "phone": "0912345678",
+      "totalOrders": 8,
+      "totalSpent": "1,456,000 VND",
+      "lastOrder": "2025-10-25",
+      "status": "active"
+    },
+    {
+      "id": 3,
+      "name": "Lê Văn Cường",
+      "email": "vancuong.le@email.com",
+      "phone": "0923456789",
+      "totalOrders": 23,
+      "totalSpent": "4,567,000 VND",
+      "lastOrder": "2025-10-25",
+      "status": "vip"
+    },
+    {
+      "id": 4,
+      "name": "Phạm Thị Dung",
+      "email": "thidung.pham@email.com",
+      "phone": "0934567890",
+      "totalOrders": 5,
+      "totalSpent": "890,000 VND",
+      "lastOrder": "2025-10-25",
+      "status": "active"
+    },
+    {
+      "id": 5,
+      "name": "Hoàng Minh Em",
+      "email": "minhem.hoang@email.com",
+      "phone": "0945678901",
+      "totalOrders": 12,
+      "totalSpent": "1,890,000 VND",
+      "lastOrder": "2025-10-25",
+      "status": "active"
+    }
+  ],
+  "menuItems": [
+    {
+      "id": 1,
+      "name": "B1 Healthy Bowl",
+      "category": "Low Calorie",
+      "price": 89000,
+      "calories": 434,
+      "protein": 43,
+      "carbs": 48,
+      "fat": 8,
+      "status": "active",
+      "image": "../images/index/bowl-b1.jpg"
+    },
+    {
+      "id": 2,
+      "name": "B2 Balanced Bowl",
+      "category": "Balanced",
+      "price": 95000,
+      "calories": 438,
+      "protein": 35,
+      "carbs": 38,
+      "fat": 16,
+      "status": "active",
+      "image": "../images/index/bowl-b2.jpg"
+    },
+    {
+      "id": 3,
+      "name": "B3 Low-Cal Bowl",
+      "category": "Low Calorie",
+      "price": 87000,
+      "calories": 435,
+      "protein": 41,
+      "carbs": 54,
+      "fat": 6,
+      "status": "active",
+      "image": "../images/index/bowl-b3.jpg"
+    },
+    {
+      "id": 4,
+      "name": "B4 Protein Bowl",
+      "category": "High Protein",
+      "price": 92000,
+      "calories": 508,
+      "protein": 31,
+      "carbs": 42,
+      "fat": 24,
+      "status": "active",
+      "image": "../images/index/bowl-b4.jpg"
+    },
+    {
+      "id": 5,
+      "name": "B5 High-Protein Bowl",
+      "category": "High Protein",
+      "price": 98000,
+      "calories": 485,
+      "protein": 40,
+      "carbs": 36,
+      "fat": 20,
+      "status": "active",
+      "image": "../images/index/bowl-b5.jpg"
+    },
+    {
+      "id": 6,
+      "name": "B6 Vegetarian Bowl",
+      "category": "Vegetarian",
+      "price": 85000,
+      "calories": 455,
+      "protein": 32,
+      "carbs": 38,
+      "fat": 20,
+      "status": "active",
+      "image": "../images/index/bowl-b6.jpg"
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "name": "Nguyen Van An",
+      "email": "an.nguyen@email.com",
+      "phone": "+84 123 456 789",
+      "status": "active",
+      "totalOrders": 15,
+      "totalSpent": "₫2,500,000",
+      "lastOrder": "2024-01-15"
+    },
+    {
+      "id": 2,
+      "name": "Tran Thi Binh",
+      "email": "binh.tran@email.com",
+      "phone": "+84 987 654 321",
+      "status": "vip",
+      "totalOrders": 45,
+      "totalSpent": "₫8,200,000",
+      "lastOrder": "2024-01-14"
+    },
+    {
+      "id": 3,
+      "name": "Le Van Cuong",
+      "email": "cuong.le@email.com",
+      "phone": "+84 555 123 456",
+      "status": "active",
+      "totalOrders": 8,
+      "totalSpent": "₫1,200,000",
+      "lastOrder": "2024-01-10"
+    },
+    {
+      "id": 4,
+      "name": "Pham Thi Dung",
+      "email": "dung.pham@email.com",
+      "phone": "+84 333 777 999",
+      "status": "inactive",
+      "totalOrders": 3,
+      "totalSpent": "₫450,000",
+      "lastOrder": "2023-12-20"
+    },
+    {
+      "id": 5,
+      "name": "Hoang Van Em",
+      "email": "em.hoang@email.com",
+      "phone": "+84 111 222 333",
+      "status": "vip",
+      "totalOrders": 32,
+      "totalSpent": "₫6,800,000",
+      "lastOrder": "2024-01-13"
+    }
+  ],
+  "menuItems": [
+    {
+      "id": 1,
+      "name": "Balanced Bowl",
+      "category": "Balanced",
+      "price": 120000,
+      "calories": 450,
+      "protein": 25,
+      "carbs": 35,
+      "fat": 18,
+      "image": "../../images/build-your-own/Balanced-jpg.webp",
+      "description": "Perfect balance of protein, carbs, and healthy fats"
+    },
+    {
+      "id": 2,
+      "name": "High Protein Power",
+      "category": "High Protein",
+      "price": 150000,
+      "calories": 520,
+      "protein": 40,
+      "carbs": 25,
+      "fat": 22,
+      "image": "../../images/build-your-own/High-protein-jpg.webp",
+      "description": "Maximize your protein intake for muscle building"
+    },
+    {
+      "id": 3,
+      "name": "Light & Lean",
+      "category": "Low Calorie",
+      "price": 95000,
+      "calories": 320,
+      "protein": 20,
+      "carbs": 30,
+      "fat": 12,
+      "image": "../../images/build-your-own/Low-calories-jpg.webp",
+      "description": "Low calorie option for weight management"
+    },
+    {
+      "id": 4,
+      "name": "Green Goddess",
+      "category": "Vegetarian",
+      "price": 110000,
+      "calories": 380,
+      "protein": 18,
+      "carbs": 40,
+      "fat": 15,
+      "image": "../../images/build-your-own/Vegan-jpg.webp",
+      "description": "Plant-based nutrition at its finest"
+    },
+    {
+      "id": 5,
+      "name": "Custom Creation",
+      "category": "Custom",
+      "price": 130000,
+      "calories": 400,
+      "protein": 22,
+      "carbs": 32,
+      "fat": 16,
+      "image": "../../images/build-your-own/Balanced-jpg.webp",
+      "description": "Build your own perfect bowl"
+    }
+  ]
+}
