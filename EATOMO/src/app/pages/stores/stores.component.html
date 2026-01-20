@@ -1,0 +1,26 @@
+<app-header></app-header>
+
+<section class="stores-hero">
+  <div class="container">
+    <h1>Our Stores</h1>
+    <p>Find the nearest Eatomo store near you</p>
+  </div>
+</section>
+
+<section class="stores-list">
+  <div class="container">
+    <div class="store-card" *ngFor="let store of stores">
+      <div class="store-image">
+        <img [src]="store.image" [alt]="store.name">
+      </div>
+      <div class="store-info">
+        <h2>{{ store.name }}</h2>
+        <p><i class="fas fa-map-marker-alt"></i> {{ store.address }}</p>
+        <p><i class="fas fa-phone"></i> {{ store.phone }}</p>
+        <p><i class="fas fa-clock"></i> {{ store.hours }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

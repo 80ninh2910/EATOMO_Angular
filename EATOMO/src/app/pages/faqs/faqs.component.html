@@ -1,0 +1,24 @@
+<app-header></app-header>
+
+<section class="faqs-hero">
+  <div class="container">
+    <h1>Frequently Asked Questions</h1>
+    <p>Find answers to common questions about Eatomo</p>
+  </div>
+</section>
+
+<section class="faqs-content">
+  <div class="container">
+    <div class="faq-item" *ngFor="let faq of faqs" [class.open]="faq.isOpen">
+      <div class="faq-question" (click)="toggleFaq(faq)">
+        <h3>{{ faq.question }}</h3>
+        <span class="toggle-icon">{{ faq.isOpen ? '−' : '+' }}</span>
+      </div>
+      <div class="faq-answer" *ngIf="faq.isOpen">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

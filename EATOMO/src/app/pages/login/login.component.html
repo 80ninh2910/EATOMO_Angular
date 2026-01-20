@@ -1,0 +1,38 @@
+<div class="logo-bar">
+  <img src="assets/healthy/images/index/image-removebg-preview (36).png" alt="Brand Logo">
+  <h1>EATOMO</h1>
+</div>
+
+<div class="login-container">
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <form (ngSubmit)="onAdminLogin()">
+      <div>
+        <label for="admin-username">Username</label>
+        <input type="text" id="admin-username" [(ngModel)]="adminUsername" name="adminUsername" placeholder="Enter admin username" required>
+      </div>
+      <div>
+        <label for="admin-password">Password</label>
+        <input type="password" id="admin-password" [(ngModel)]="adminPassword" name="adminPassword" placeholder="Enter admin password" required>
+      </div>
+      <button type="submit">Login as Admin</button>
+    </form>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="login-box">
+    <h2>User Login</h2>
+    <form (ngSubmit)="onUserLogin()">
+      <div>
+        <label for="user-username">Username</label>
+        <input type="text" id="user-username" [(ngModel)]="userUsername" name="userUsername" placeholder="Enter username" required>
+      </div>
+      <div>
+        <label for="user-password">Password</label>
+        <input type="password" id="user-password" [(ngModel)]="userPassword" name="userPassword" placeholder="Enter password" required>
+      </div>
+      <button type="submit">Login as User</button>
+    </form>
+  </div>
+</div>

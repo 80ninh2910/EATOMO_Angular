@@ -130,7 +130,7 @@ body {
 
 
 .hero-section {
-    background-image: url('images/index/bowl-healthy.jpg');
+    background-image: url('../images/index/bowl-healthy.jpg');
     background-size: cover;
     background-position: center;
     height: 500px;

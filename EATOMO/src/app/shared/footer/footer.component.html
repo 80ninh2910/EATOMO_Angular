@@ -1,0 +1,44 @@
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>EATOMO</h3>
+        <p>Your healthy food soulmate</p>
+        <p>Fresh, healthy, and mindful eating for your body and soul.</p>
+      </div>
+
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li *ngFor="let link of quickLinks">
+            <a [routerLink]="link.route">{{ link.label }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4>Contact Us</h4>
+        <p>📍 669 QL1A, khu phố 6, Thủ Đức, Hồ Chí Minh</p>
+        <p>📞 Hotline: 1900 xxxx</p>
+        <p>✉️ Email: contact&#64;eatomo.com</p>
+      </div>
+
+      <div class="footer-section">
+        <h4>Follow Us</h4>
+        <div class="social-links">
+          <a *ngFor="let social of socialLinks" 
+             [href]="social.url" 
+             [attr.aria-label]="social.label"
+             target="_blank"
+             rel="noopener noreferrer">
+            <i [class]="social.icon"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {{ currentYear }} EATOMO. All rights reserved. | UEL - Faculty of Information System</p>
+    </div>
+  </div>
+</footer>

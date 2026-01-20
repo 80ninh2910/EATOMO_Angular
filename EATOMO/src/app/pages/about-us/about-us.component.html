@@ -1,0 +1,46 @@
+<app-header></app-header>
+
+<section class="hero-about">
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">Our Story</h1>
+      <p class="hero-subtitle">Where passion meets perfection</p>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="mouse"></div>
+  </div>
+</section>
+
+<section class="brand-story">
+  <div class="container">
+    <div class="story-grid">
+      <div class="story-content">
+        <span class="section-label">Who We Are</span>
+        <h2 class="section-title">Your Healthy Food Soulmate</h2>
+        <p class="story-text">
+          At Soumaki, we believe that healthy eating should never compromise on taste.
+          Born from a passion for wellness and culinary excellence, we've created a space
+          where nutrition meets indulgence.
+        </p>
+        <p class="story-text">
+          Every bowl we craft tells a story of dedication, quality ingredients, and
+          innovative cooking techniques that preserve the natural goodness of food while
+          delivering unforgettable flavors.
+        </p>
+        <div class="story-stats">
+          <div class="stat-item" *ngFor="let stat of stats">
+            <h3 class="stat-number">{{ stat.number }}</h3>
+            <p class="stat-label">{{ stat.label }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="story-image">
+        <img src="assets/healthy/images/about/store-interior.jpg" alt="Our Store" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

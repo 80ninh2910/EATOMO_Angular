@@ -1,0 +1,34 @@
+<!-- Top Banner -->
+<div class="top-banner">
+  <p>UEL | Faculty of Information System | E-Commerce.</p>
+  <p>Visit our store at 669 QL1A, khu phố 6, Thủ Đức, Hồ Chí Minh.</p>
+  <p>Open from 10AM–9PM everyday.</p>
+</div>
+
+<!-- Header -->
+<header class="header" [class.scrolled]="isScrolled">
+  <div class="container">
+    <div class="logo" (click)="scrollToTop()">
+      <h1>
+        <img src="assets/healthy/images/index/image-removebg-preview (36).png" alt="EATOMO Logo">
+        EATOMO
+      </h1>
+    </div>
+    <nav class="nav" [class.active]="isMenuOpen">
+      <a routerLink="/our-bowls" class="nav-link" routerLinkActive="active" (click)="closeMenu()">Our Bowls</a>
+      <a routerLink="/stores" class="nav-link" routerLinkActive="active" (click)="closeMenu()">Stores</a>
+      <a routerLink="/orders" class="nav-link" routerLinkActive="active" (click)="closeMenu()">Cart</a>
+      <a routerLink="/about-us" class="nav-link" routerLinkActive="active" (click)="closeMenu()">About Us</a>
+      <a routerLink="/faqs" class="nav-link" routerLinkActive="active" (click)="closeMenu()">FAQs</a>
+      <div class="nav-auth-buttons">
+        <a routerLink="/login" class="login-btn" (click)="closeMenu()">Login</a>
+        <a routerLink="/register" class="register-btn" (click)="closeMenu()">Register</a>
+      </div>
+    </nav>
+    <button class="menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
