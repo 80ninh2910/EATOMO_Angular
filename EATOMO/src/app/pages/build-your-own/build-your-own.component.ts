@@ -1,121 +1,173 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
+import { CartService } from '../../services/cart.service';
+
+interface Ingredient {
+  name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  image: string;
+}
+
+interface SelectedItems {
+  protein: Ingredient | null;
+  carbs: Ingredient | null;
+  side: Ingredient | null;
+  sauce: Ingredient | null;
+}
 
 @Component({
   selector: 'app-build-your-own',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule, RouterModule, HeaderComponent, FooterComponent],
   templateUrl: './build-your-own.component.html',
   styleUrl: './build-your-own.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BuildYourOwnComponent {
-  selectedProtein = '';
-  selectedCarbs = '';
-  selectedVeggies: string[] = [];
-  selectedSauce = '';
-  
-  proteins = [
-    { name: 'Chicken Breast', calories: 165, price: 20000 },
-    { name: 'Salmon', calories: 280, price: 35000 },
-    { name: 'Tuna', calories: 144, price: 30000 },
-    { name: 'Beef Steak', calories: 250, price: 40000 },
-    { name: 'Tofu', calories: 76, price: 15000 },
-    { name: 'Duck Breast', calories: 337, price: 45000 }
+  // Selected items signal
+  selectedItems = signal<SelectedItems>({
+    protein: null,
+    carbs: null,
+    side: null,
+    sauce: null
+  });
+
+  // Computed nutrition totals
+  totalCalories = computed(() => {
+    const items = this.selectedItems();
+    return (items.protein?.calories || 0) +
+           (items.carbs?.calories || 0) +
+           (items.side?.calories || 0) +
+           (items.sauce?.calories || 0);
+  });
+
+  totalProtein = computed(() => {
+    const items = this.selectedItems();
+    return (items.protein?.protein || 0) +
+           (items.carbs?.protein || 0) +
+           (items.side?.protein || 0) +
+           (items.sauce?.protein || 0);
+  });
+
+  totalCarbs = computed(() => {
+    const items = this.selectedItems();
+    return (items.protein?.carbs || 0) +
+           (items.carbs?.carbs || 0) +
+           (items.side?.carbs || 0) +
+           (items.sauce?.carbs || 0);
+  });
+
+  totalFat = computed(() => {
+    const items = this.selectedItems();
+    return (items.protein?.fat || 0) +
+           (items.carbs?.fat || 0) +
+           (items.side?.fat || 0) +
+           (items.sauce?.fat || 0);
+  });
+
+  // Ingredients data
+  readonly proteins: Ingredient[] = [
+    { name: 'Full sous vide top blade beef steak', calories: 250, protein: 30, carbs: 0, fat: 15, image: '/assets/healthy/images/build-your-own/Top-blade-beef-steak-300x300.png' },
+    { name: 'Full sous vide original chicken breast', calories: 180, protein: 35, carbs: 0, fat: 5, image: '/assets/healthy/images/build-your-own/Original-chicken-breast-300x300.png' },
+    { name: 'Sous vide lemon pepper prawn', calories: 120, protein: 25, carbs: 2, fat: 3, image: '/assets/healthy/images/build-your-own/Lemon-pepper-prawn-300x300.png' },
+    { name: 'Sous vide Norwegian salmon', calories: 220, protein: 22, carbs: 0, fat: 14, image: '/assets/healthy/images/build-your-own/Basa-fish-300x300.png' }
   ];
 
-  carbs = [
-    { name: 'Brown Rice', calories: 111, price: 10000 },
-    { name: 'Pasta', calories: 131, price: 12000 },
-    { name: 'Sweet Potato', calories: 86, price: 8000 },
-    { name: 'Quinoa', calories: 120, price: 15000 }
+  readonly carbsOptions: Ingredient[] = [
+    { name: 'White rice', calories: 150, protein: 3, carbs: 30, fat: 1, image: '/assets/healthy/images/build-your-own/White-Rice-300x300.png' },
+    { name: 'Brown rice', calories: 170, protein: 4, carbs: 35, fat: 2, image: '/assets/healthy/images/build-your-own/Brown-Rice--300x300.png' },
+    { name: 'Sweet potato', calories: 130, protein: 2, carbs: 25, fat: 0, image: '/assets/healthy/images/build-your-own/Sweet-potato-300x300.png' },
+    { name: 'Cold soba', calories: 120, protein: 5, carbs: 24, fat: 1, image: '/assets/healthy/images/build-your-own/Cold-soba-300x300.png' },
+    { name: 'Donburi white rice', calories: 120, protein: 5, carbs: 24, fat: 1, image: '/assets/healthy/images/build-your-own/Donburi-white-rice-.png' },
+    { name: 'Fusilli pasta', calories: 120, protein: 5, carbs: 24, fat: 1, image: '/assets/healthy/images/build-your-own/Fusilli-pasta--300x300.png' }
   ];
 
-  veggies = [
-    { name: 'Broccoli', calories: 34 },
-    { name: 'Spinach', calories: 23 },
-    { name: 'Carrot', calories: 41 },
-    { name: 'Bell Pepper', calories: 31 },
-    { name: 'Cucumber', calories: 16 },
-    { name: 'Tomato', calories: 18 }
+  readonly sides: Ingredient[] = [
+    { name: 'Purple cabbage', calories: 30, protein: 1, carbs: 5, fat: 0, image: '/assets/healthy/images/build-your-own/resize_2-06-300x300.png' },
+    { name: 'Avocado', calories: 120, protein: 2, carbs: 6, fat: 10, image: '/assets/healthy/images/build-your-own/Avocado-300x300.png' },
+    { name: 'Broccoli', calories: 40, protein: 3, carbs: 7, fat: 0, image: '/assets/healthy/images/build-your-own/Broccoli--300x300.png' },
+    { name: 'Edamame', calories: 80, protein: 8, carbs: 8, fat: 3, image: '/assets/healthy/images/build-your-own/Edamame-300x300.png' },
+    { name: 'Salad and nuts', calories: 80, protein: 8, carbs: 8, fat: 3, image: '/assets/healthy/images/build-your-own/Salad-and-nuts-300x300.png' },
+    { name: 'Baked cherry tomato', calories: 80, protein: 8, carbs: 8, fat: 3, image: '/assets/healthy/images/build-your-own/Baked-cherry-tomato-300x300.png' }
   ];
 
-  sauces = [
-    { name: 'Teriyaki', calories: 70, price: 5000 },
-    { name: 'Sriracha Mayo', calories: 85, price: 5000 },
-    { name: 'Ponzu', calories: 40, price: 5000 },
-    { name: 'Sesame Ginger', calories: 90, price: 5000 }
+  readonly sauces: Ingredient[] = [
+    { name: 'Japanese', calories: 50, protein: 0, carbs: 10, fat: 2, image: '/assets/healthy/images/build-your-own/Japanese-300x300.png' },
+    { name: 'Thai sweet chilli', calories: 60, protein: 0, carbs: 15, fat: 0, image: '/assets/healthy/images/build-your-own/Thai-sweet-chilli-300x300.png' },
+    { name: 'Wasabi soy', calories: 40, protein: 1, carbs: 8, fat: 1, image: '/assets/healthy/images/build-your-own/Cilantro-lime-300x300 (1).png' },
+    { name: 'Honey & soy', calories: 70, protein: 0, carbs: 17, fat: 0, image: '/assets/healthy/images/build-your-own/Honey-soy-300x300.png' },
+    { name: 'Vietnamese Sauce', calories: 70, protein: 0, carbs: 17, fat: 0, image: '/assets/healthy/images/build-your-own/Viet-Fish-Sauce-300x300.png' },
+    { name: 'Olive oil and herb', calories: 70, protein: 0, carbs: 17, fat: 0, image: '/assets/healthy/images/build-your-own/Olive-oil-herb-300x300.png' }
   ];
 
-  toggleVeggie(veggie: string): void {
-    const index = this.selectedVeggies.indexOf(veggie);
-    if (index > -1) {
-      this.selectedVeggies.splice(index, 1);
-    } else {
-      this.selectedVeggies.push(veggie);
-    }
+  constructor(private cartService: CartService) {}
+
+  /**
+   * Select an ingredient
+   */
+  selectIngredient(category: keyof SelectedItems, ingredient: Ingredient): void {
+    this.selectedItems.update(items => ({
+      ...items,
+      [category]: ingredient
+    }));
   }
 
-  get totalCalories(): number {
-    let calories = 0;
-    
-    const protein = this.proteins.find(p => p.name === this.selectedProtein);
-    if (protein) calories += protein.calories;
-    
-    const carb = this.carbs.find(c => c.name === this.selectedCarbs);
-    if (carb) calories += carb.calories;
-    
-    this.selectedVeggies.forEach(veggie => {
-      const v = this.veggies.find(veg => veg.name === veggie);
-      if (v) calories += v.calories;
+  /**
+   * Check if ingredient is selected
+   */
+  isSelected(category: keyof SelectedItems, ingredient: Ingredient): boolean {
+    return this.selectedItems()[category]?.name === ingredient.name;
+  }
+
+  /**
+   * Clear all selections
+   */
+  clearSelections(): void {
+    this.selectedItems.set({
+      protein: null,
+      carbs: null,
+      side: null,
+      sauce: null
     });
-    
-    const sauce = this.sauces.find(s => s.name === this.selectedSauce);
-    if (sauce) calories += sauce.calories;
-    
-    return calories;
   }
 
-  get totalPrice(): number {
-    let price = 0;
-    
-    const protein = this.proteins.find(p => p.name === this.selectedProtein);
-    if (protein) price += protein.price;
-    
-    const carb = this.carbs.find(c => c.name === this.selectedCarbs);
-    if (carb) price += carb.price;
-    
-    const sauce = this.sauces.find(s => s.name === this.selectedSauce);
-    if (sauce) price += sauce.price;
-    
-    return price;
+  /**
+   * Download recipe (placeholder)
+   */
+  downloadRecipe(): void {
+    alert('Download recipe feature coming soon!');
   }
 
+  /**
+   * Add to cart
+   */
   addToCart(): void {
-    if (this.selectedProtein && this.selectedCarbs && this.selectedSauce) {
-      const bowl = {
-        id: Date.now(),
-        name: `Custom Bowl - ${this.selectedProtein}`,
-        price: this.totalPrice,
-        calories: this.totalCalories,
-        protein: this.selectedProtein,
-        carbs: this.selectedCarbs,
-        veggies: this.selectedVeggies,
-        sauce: this.selectedSauce
-      };
-      
-      if (typeof localStorage !== 'undefined') {
-        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        cart.push(bowl);
-        localStorage.setItem('cart', JSON.stringify(cart));
-      }
-      
-      alert('Bowl added to cart!');
-    } else {
-      alert('Please select protein, carbs, and sauce!');
+    const items = this.selectedItems();
+    
+    if (!items.protein || !items.carbs || !items.side || !items.sauce) {
+      alert('Please select all ingredients before adding to cart');
+      return;
     }
+
+    const cartItem = {
+      id: `custom-${Date.now()}`,
+      name: 'Custom Bowl',
+      price: 89000, // Base price for custom bowl
+      quantity: 1,
+      proteins: [items.protein.name],
+      carbs: [items.carbs.name],
+      veggies: [items.side.name],
+      sauces: [items.sauce.name]
+    };
+
+    this.cartService.addToCart(cartItem);
+    alert('Added to cart!');
+    this.clearSelections();
   }
 }

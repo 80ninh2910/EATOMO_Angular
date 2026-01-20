@@ -10,118 +10,152 @@
   </div>
 </div>
 
-<!-- Hero Section -->
-<section class="hero-build">
-  <div class="container">
-    <h1>Build Your Own Healthy Bowl</h1>
-    <p>Choose your ingredients and create the perfect bowl for your diet</p>
+<!-- Advertisement section -->
+<section class="adv-showcase">
+  <div class="adv-container">
+    <img src="/assets/healthy/images/build-your-own/Low-calories-jpg.webp" alt="Low Calories" class="adv-img">
+    <img src="/assets/healthy/images/build-your-own/High-protein-jpg.webp" alt="High Protein" class="adv-img">
+    <img src="/assets/healthy/images/build-your-own/Vegan-jpg.webp" alt="Vegan" class="adv-img">
+    <img src="/assets/healthy/images/build-your-own/Balanced-jpg.webp" alt="Balanced" class="adv-img">
+    <img src="/assets/healthy/images/build-your-own/Low-calories-jpg.webp" alt="Low Calories" class="adv-img">
+  </div>
+  <div class="adv-content">
+    <h2 class="adv-title">You will find yourself between us!</h2>
+    <p class="adv-text">Discover the balance between nature and flavor in every bite.</p>
+    <button class="adv-btn">Explore Now</button>
+    <img src="/assets/healthy/images/build-your-own/Visual-Line.svg" alt="" class="green">
   </div>
 </section>
 
-<!-- Builder Section -->
-<section class="builder-section">
-  <div class="container">
-    <div class="builder-grid">
-      <!-- Left: Builder Form -->
-      <div class="builder-form">
-        
-        <!-- Protein Selection -->
-        <div class="builder-step">
-          <h3><span class="step-number">1</span> Select Protein</h3>
-          <div class="options-grid">
-            <label class="option-card" *ngFor="let protein of proteins">
-              <input type="radio" [value]="protein.name" [(ngModel)]="selectedProtein" name="protein">
-              <span class="option-name">{{ protein.name }}</span>
-              <span class="option-info">{{ protein.calories }} cal • ₫{{ protein.price | number }}</span>
-            </label>
+<!-- Selection Ingredients -->
+<div class="container">
+  <div class="build-section">
+    <div class="selection-container">
+      
+      <!-- Protein Selection -->
+      <div class="selection-step">
+        <h2>1 Select Protein</h2>
+        <div class="selection-options">
+          @for (protein of proteins; track protein.name) {
+            <div class="option" 
+                 [class.selected]="isSelected('protein', protein)"
+                 (click)="selectIngredient('protein', protein)">
+              <img [src]="protein.image" [alt]="protein.name">
+              <p>{{ protein.name }}</p>
+            </div>
+          }
+          <div class="option large">
+            <img src="/assets/healthy/images/build-your-own/High-protein-jpg.webp" alt="Featured Dish">
+            <div class="overlay">
+              <h1>TRY IT!</h1>
+            </div>
           </div>
         </div>
-
-        <!-- Carbs Selection -->
-        <div class="builder-step">
-          <h3><span class="step-number">2</span> Select Carbs</h3>
-          <div class="options-grid">
-            <label class="option-card" *ngFor="let carb of carbs">
-              <input type="radio" [value]="carb.name" [(ngModel)]="selectedCarbs" name="carbs">
-              <span class="option-name">{{ carb.name }}</span>
-              <span class="option-info">{{ carb.calories }} cal • ₫{{ carb.price | number }}</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Veggies Selection -->
-        <div class="builder-step">
-          <h3><span class="step-number">3</span> Choose Veggies (Optional)</h3>
-          <div class="options-grid">
-            <label class="option-card" *ngFor="let veggie of veggies">
-              <input type="checkbox" [checked]="selectedVeggies.includes(veggie.name)" (change)="toggleVeggie(veggie.name)">
-              <span class="option-name">{{ veggie.name }}</span>
-              <span class="option-info">{{ veggie.calories }} cal</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Sauce Selection -->
-        <div class="builder-step">
-          <h3><span class="step-number">4</span> Choose Sauce</h3>
-          <div class="options-grid">
-            <label class="option-card" *ngFor="let sauce of sauces">
-              <input type="radio" [value]="sauce.name" [(ngModel)]="selectedSauce" name="sauce">
-              <span class="option-name">{{ sauce.name }}</span>
-              <span class="option-info">{{ sauce.calories }} cal • ₫{{ sauce.price | number }}</span>
-            </label>
-          </div>
-        </div>
-
       </div>
 
-      <!-- Right: Summary & Preview -->
-      <div class="builder-summary">
-        <div class="summary-card">
-          <h3>Your Bowl Summary</h3>
-          
-          <div class="summary-item" *ngIf="selectedProtein">
-            <span class="label">Protein:</span>
-            <span class="value">{{ selectedProtein }}</span>
-          </div>
-
-          <div class="summary-item" *ngIf="selectedCarbs">
-            <span class="label">Carbs:</span>
-            <span class="value">{{ selectedCarbs }}</span>
-          </div>
-
-          <div class="summary-item" *ngIf="selectedVeggies.length > 0">
-            <span class="label">Veggies:</span>
-            <span class="value">{{ selectedVeggies.join(', ') }}</span>
-          </div>
-
-          <div class="summary-item" *ngIf="selectedSauce">
-            <span class="label">Sauce:</span>
-            <span class="value">{{ selectedSauce }}</span>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="summary-stats">
-            <div class="stat">
-              <span class="stat-label">Total Calories</span>
-              <span class="stat-value">{{ totalCalories }}</span>
+      <!-- Carbs Selection -->
+      <div class="selection-step">
+        <h2>2 Select Carbs</h2>
+        <div class="selection-options">
+          @for (carb of carbsOptions; track carb.name) {
+            <div class="option" 
+                 [class.selected]="isSelected('carbs', carb)"
+                 (click)="selectIngredient('carbs', carb)">
+              <img [src]="carb.image" [alt]="carb.name">
+              <p>{{ carb.name }}</p>
             </div>
-            <div class="stat">
-              <span class="stat-label">Total Price</span>
-              <span class="stat-value">₫{{ totalPrice | number }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Side Selection -->
+      <div class="selection-step">
+        <h2>3 Select Side</h2>
+        <div class="selection-options">
+          @for (side of sides; track side.name) {
+            <div class="option" 
+                 [class.selected]="isSelected('side', side)"
+                 (click)="selectIngredient('side', side)">
+              <img [src]="side.image" [alt]="side.name">
+              <p>{{ side.name }}</p>
             </div>
-          </div>
+          }
+        </div>
+      </div>
 
-          <button class="add-btn" (click)="addToCart()" [disabled]="!selectedProtein || !selectedCarbs || !selectedSauce">
-            <i class="fas fa-shopping-cart"></i> Add to Cart
-          </button>
-
-          <p class="note">*Prices may vary based on portion size</p>
+      <!-- Sauce Selection -->
+      <div class="selection-step">
+        <h2>4 Select Sauce</h2>
+        <div class="selection-options">
+          @for (sauce of sauces; track sauce.name) {
+            <div class="option" 
+                 [class.selected]="isSelected('sauce', sauce)"
+                 (click)="selectIngredient('sauce', sauce)">
+              <img [src]="sauce.image" [alt]="sauce.name">
+              <p>{{ sauce.name }}</p>
+            </div>
+          }
         </div>
       </div>
     </div>
+
+    <!-- Nutrition Info Bar -->
+    <div class="nutrition-info">
+      <div class="nutrition-item">
+        <span>{{ totalCalories() }}</span>
+        <span>Calories</span>
+      </div>
+      <div class="nutrition-item">
+        <span>{{ totalProtein() }}</span>
+        <span>Protein</span>
+      </div>
+      <div class="nutrition-item">
+        <span>{{ totalCarbs() }}</span>
+        <span>Carbs</span>
+      </div>
+      <div class="nutrition-item">
+        <span>{{ totalFat() }}</span>
+        <span>Fat</span>
+      </div>
+    </div>
   </div>
-</section>
+
+  <!-- Summary Section -->
+  <div class="summary-section">
+    <h2>Your bowl</h2>
+    <p>Get creative by mixing and matching ingredients and sauces to craft your unique, healthy bowl of comfort while keeping track of calories.</p>
+    
+    <div class="selected-items">
+      <div class="selected-item">
+        <h4>Protein <span>{{ selectedItems().protein?.calories || 0 }}</span></h4>
+        <p>{{ selectedItems().protein?.name || 'Select a protein' }}</p>
+      </div>
+      <div class="selected-item">
+        <h4>Carbs <span>{{ selectedItems().carbs?.calories || 0 }}</span></h4>
+        <p>{{ selectedItems().carbs?.name || 'Select a carb' }}</p>
+      </div>
+      <div class="selected-item">
+        <h4>Side <span>{{ selectedItems().side?.calories || 0 }}</span></h4>
+        <p>{{ selectedItems().side?.name || 'Select a side' }}</p>
+      </div>
+      <div class="selected-item">
+        <h4>Sauce <span>{{ selectedItems().sauce?.calories || 0 }}</span></h4>
+        <p>{{ selectedItems().sauce?.name || 'Select a sauce' }}</p>
+      </div>
+    </div>
+
+    <div class="summary-nutrition">
+      <p><span>{{ totalCalories() }}</span> Calories</p>
+      <p><span>{{ totalProtein() }}</span> Protein</p>
+      <p><span>{{ totalCarbs() }}</span> Carbs</p>
+      <p><span>{{ totalFat() }}</span> Fat</p>
+    </div>
+
+    <div class="action-buttons">
+      <button (click)="clearSelections()">Clear selections</button>
+      <button (click)="addToCart()">Add to Cart</button>
+    </div>
+  </div>
+</div>
 
 <app-footer></app-footer>

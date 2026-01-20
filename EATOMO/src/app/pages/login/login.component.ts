@@ -53,8 +53,9 @@ export class LoginComponent {
       const result = await this.authService.login(this.adminForm.value, true);
       
       if (result.success) {
-        // Redirect tới admin dashboard (hoặc trang chủ nếu chưa có admin page)
-        this.router.navigate(['/']);
+        // Redirect tới trang đã lưu hoặc trang chủ
+        const redirectUrl = this.authService.getRedirectUrl();
+        this.router.navigate([redirectUrl]);
       } else {
         this.adminError.set(result.message);
       }
@@ -79,7 +80,9 @@ export class LoginComponent {
       const result = await this.authService.login(this.userForm.value, false);
       
       if (result.success) {
-        this.router.navigate(['/']);
+        // Redirect tới trang đã lưu hoặc trang chủ
+        const redirectUrl = this.authService.getRedirectUrl();
+        this.router.navigate([redirectUrl]);
       } else {
         this.userError.set(result.message);
       }

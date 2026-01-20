@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 
 export interface User {
@@ -23,9 +24,14 @@ export interface RegisterData {
   providedIn: 'root'
 })
 export class AuthService {
+  private platformId = inject(PLATFORM_ID);
+  
   // Signal để theo dõi trạng thái đăng nhập
   private currentUserSignal = signal<User | null>(null);
   currentUser = this.currentUserSignal.asReadonly();
+
+  // URL để redirect sau khi login thành công
+  private redirectUrl: string | null = null;
 
   constructor(private router: Router) {
     // Khôi phục session từ localStorage khi khởi tạo
@@ -56,7 +62,9 @@ export class AuthService {
 
         // Lưu user vào signal và localStorage
         this.currentUserSignal.set(mockUser);
-        localStorage.setItem('currentUser', JSON.stringify(mockUser));
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('currentUser', JSON.stringify(mockUser));
+        }
 
         resolve({ success: true, message: 'Login successful' });
       }, 500);
@@ -99,7 +107,9 @@ export class AuthService {
 
         // Auto login sau khi đăng ký thành công
         this.currentUserSignal.set(newUser);
-        localStorage.setItem('currentUser', JSON.stringify(newUser));
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('currentUser', JSON.stringify(newUser));
+        }
 
         resolve({ success: true, message: 'Registration successful! Welcome to EATOMO.' });
       }, 500);
@@ -111,7 +121,9 @@ export class AuthService {
    */
   logout(): void {
     this.currentUserSignal.set(null);
-    localStorage.removeItem('currentUser');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('currentUser');
+    }
     this.router.navigate(['/']);
   }
 
@@ -140,6 +152,10 @@ export class AuthService {
    * Khôi phục user từ localStorage khi refresh page
    */
   private loadUserFromStorage(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       try {
@@ -150,5 +166,21 @@ export class AuthService {
         localStorage.removeItem('currentUser');
       }
     }
+  }
+
+  /**
+   * Lưu URL để redirect sau khi login
+   */
+  setRedirectUrl(url: string): void {
+    this.redirectUrl = url;
+  }
+
+  /**
+   * Lấy và xóa redirect URL
+   */
+  getRedirectUrl(): string {
+    const url = this.redirectUrl || '/';
+    this.redirectUrl = null;
+    return url;
   }
 }
