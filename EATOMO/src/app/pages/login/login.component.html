@@ -1,38 +1,106 @@
-<div class="logo-bar">
-  <img src="assets/healthy/images/index/image-removebg-preview (36).png" alt="Brand Logo">
+<div class="logo-bar" routerLink="/">
+  <img src="/assets/healthy/images/index/image-removebg-preview (36).png" alt="Brand Logo">
   <h1>EATOMO</h1>
 </div>
 
 <div class="login-container">
+  <!-- Admin Login -->
   <div class="login-box">
     <h2>Admin Login</h2>
-    <form (ngSubmit)="onAdminLogin()">
-      <div>
+    
+    @if (adminError()) {
+      <div class="alert alert-error">
+        {{ adminError() }}
+      </div>
+    }
+    
+    <form [formGroup]="adminForm" (ngSubmit)="onAdminLogin()">
+      <div class="form-group">
         <label for="admin-username">Username</label>
-        <input type="text" id="admin-username" [(ngModel)]="adminUsername" name="adminUsername" placeholder="Enter admin username" required>
+        <input 
+          type="text" 
+          id="admin-username" 
+          formControlName="username" 
+          placeholder="Enter admin username"
+          [class.error]="adminForm.get('username')?.invalid && adminForm.get('username')?.touched">
+        @if (adminUsernameError) {
+          <span class="error-text">{{ adminUsernameError }}</span>
+        }
       </div>
-      <div>
+      
+      <div class="form-group">
         <label for="admin-password">Password</label>
-        <input type="password" id="admin-password" [(ngModel)]="adminPassword" name="adminPassword" placeholder="Enter admin password" required>
+        <input 
+          type="password" 
+          id="admin-password" 
+          formControlName="password" 
+          placeholder="Enter admin password"
+          [class.error]="adminForm.get('password')?.invalid && adminForm.get('password')?.touched">
+        @if (adminPasswordError) {
+          <span class="error-text">{{ adminPasswordError }}</span>
+        }
       </div>
-      <button type="submit">Login as Admin</button>
+      
+      <button type="submit" [disabled]="adminLoading()">
+        @if (adminLoading()) {
+          <span>Logging in...</span>
+        } @else {
+          <span>Login as Admin</span>
+        }
+      </button>
     </form>
   </div>
 
   <div class="divider"></div>
 
+  <!-- User Login -->
   <div class="login-box">
     <h2>User Login</h2>
-    <form (ngSubmit)="onUserLogin()">
-      <div>
+    
+    @if (userError()) {
+      <div class="alert alert-error">
+        {{ userError() }}
+      </div>
+    }
+    
+    <form [formGroup]="userForm" (ngSubmit)="onUserLogin()">
+      <div class="form-group">
         <label for="user-username">Username</label>
-        <input type="text" id="user-username" [(ngModel)]="userUsername" name="userUsername" placeholder="Enter username" required>
+        <input 
+          type="text" 
+          id="user-username" 
+          formControlName="username" 
+          placeholder="Enter username"
+          [class.error]="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+        @if (userUsernameError) {
+          <span class="error-text">{{ userUsernameError }}</span>
+        }
       </div>
-      <div>
+      
+      <div class="form-group">
         <label for="user-password">Password</label>
-        <input type="password" id="user-password" [(ngModel)]="userPassword" name="userPassword" placeholder="Enter password" required>
+        <input 
+          type="password" 
+          id="user-password" 
+          formControlName="password" 
+          placeholder="Enter password"
+          [class.error]="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+        @if (userPasswordError) {
+          <span class="error-text">{{ userPasswordError }}</span>
+        }
       </div>
-      <button type="submit">Login as User</button>
+      
+      <button type="submit" [disabled]="userLoading()">
+        @if (userLoading()) {
+          <span>Logging in...</span>
+        } @else {
+          <span>Login as User</span>
+        }
+      </button>
     </form>
+    
+    <p class="register-link">
+      Don't have an account? <a routerLink="/register">Register here</a>
+    </p>
   </div>
 </div>

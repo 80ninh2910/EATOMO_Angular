@@ -1,30 +1,36 @@
-<div class="logo-bar">
-  <img src="assets/healthy/images/index/image-removebg-preview (36).png" alt="Brand Logo">
+<div class="logo-bar" routerLink="/">
+  <img src="/assets/healthy/images/index/image-removebg-preview (36).png" alt="Brand Logo">
   <h1>EATOMO</h1>
 </div>
 
-<div class="register-container">
-  <div class="register-box">
+<div class="login-container">
+  <div class="login-box register-box">
     <h2>Create Account</h2>
     
-    <div *ngIf="errorMessage" class="alert alert-error">
-      <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
-    </div>
+    @if (errorMessage()) {
+      <div class="alert alert-error">
+        {{ errorMessage() }}
+      </div>
+    }
 
-    <div *ngIf="successMessage" class="alert alert-success">
-      <i class="fas fa-check-circle"></i> {{ successMessage }}
-    </div>
+    @if (successMessage()) {
+      <div class="alert alert-success">
+        {{ successMessage() }}
+      </div>
+    }
 
-    <form (ngSubmit)="onRegister()">
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
       <div class="form-group">
         <label for="username">Username</label>
         <input 
           type="text" 
           id="username" 
-          [(ngModel)]="username" 
-          name="username" 
-          placeholder="Choose a username" 
-          required>
+          formControlName="username" 
+          placeholder="Choose a username"
+          [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+        @if (usernameError) {
+          <span class="error-text">{{ usernameError }}</span>
+        }
       </div>
 
       <div class="form-group">
@@ -32,10 +38,12 @@
         <input 
           type="email" 
           id="email" 
-          [(ngModel)]="email" 
-          name="email" 
-          placeholder="Enter your email" 
-          required>
+          formControlName="email" 
+          placeholder="Enter your email"
+          [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+        @if (emailError) {
+          <span class="error-text">{{ emailError }}</span>
+        }
       </div>
 
       <div class="form-group">
@@ -43,10 +51,12 @@
         <input 
           type="password" 
           id="password" 
-          [(ngModel)]="password" 
-          name="password" 
-          placeholder="Create a password" 
-          required>
+          formControlName="password" 
+          placeholder="Create a password"
+          [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        @if (passwordError) {
+          <span class="error-text">{{ passwordError }}</span>
+        }
       </div>
 
       <div class="form-group">
@@ -54,17 +64,25 @@
         <input 
           type="password" 
           id="confirm-password" 
-          [(ngModel)]="confirmPassword" 
-          name="confirmPassword" 
-          placeholder="Confirm your password" 
-          required>
+          formControlName="confirmPassword" 
+          placeholder="Confirm your password"
+          [class.error]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+        @if (confirmPasswordError) {
+          <span class="error-text">{{ confirmPasswordError }}</span>
+        }
       </div>
 
-      <button type="submit" class="register-btn">Register</button>
+      <button type="submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span>Creating account...</span>
+        } @else {
+          <span>Register</span>
+        }
+      </button>
     </form>
 
     <p class="login-link">
-      Already have an account? <a href="javascript:void(0)" (click)="goToLogin()">Login here</a>
+      Already have an account? <a routerLink="/login">Login here</a>
     </p>
   </div>
 </div>

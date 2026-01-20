@@ -1,33 +1,4 @@
-﻿/* Reset & Base Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-:root {
-  --primary-green: #4caf50;
-  --dark-green: #2e7d32;
-  --light-green: #81c784;
-  --accent-green: #66bb6a;
-  --cream: #fff8e7;
-  --white: #ffffff;
-  --black: #1a1a1a;
-  --gray: #666666;
-  --light-gray: #f8f9fa;
-  --border-color: #e0e0e0;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
-  --gradient-primary: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
-  --gradient-hero: linear-gradient(135deg, #fff8e7 0%, #f8f9fa 50%, #ffffff 100%);
-}
-
-body {
-  font-family: "Poppins", sans-serif;
-  color: var(--black);
-  line-height: 1.6;
-  overflow-x: hidden;
-}
+﻿/* Our Bowls Page Styles */
 
 .container {
   max-width: 1200px;
@@ -262,50 +233,6 @@ body {
 
 .add-to-bag-btn:hover {
   background-color: var(--dark-green);
-}
-
-.nav {
-  display: flex;
-  gap: 35px;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: var(--black);
-  font-weight: 500;
-  font-size: 15px;
-  transition: color 0.3s ease;
-  position: relative;
-}
-
-.nav-link::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--primary-green);
-  transition: width 0.3s ease;
-}
-
-.nav-link:hover,
-.nav-link.active {
-  color: var(--primary-green);
-}
-
-.nav-link:hover::after,
-.nav-link.active::after {
-  width: 100%;
-}
-
-.menu-toggle {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  background: none;
-  border: none;
-  cursor: pointer;
 }
 
 .menu-toggle span {

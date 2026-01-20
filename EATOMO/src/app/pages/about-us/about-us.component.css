@@ -1,175 +1,9 @@
-/* Reset & Base Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-:root {
-  --primary-green: #4caf50;
-  --dark-green: #2e7d32;
-  --light-green: #81c784;
-  --accent-green: #66bb6a;
-  --primary-color: #2d5016;
-  --secondary-color: #7fb069;
-  --accent-color: #e8b923;
-  --text-dark: #1a1a1a;
-  --text-light: #666;
-  --bg-light: #f8f9f5;
-  --white: #ffffff;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
-  --shadow-hover: 0 20px 50px rgba(76, 175, 80, 0.25);
-  --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --gradient-primary: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
-  --gradient-hero: linear-gradient(135deg, #2d5016 0%, #7fb069 50%, #4caf50 100%);
-}
-
-body {
-  font-family: "Poppins", sans-serif;
-  color: var(--text-dark);
-  line-height: 1.6;
-  overflow-x: hidden;
-}
+/* About Us Page Styles */
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
-}
-
-/* Header Styles */
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background: var(--white);
-  transition: var(--transition);
-}
-
-.header.scrolled {
-  box-shadow: var(--shadow);
-}
-
-.header-top {
-  background: var(--primary-color);
-  color: var(--white);
-  padding: 8px 0;
-  font-size: 13px;
-}
-
-.header-info {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  flex-wrap: wrap;
-}
-
-.header-main {
-  padding: 15px 0;
-}
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo h1 {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px; /* khoảng cách giữa icon và chữ */
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #335133;
-  margin: 0;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.logo img {
-  width: 50px;
-  height: auto;
-  object-fit: contain;
-  vertical-align: middle;
-}
-
-
-.nav-menu {
-  display: flex;
-  list-style: none;
-  gap: 35px;
-}
-
-.nav-menu a {
-  color: var(--text-dark);
-  text-decoration: none;
-  font-weight: 500;
-  transition: var(--transition);
-  position: relative;
-}
-
-.nav-menu a::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--secondary-color);
-  transition: var(--transition);
-}
-
-.nav-menu a:hover::after,
-.nav-menu a.active::after {
-  width: 100%;
-}
-
-.nav-menu a:hover,
-.nav-menu a.active {
-  color: var(--secondary-color);
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.btn-order {
-  background: var(--secondary-color);
-  color: var(--white);
-  border: none;
-  padding: 12px 28px;
-  border-radius: 25px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.btn-order:hover {
-  background: var(--primary-color);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
-}
-
-.mobile-toggle {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.mobile-toggle span {
-  width: 25px;
-  height: 3px;
-  background: var(--primary-color);
-  transition: var(--transition);
 }
 
 /* Hero Section */
@@ -871,10 +705,12 @@ body {
   font-weight: bold;
   font-size: 20px;
   transition: transform 0.3s ease;
+  z-index: 5;
 }
 
 .hotspot:hover {
   transform: scale(1.2);
+  background: #9a3075;
 }
 
 .description {
@@ -891,12 +727,30 @@ body {
   padding: 15px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  animation: fadeIn 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.8);
+  transition: all 0.3s ease;
+  z-index: 10;
+  color: #2d2d2d;
+}
+
+.description h3 {
+  color: #7A205C;
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.description p {
+  color: #4a4a4a;
+  line-height: 1.5;
 }
 .description.show {
+  display: block;
   opacity: 1;
-  transform: scale(1);
+  transform: translateY(-50%) scale(1);
   pointer-events: auto;
+  animation: fadeIn 0.5s ease forwards;
 } 
 
 @keyframes fadeIn {

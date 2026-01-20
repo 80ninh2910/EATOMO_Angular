@@ -1,24 +1,57 @@
 <app-header></app-header>
 
-<section class="faqs-hero">
-  <div class="container">
-    <h1>Frequently Asked Questions</h1>
-    <p>Find answers to common questions about Eatomo</p>
+<!--Hero Section-->
+<div class="hero-section">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <h1>FAQs</h1>
   </div>
-</section>
+</div>
 
-<section class="faqs-content">
-  <div class="container">
-    <div class="faq-item" *ngFor="let faq of faqs" [class.open]="faq.isOpen">
-      <div class="faq-question" (click)="toggleFaq(faq)">
-        <h3>{{ faq.question }}</h3>
-        <span class="toggle-icon">{{ faq.isOpen ? '−' : '+' }}</span>
-      </div>
-      <div class="faq-answer" *ngIf="faq.isOpen">
-        <p>{{ faq.answer }}</p>
+<!--FAQs Content-->
+<div class="container">
+  <div class="faq-tabs">
+    <button class="tab-button" 
+            [class.active]="activeTab === 'menu'" 
+            (click)="switchTab('menu')">Menu</button>
+    <button class="tab-button" 
+            [class.active]="activeTab === 'food'" 
+            (click)="switchTab('food')">Food</button>
+    <button class="tab-button" 
+            [class.active]="activeTab === 'delivery'" 
+            (click)="switchTab('delivery')">Delivery</button>
+    <button class="tab-button" 
+            [class.active]="activeTab === 'payment'" 
+            (click)="switchTab('payment')">Payment</button>
+  </div>
+
+  <div class="faq-content">
+    <h2 *ngIf="activeTab === 'menu'">About Soumaki's Menu</h2>
+    <h2 *ngIf="activeTab === 'food'">About Soumaki's Food</h2>
+    <h2 *ngIf="activeTab === 'delivery'">Delivery Information</h2>
+    <h2 *ngIf="activeTab === 'payment'">Payment Methods</h2>
+
+    <div class="faq-accordion">
+      <div class="faq-item" 
+           *ngFor="let faq of getFilteredFaqs()" 
+           [class.open]="faq.isOpen">
+        <div class="faq-question" (click)="toggleFaq(faq)">
+          <h3>{{ faq.question }}</h3>
+          <div class="arrow">
+            <i class="fas" [class.fa-chevron-up]="faq.isOpen" [class.fa-chevron-down]="!faq.isOpen"></i>
+          </div>
+        </div>
+        <div class="faq-answer" *ngIf="faq.isOpen">
+          <ng-container *ngIf="objectTypeOf(faq.answer) === 'string'">
+            <p>{{ faq.answer }}</p>
+          </ng-container>
+          <ng-container *ngIf="objectTypeOf(faq.answer) !== 'string'">
+            <p *ngFor="let line of $any(faq.answer)">{{ line }}</p>
+          </ng-container>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <app-footer></app-footer>

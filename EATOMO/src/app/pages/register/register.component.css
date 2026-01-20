@@ -1,4 +1,231 @@
-@import '../../../assets/healthy/css/login.css';
+/* Register Page Styles */
+
+body {
+  background: linear-gradient(135deg, #cce4ce 0%, #f7f8e4 50%, #f8f4c1 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Logo Bar */
+.logo-bar {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.logo-bar:hover {
+  transform: translateX(-50%) scale(1.05);
+}
+
+.logo-bar img {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+}
+
+.logo-bar h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #335133;
+  margin: 0;
+  letter-spacing: 1px;
+  font-family: "Playfair Display", serif;
+}
+
+/* Login Container (shared with register) */
+.login-container {
+  display: flex;
+  justify-content: center;
+  background-color: #fffaf1;
+  padding: 60px 70px;
+  border-radius: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s ease;
+  margin: 50px auto 0;
+  max-width: 550px;
+}
+
+.login-box {
+  width: 100%;
+  background-color: #faf5e8;
+  border-radius: 20px;
+  padding: 40px 35px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.login-box h2 {
+  text-align: center;
+  color: #28533f;
+  font-family: "Playfair Display", serif;
+  margin-bottom: 30px;
+  font-size: 26px;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #335133;
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #43a047;
+  box-shadow: 0 0 8px rgba(67, 160, 71, 0.3);
+  transform: translateX(-3px);
+}
+
+.form-group input.error {
+  border-color: #f44336;
+}
+
+.error-text {
+  display: block;
+  color: #f44336;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* Alerts */
+.alert {
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  animation: slideDown 0.3s ease;
+}
+
+.alert-error {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef5350;
+}
+
+.alert-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #66bb6a;
+}
+
+/* Buttons */
+button[type="submit"] {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  font-size: 16px;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #5da461 0%, #43a047 100%);
+  border-radius: 8px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(67, 160, 71, 0.2);
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(67, 160, 71, 0.3);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Login Link */
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.login-link a {
+  color: #43a047;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+  color: #2e7d32;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  body {
+    min-height: auto;
+    padding: 80px 20px;
+  }
+  
+  .login-container {
+    padding: 40px 30px;
+    margin-top: 40px;
+    max-width: 100%;
+  }
+}
+
 
 /* ===== REGISTER COMPONENT EXTENSIONS ===== */
 

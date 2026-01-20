@@ -158,20 +158,37 @@
   <div class="dish-container">
     <img src="/assets/healthy/images/about/FUll.webp" alt="EATOMO Bowl" class="dish-image">
 
-    <!-- Hotspots -->
+    <!-- Hotspot 1 - Left (Protein) -->
     <div class="hotspot" 
-         *ngFor="let dish of dishes; let i = index"
-         [style.top]="i === 0 ? '40%' : i === 1 ? '80%' : '40%'"
-         [style.left]="i === 0 ? '30%' : i === 1 ? '55%' : null"
-         [style.right]="i === 2 ? '25%' : null"
-         (click)="selectDish(dish.id)">+</div>
+         [style.top]="'40%'"
+         [style.left]="'30%'"
+         (click)="selectDish(1)">+
+      <div class="description" [class.show]="activeDish === 1">
+        <h3>{{ dishes[0].title }}</h3>
+        <p>{{ dishes[0].description }}</p>
+      </div>
+    </div>
 
-    <!-- Descriptions -->
-    <div class="description" 
-         *ngFor="let dish of dishes"
-         [class.show]="activeDish === dish.id">
-      <h3>{{ dish.title }}</h3>
-      <p>{{ dish.description }}</p>
+    <!-- Hotspot 2 - Bottom (Veggies) -->
+    <div class="hotspot" 
+         [style.top]="'80%'"
+         [style.left]="'55%'"
+         (click)="selectDish(2)">+
+      <div class="description" [class.show]="activeDish === 2">
+        <h3>{{ dishes[1].title }}</h3>
+        <p>{{ dishes[1].description }}</p>
+      </div>
+    </div>
+
+    <!-- Hotspot 3 - Right (Carbs) -->
+    <div class="hotspot" 
+         [style.top]="'40%'"
+         [style.right]="'25%'"
+         (click)="selectDish(3)">+
+      <div class="description" [class.show]="activeDish === 3">
+        <h3>{{ dishes[2].title }}</h3>
+        <p>{{ dishes[2].description }}</p>
+      </div>
     </div>
   </div>
 </div>

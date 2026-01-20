@@ -1,26 +1,41 @@
 <app-header></app-header>
 
-<section class="stores-hero">
-  <div class="container">
-    <h1>Our Stores</h1>
-    <p>Find the nearest Eatomo store near you</p>
+<!--Hero Video Section-->
+<section class="hero-video-section">
+  <video autoplay muted loop playsinline class="background-video">
+    <source src="/assets/healthy/videos/bandicam 2025-10-20 15-10-41-439.mp4" type="video/mp4">
+  </video>
+  <div class="video-overlay"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">OUR STORES</h1>
+    <p class="hero-subtext">
+      Fresh, healthy, and mindful eating for your body and soul.
+    </p>
   </div>
 </section>
 
-<section class="stores-list">
-  <div class="container">
+<br/>
+
+<!--Stores Section-->
+<div class="container">
+  <div class="stores-section">
     <div class="store-card" *ngFor="let store of stores">
       <div class="store-image">
         <img [src]="store.image" [alt]="store.name">
       </div>
       <div class="store-info">
         <h2>{{ store.name }}</h2>
-        <p><i class="fas fa-map-marker-alt"></i> {{ store.address }}</p>
-        <p><i class="fas fa-phone"></i> {{ store.phone }}</p>
-        <p><i class="fas fa-clock"></i> {{ store.hours }}</p>
+        <div class="info-block">
+          <h3>FIND US</h3>
+          <p>{{ store.address }}</p>
+        </div>
+        <div class="info-block">
+          <h3>OPENING HOURS</h3>
+          <p>{{ store.hours }}</p>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <app-footer></app-footer>
