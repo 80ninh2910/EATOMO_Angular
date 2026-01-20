@@ -1,5 +1,6 @@
 <app-header></app-header>
 
+<!--Hero Section-->
 <section class="hero-about">
   <div class="hero-overlay"></div>
   <div class="container">
@@ -13,6 +14,7 @@
   </div>
 </section>
 
+<!--Brand Story Section-->
 <section class="brand-story">
   <div class="container">
     <div class="story-grid">
@@ -20,7 +22,7 @@
         <span class="section-label">Who We Are</span>
         <h2 class="section-title">Your Healthy Food Soulmate</h2>
         <p class="story-text">
-          At Soumaki, we believe that healthy eating should never compromise on taste.
+          At EATOMO, we believe that healthy eating should never compromise on taste.
           Born from a passion for wellness and culinary excellence, we've created a space
           where nutrition meets indulgence.
         </p>
@@ -37,10 +39,141 @@
         </div>
       </div>
       <div class="story-image">
-        <img src="assets/healthy/images/about/store-interior.jpg" alt="Our Store" />
+        <img src="/assets/healthy/images/index/bowl t.webp" alt="EATOMO Restaurant">
+        <div class="image-decoration"></div>
       </div>
     </div>
   </div>
 </section>
+
+<!--Sous-vide Section-->
+<section class="sousvide-section">
+  <div class="container">
+    <div class="sousvide-grid">
+      <div class="sousvide-image">
+        <img src="/assets/healthy/images/about/sous-vide-cooking.jpg" alt="Sous-vide Cooking">
+        <div class="image-badge">
+          <span class="badge-icon">🔥</span>
+          <span class="badge-text">Precision Cooking</span>
+        </div>
+      </div>
+      <div class="sousvide-content">
+        <span class="section-label">Our Technique</span>
+        <h2 class="section-title">The Art of Sous-vide</h2>
+        <p class="sousvide-description">
+          Sous-vide bathes your meat in a warm, precise water bath, gently coaxing it
+          to perfection for hours. <strong>90% of the meat's volume and nutrients are retained</strong>
+          compared to other cooking techniques.
+        </p>
+        <p class="sousvide-description">
+          Each bite is a symphony of textures — impossibly tender, unbelievably juicy,
+          bursting with natural essence. No more dry, bland, and boring meats here,
+          <strong>heavenly only</strong>.
+        </p>
+        <div class="technique-features">
+          <div class="feature-item" *ngFor="let feature of features">
+            <div class="feature-icon">
+              <i [class]="feature.icon"></i>
+            </div>
+            <div class="feature-text">
+              <h4>{{ feature.title }}</h4>
+              <p>{{ feature.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Values Section-->
+<section class="values-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Our Values</span>
+      <h2 class="section-title">What We Stand For</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card" 
+           *ngFor="let value of values; let i = index" 
+           [ngClass]="'card' + (i + 1)">
+        <div class="value-icon">
+          <i [class]="value.icon"></i>
+        </div>
+        <h3 class="value-title">{{ value.title }}</h3>
+        <p class="value-description">{{ value.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Team Section-->
+<section class="team-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Meet The Team</span>
+      <h2 class="section-title">The People Behind EATOMO</h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-member" *ngFor="let member of teamMembers">
+        <div class="member-image">
+          <img [src]="member.image" [alt]="member.name">
+          <div class="member-overlay">
+            <div class="member-social">
+              <a href="#" class="social-link">LinkedIn</a>
+              <a [href]="'https://www.instagram.com/' + member.instagram + '/'" 
+                 class="social-link" 
+                 target="_blank">Instagram</a>
+            </div>
+          </div>
+        </div>
+        <h3 class="member-name">{{ member.name }}</h3>
+        <p class="member-role">{{ member.role }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--CTA Section-->
+<section class="cta-section">
+  <div class="cta-overlay"></div>
+  <div class="container">
+    <div class="cta-content">
+      <h2 class="cta-title">Ready to Experience EATOMO?</h2>
+      <p class="cta-description">Visit us today and discover your new favorite healthy bowl</p>
+      <div class="cta-buttons">
+        <button class="btn-secondary" routerLink="/our-bowls">View Menu</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Dish Section-->
+<div class="dish-section">
+  <h2>Our philosophy
+    <p></p> to healthy eating
+  </h2>
+  <p>CLICK TO EXPLORE</p>
+
+  <div class="dish-container">
+    <img src="/assets/healthy/images/about/FUll.webp" alt="EATOMO Bowl" class="dish-image">
+
+    <!-- Hotspots -->
+    <div class="hotspot" 
+         *ngFor="let dish of dishes; let i = index"
+         [style.top]="i === 0 ? '40%' : i === 1 ? '80%' : '40%'"
+         [style.left]="i === 0 ? '30%' : i === 1 ? '55%' : null"
+         [style.right]="i === 2 ? '25%' : null"
+         (click)="selectDish(dish.id)">+</div>
+
+    <!-- Descriptions -->
+    <div class="description" 
+         *ngFor="let dish of dishes"
+         [class.show]="activeDish === dish.id">
+      <h3>{{ dish.title }}</h3>
+      <p>{{ dish.description }}</p>
+    </div>
+  </div>
+</div>
 
 <app-footer></app-footer>

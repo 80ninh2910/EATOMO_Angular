@@ -1,0 +1,224 @@
+@import '../../../assets/healthy/css/login.css';
+
+/* ===== REGISTER COMPONENT EXTENSIONS ===== */
+
+.logo-bar {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.logo-bar img {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+}
+
+.logo-bar h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #335133;
+  margin: 0;
+  letter-spacing: 1px;
+  cursor: default;
+  font-family: "Playfair Display", serif;
+}
+
+.register-container {
+  display: flex;
+  gap: 50px;
+  background-color: #fffaf1;
+  padding: 60px 70px;
+  border-radius: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 1.2s ease;
+  margin-top: 50px;
+}
+
+.register-box {
+  flex: 1;
+  background-color: #faf5e8;
+  border-radius: 20px;
+  padding: 40px 35px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.register-box h2 {
+  text-align: center;
+  color: #28533f;
+  font-family: "Playfair Display", serif;
+  margin-bottom: 30px;
+  font-size: 26px;
+}
+
+.register-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.register-box label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4a2e1f;
+  margin-bottom: 5px;
+  text-align: left;
+  display: block;
+}
+
+.register-box input {
+  padding: 12px 15px;
+  border: 1.8px solid #ddd;
+  border-radius: 8px;
+  background-color: #fef8f1;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+}
+
+.register-box input:focus {
+  outline: none;
+  border-color: #667eea;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.register-box input::placeholder {
+  color: #bbb;
+}
+
+.register-box button {
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.register-box button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: 5px;
+  display: none;
+}
+
+.error-message.show {
+  display: block;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.error input {
+  border-color: #d32f2f;
+  background-color: #ffebee;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .register-container {
+    flex-direction: column;
+    padding: 40px;
+    gap: 30px;
+  }
+
+  .register-box {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-bar {
+    top: 15px;
+    padding: 8px;
+  }
+
+  .logo-bar h1 {
+    font-size: 1.4rem;
+  }
+
+  .register-container {
+    padding: 30px;
+    margin-top: 80px;
+  }
+
+  .register-box h2 {
+    font-size: 22px;
+  }
+
+  .register-box input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-bar {
+    gap: 5px;
+  }
+
+  .logo-bar h1 {
+    font-size: 1.2rem;
+  }
+
+  .register-container {
+    padding: 20px;
+    margin-top: 70px;
+  }
+
+  .register-box {
+    padding: 20px;
+  }
+
+  .register-box h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .register-box input {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .register-box button {
+    padding: 12px;
+    font-size: 14px;
+  }
+}

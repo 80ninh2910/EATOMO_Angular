@@ -1,0 +1,181 @@
+﻿<app-header></app-header>
+
+<!-- Top Banner -->
+<div class="top-banner">
+  <p>UEL | Faculty of Information System | E-Commerce.</p>
+  <p>Visit our store at 669 QL1A, khu phố 6, Thủ Đức, Hồ Chí Minh.</p>
+  <p>Open from 10AM9PM everyday.</p>
+</div>
+
+<!-- Sub Navigation -->
+<div class="sub-nav">
+  <div class="container">
+    <div class="sub-nav-links">
+      <a routerLink="/build-your-own" class="sub-nav-link">Build your own</a>
+      <a routerLink="/our-bowls" class="sub-nav-link active">Sou-made bowls</a>
+    </div>
+  </div>
+</div>
+
+<!-- Hero Section -->
+<section class="hero-bowls">
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">Sou-made bowls of your choice</h1>
+      <div class="filter-tabs">
+        <button *ngFor="let filter of filters" class="filter-tab" [class.active]="activeFilter === filter.value" (click)="filterBowls(filter.value)">{{ filter.label }}</button>
+      </div>
+      <a href="#" class="btn btn-primary" (click)="viewFullMenu($event)">View full menu</a>
+    </div>
+  </div>
+</section>
+
+<!-- Modal for Cart -->
+<div class="modal" [class.show]="showModal" id="addedToBagModal">
+  <div class="modal-content">
+    <button class="close-btn" (click)="closeModal()">&times;</button>
+    <div class="success-message">
+      <i class="fas fa-check-circle"></i>
+      <h2>My Bag</h2>
+    </div>
+    <div class="cart-summary">
+      <div class="cart-items">
+        <div class="cart-item" *ngFor="let item of cartItems; let i = index">
+          <img [src]="item.image" [alt]="item.name">
+          <div class="cart-item-details">
+            <div class="cart-item-name">{{ item.name }}</div>
+            <div class="cart-item-price">{{ item.price | number:'1.0-0' }} VND</div>
+            <div class="cart-item-quantity">Qty: {{ item.quantity }}</div>
+          </div>
+          <button class="cart-item-remove" (click)="removeFromCart(i)"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+      <div class="cart-total">
+        <p>Total Items: <span>{{ totalItems }}</span></p>
+        <p>Total Price: <span>{{ totalPrice | number:'1.0-0' }} VND</span></p>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="continue-shopping" (click)="closeModal()">Continue Shopping</button>
+      <button class="view-bag" (click)="viewCart()">View My Bag</button>
+    </div>
+  </div>
+</div>
+
+<!-- Low Calories Section -->
+<section class="bowls-section" *ngIf="shouldShowCategory('low-cal')">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Low calories</h2>
+      <p class="section-description">Ideal options with less than 350kcal for effective weight loss or control</p>
+    </div>
+    <div class="bowls-grid">
+      <div class="bowl-card" *ngFor="let bowl of getLowCalBowls()" (click)="onBowlClick(bowl)">
+        <div class="bowl-image">
+          <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
+          <button class="download-recipe" (click)="downloadRecipe(bowl.id, $event)">Download recipe</button>
+        </div>
+        <div class="bowl-info">
+          <div class="bowl-calories"><span class="calories-badge">{{ bowl.calories }} CALORIES</span></div>
+          <h3 class="bowl-name">{{ bowl.name }}</h3>
+          <p class="bowl-description">{{ bowl.description }}</p>
+          <button class="add-to-bag-btn" (click)="addToBag(bowl, $event)">Add to Bag</button>
+          <div class="bowl-macros">
+            <div class="macro"><span class="macro-value">{{ bowl.protein }}</span><span class="macro-label">PROTEIN</span></div>
+            <div class="macro"><span class="macro-value">{{ bowl.carbs }}</span><span class="macro-label">CARBS</span></div>
+            <div class="macro"><span class="macro-value">{{ bowl.fat }}</span><span class="macro-label">FAT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Balanced Section -->
+<section class="bowls-section" *ngIf="shouldShowCategory('balanced')">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Balanced</h2>
+      <p class="section-description">Best for health fanatics, with the right portions of fat, carbs and protein, between 350 and 550kcal</p>
+    </div>
+    <div class="bowls-grid">
+      <div class="bowl-card" *ngFor="let bowl of getBalancedBowls()" (click)="onBowlClick(bowl)">
+        <div class="bowl-image">
+          <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
+          <button class="download-recipe" (click)="downloadRecipe(bowl.id, $event)">Download recipe</button>
+        </div>
+        <div class="bowl-info">
+          <div class="bowl-calories"><span class="calories-badge">{{ bowl.calories }} CALORIES</span></div>
+          <h3 class="bowl-name">{{ bowl.name }}</h3>
+          <p class="bowl-description">{{ bowl.description }}</p>
+          <button class="add-to-bag-btn" (click)="addToBag(bowl, $event)">Add to Bag</button>
+          <div class="bowl-macros">
+            <div class="macro"><span class="macro-value">{{ bowl.protein }}</span><span class="macro-label">PROTEIN</span></div>
+            <div class="macro"><span class="macro-value">{{ bowl.carbs }}</span><span class="macro-label">CARBS</span></div>
+            <div class="macro"><span class="macro-value">{{ bowl.fat }}</span><span class="macro-label">FAT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- High Protein Section -->
+<section class="bowls-section" *ngIf="shouldShowCategory('high-protein')">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">High protein</h2>
+      <p class="section-description">Highly recommended for muscle gain and after workout with over 550kcal, most wanted by the gym enthusiasts</p>
+    </div>
+    <div class="bowls-grid">
+      <div class="bowl-card" *ngFor="let bowl of getHighProteinBowls()" (click)="onBowlClick(bowl)">
+        <div class="bowl-image">
+          <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
+          <button class="download-recipe" (click)="downloadRecipe(bowl.id, $event)">Download recipe</button>
+        </div>
+        <div class="bowl-info">
+          <div class="bowl-calories"><span class="calories-badge">{{ bowl.calories }} CALORIES</span></div>
+          <h3 class="bowl-name">{{ bowl.name }}</h3>
+          <p class="bowl-description">{{ bowl.description }}</p>
+          <button class="add-to-bag-btn" (click)="addToBag(bowl, $event)">Add to Bag</button>
+          <div class="bowl-macros">
+            <div class="macro"><span class="macro-value">{{ bowl.protein }}</span><span class="macro-label">PROTEIN</span></div>
+            <div class="macro"><span class="macro-value">{{ bowl.carbs }}</span><span class="macro-label">CARBS</span></div>
+            <div class="macro"><span class="macro-value">{{ bowl.fat }}</span><span class="macro-label">FAT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Vegetarian Section -->
+<section class="bowls-section" *ngIf="shouldShowCategory('vegetarian')">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Vegetarian</h2>
+      <p class="section-description">Vegetarian bowls are flavorful with green goodness and balanced in macronutrients</p>
+    </div>
+    <div class="bowls-grid">
+      <div class="bowl-card" *ngFor="let bowl of getVegetarianBowls()" (click)="onBowlClick(bowl)">
+        <div class="bowl-image">
+          <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
+          <button class="download-recipe" (click)="downloadRecipe(bowl.id, $event)">Download recipe</button>
+        </div>
+        <div class="bowl-info">
+          <div class="bowl-calories"><span class="calories-badge">{{ bowl.calories }} CALORIES</span></div>
+          <h3 class="bowl-name">{{ bowl.name }}</h3>
+          <p class="bowl-description">{{ bowl.description }}</p>
+          <button class="add-to-bag-btn" (click)="addToBag(bowl, $event)">Add to Bag</button>
+          <div class="bowl-macros">
+            <div class="macro"><span class="macro-value">{{ bowl.protein }}</span><span class="macro-label">PROTEIN</span></div>
+            <div class="macro"><span class="macro-value">{{ bowl.carbs }}</span><span class="macro-label">CARBS</span></div>
+            <div class="macro"><span class="macro-value">{{ bowl.fat }}</span><span class="macro-label">FAT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

@@ -1,0 +1,127 @@
+<app-header></app-header>
+
+<!-- Sub Navigation -->
+<div class="sub-nav">
+  <div class="container">
+    <div class="sub-nav-links">
+      <a routerLink="/build-your-own" class="sub-nav-link active">Build your own</a>
+      <a routerLink="/our-bowls" class="sub-nav-link">Sou-made bowls</a>
+    </div>
+  </div>
+</div>
+
+<!-- Hero Section -->
+<section class="hero-build">
+  <div class="container">
+    <h1>Build Your Own Healthy Bowl</h1>
+    <p>Choose your ingredients and create the perfect bowl for your diet</p>
+  </div>
+</section>
+
+<!-- Builder Section -->
+<section class="builder-section">
+  <div class="container">
+    <div class="builder-grid">
+      <!-- Left: Builder Form -->
+      <div class="builder-form">
+        
+        <!-- Protein Selection -->
+        <div class="builder-step">
+          <h3><span class="step-number">1</span> Select Protein</h3>
+          <div class="options-grid">
+            <label class="option-card" *ngFor="let protein of proteins">
+              <input type="radio" [value]="protein.name" [(ngModel)]="selectedProtein" name="protein">
+              <span class="option-name">{{ protein.name }}</span>
+              <span class="option-info">{{ protein.calories }} cal • ₫{{ protein.price | number }}</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Carbs Selection -->
+        <div class="builder-step">
+          <h3><span class="step-number">2</span> Select Carbs</h3>
+          <div class="options-grid">
+            <label class="option-card" *ngFor="let carb of carbs">
+              <input type="radio" [value]="carb.name" [(ngModel)]="selectedCarbs" name="carbs">
+              <span class="option-name">{{ carb.name }}</span>
+              <span class="option-info">{{ carb.calories }} cal • ₫{{ carb.price | number }}</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Veggies Selection -->
+        <div class="builder-step">
+          <h3><span class="step-number">3</span> Choose Veggies (Optional)</h3>
+          <div class="options-grid">
+            <label class="option-card" *ngFor="let veggie of veggies">
+              <input type="checkbox" [checked]="selectedVeggies.includes(veggie.name)" (change)="toggleVeggie(veggie.name)">
+              <span class="option-name">{{ veggie.name }}</span>
+              <span class="option-info">{{ veggie.calories }} cal</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Sauce Selection -->
+        <div class="builder-step">
+          <h3><span class="step-number">4</span> Choose Sauce</h3>
+          <div class="options-grid">
+            <label class="option-card" *ngFor="let sauce of sauces">
+              <input type="radio" [value]="sauce.name" [(ngModel)]="selectedSauce" name="sauce">
+              <span class="option-name">{{ sauce.name }}</span>
+              <span class="option-info">{{ sauce.calories }} cal • ₫{{ sauce.price | number }}</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Summary & Preview -->
+      <div class="builder-summary">
+        <div class="summary-card">
+          <h3>Your Bowl Summary</h3>
+          
+          <div class="summary-item" *ngIf="selectedProtein">
+            <span class="label">Protein:</span>
+            <span class="value">{{ selectedProtein }}</span>
+          </div>
+
+          <div class="summary-item" *ngIf="selectedCarbs">
+            <span class="label">Carbs:</span>
+            <span class="value">{{ selectedCarbs }}</span>
+          </div>
+
+          <div class="summary-item" *ngIf="selectedVeggies.length > 0">
+            <span class="label">Veggies:</span>
+            <span class="value">{{ selectedVeggies.join(', ') }}</span>
+          </div>
+
+          <div class="summary-item" *ngIf="selectedSauce">
+            <span class="label">Sauce:</span>
+            <span class="value">{{ selectedSauce }}</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="summary-stats">
+            <div class="stat">
+              <span class="stat-label">Total Calories</span>
+              <span class="stat-value">{{ totalCalories }}</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Total Price</span>
+              <span class="stat-value">₫{{ totalPrice | number }}</span>
+            </div>
+          </div>
+
+          <button class="add-btn" (click)="addToCart()" [disabled]="!selectedProtein || !selectedCarbs || !selectedSauce">
+            <i class="fas fa-shopping-cart"></i> Add to Cart
+          </button>
+
+          <p class="note">*Prices may vary based on portion size</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

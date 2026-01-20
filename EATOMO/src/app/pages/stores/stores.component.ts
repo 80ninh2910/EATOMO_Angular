@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
@@ -8,7 +8,8 @@ import { FooterComponent } from '../../shared/footer/footer.component';
   standalone: true,
   imports: [CommonModule, HeaderComponent, FooterComponent],
   templateUrl: './stores.component.html',
-  styleUrl: './stores.component.css'
+  styleUrl: './stores.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StoresComponent {
   stores = [

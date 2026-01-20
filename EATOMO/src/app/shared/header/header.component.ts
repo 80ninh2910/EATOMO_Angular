@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -12,13 +12,24 @@ import { RouterModule } from '@angular/router';
 export class HeaderComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
   isScrolled = false;
+  isHomePage = false;
+
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    // Initialize any header logic
+    // Check if on home page
+    this.updateHomePageStatus();
+    this.router.events.subscribe(() => {
+      this.updateHomePageStatus();
+    });
   }
 
   ngOnDestroy(): void {
     // Cleanup if needed
+  }
+
+  private updateHomePageStatus(): void {
+    this.isHomePage = this.router.url === '/' || this.router.url === '/index';
   }
 
   @HostListener('window:scroll', [])
@@ -34,7 +45,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isMenuOpen = false;
   }
 
-  scrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  onLogoClick(): void {
+    if (this.isHomePage) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 }

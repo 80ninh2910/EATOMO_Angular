@@ -1,0 +1,70 @@
+<div class="logo-bar">
+  <img src="assets/healthy/images/index/image-removebg-preview (36).png" alt="Brand Logo">
+  <h1>EATOMO</h1>
+</div>
+
+<div class="register-container">
+  <div class="register-box">
+    <h2>Create Account</h2>
+    
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success">
+      <i class="fas fa-check-circle"></i> {{ successMessage }}
+    </div>
+
+    <form (ngSubmit)="onRegister()">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          [(ngModel)]="username" 
+          name="username" 
+          placeholder="Choose a username" 
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="email" 
+          name="email" 
+          placeholder="Enter your email" 
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          [(ngModel)]="password" 
+          name="password" 
+          placeholder="Create a password" 
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password</label>
+        <input 
+          type="password" 
+          id="confirm-password" 
+          [(ngModel)]="confirmPassword" 
+          name="confirmPassword" 
+          placeholder="Confirm your password" 
+          required>
+      </div>
+
+      <button type="submit" class="register-btn">Register</button>
+    </form>
+
+    <p class="login-link">
+      Already have an account? <a href="javascript:void(0)" (click)="goToLogin()">Login here</a>
+    </p>
+  </div>
+</div>

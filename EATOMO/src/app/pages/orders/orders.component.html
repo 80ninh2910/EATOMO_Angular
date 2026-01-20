@@ -1,0 +1,112 @@
+<app-header></app-header>
+
+<div class="orders-container">
+  <div class="container">
+    <h1>Shopping Cart</h1>
+
+    <div class="orders-grid">
+      <!-- Cart Items -->
+      <div class="cart-items">
+        <div *ngIf="cart.length === 0" class="empty-cart">
+          <i class="fas fa-shopping-cart"></i>
+          <h2>Your cart is empty</h2>
+          <p>Add some delicious bowls to get started!</p>
+          <a routerLink="/our-bowls" class="btn btn-primary">Continue Shopping</a>
+        </div>
+
+        <div *ngIf="cart.length > 0">
+          <div class="cart-item" *ngFor="let item of cart; let i = index">
+            <img [src]="item.image || 'assets/healthy/images/index/bowl-b1.jpg'" alt="{{ item.name }}">
+            <div class="item-info">
+              <h3>{{ item.name }}</h3>
+              <p class="item-description">{{ item.description || 'Delicious healthy bowl' }}</p>
+              <p class="item-price">₫{{ item.price | number }}</p>
+            </div>
+            <div class="item-quantity">
+              <label>Qty:</label>
+              <input type="number" min="1" [value]="item.quantity || 1" (change)="updateQuantity(i, +$event.target.value)">
+            </div>
+            <div class="item-total">
+              <p class="total">₫{{ (item.price * (item.quantity || 1)) | number }}</p>
+              <button class="remove-btn" (click)="removeFromCart(i)">
+                <i class="fas fa-trash"></i> Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkout Sidebar -->
+      <div class="checkout-sidebar">
+        <div class="checkout-card">
+          <h2>Order Summary</h2>
+
+          <!-- Order Summary -->
+          <div class="summary">
+            <div class="summary-row">
+              <span>Subtotal:</span>
+              <span>₫{{ subtotal | number }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Tax (10%):</span>
+              <span>₫{{ tax | number }}</span>
+            </div>
+            <div class="summary-row" *ngIf="shippingFee > 0">
+              <span>Shipping:</span>
+              <span>₫{{ shippingFee | number }}</span>
+            </div>
+            <div class="summary-row" *ngIf="shippingFee === 0">
+              <span>Shipping:</span>
+              <span class="free">FREE</span>
+            </div>
+            <div class="divider"></div>
+            <div class="summary-row total-row">
+              <span>Total:</span>
+              <span class="total-amount">₫{{ total | number }}</span>
+            </div>
+          </div>
+
+          <!-- Customer Info -->
+          <div class="customer-info" *ngIf="cart.length > 0">
+            <h3>Delivery Information</h3>
+            <form>
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" [(ngModel)]="customerName" name="name" placeholder="Enter your name" required>
+              </div>
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" [(ngModel)]="customerPhone" name="phone" placeholder="Enter your phone" required>
+              </div>
+              <div class="form-group">
+                <label>Delivery Address</label>
+                <textarea [(ngModel)]="customerAddress" name="address" placeholder="Enter delivery address" required></textarea>
+              </div>
+              <div class="form-group">
+                <label>Payment Method</label>
+                <select [(ngModel)]="paymentMethod" name="payment">
+                  <option value="cash">Cash on Delivery</option>
+                  <option value="card">Credit Card</option>
+                  <option value="bank">Bank Transfer</option>
+                </select>
+              </div>
+            </form>
+          </div>
+
+          <!-- Checkout Button -->
+          <button class="checkout-btn" (click)="checkout()" [disabled]="cart.length === 0">
+            <i class="fas fa-check-circle"></i> Place Order
+          </button>
+
+          <button class="continue-btn" (click)="continueShopping()">
+            <i class="fas fa-arrow-left"></i> Continue Shopping
+          </button>
+
+          <p class="note">Free shipping for orders over ₫500,000</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

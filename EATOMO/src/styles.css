@@ -1,2 +1,68 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Performance Optimization Styles */
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #333;
+  background-color: #ffffff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Image optimization */
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Font display strategy for faster text rendering */
+@font-face {
+  font-family: 'Poppins';
+  font-display: swap;
+}
+
+/* Prevent layout shift */
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+/* Smooth transitions */
+a, button {
+  transition: all 0.3s ease;
+}
+
+/* Focus styles for accessibility */
+button:focus,
+a:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Container optimization */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Loading states */
+img[loading="lazy"] {
+  background-color: #f0f0f0;
+}
+
+/* You can add additional global styles here */

@@ -1,1 +1,104 @@
 @import '../../../assets/healthy/css/login.css';
+
+/* ===== COMPONENT LEVEL EXTENSIONS ===== */
+
+/* Ensure full-height login page */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+app-login {
+  display: block;
+  min-height: 100vh;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .login-container {
+    padding: 40px;
+    gap: 30px;
+  }
+
+  .login-box {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-bar {
+    top: 15px;
+    padding: 8px;
+  }
+
+  .logo-bar h1 {
+    font-size: 1.4rem;
+  }
+
+  .login-container {
+    flex-direction: column;
+    padding: 30px;
+    margin-top: 80px;
+  }
+
+  .login-box {
+    padding: 25px;
+  }
+
+  .login-box h2 {
+    font-size: 22px;
+  }
+
+  .login-box label {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 5px;
+  }
+
+  .login-box input {
+    width: 100%;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .button-group button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-bar {
+    gap: 5px;
+  }
+
+  .logo-bar h1 {
+    font-size: 1.2rem;
+  }
+
+  .login-container {
+    padding: 20px;
+    margin-top: 70px;
+  }
+
+  .login-box {
+    padding: 20px;
+  }
+
+  .login-box h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .login-box input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .button-group button {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
