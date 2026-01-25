@@ -583,7 +583,7 @@ body {
 
 /* 🔹 Ảnh nền riêng cho từng thẻ */
 .card1 {
-  background: url('../images/about/1.webp') center/cover no-repeat;
+  background: url('../images/about/Fresh-Natural.jpeg') center/cover no-repeat;
 }
 
 .card2 {
@@ -622,7 +622,7 @@ body {
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 30px;
 }
 

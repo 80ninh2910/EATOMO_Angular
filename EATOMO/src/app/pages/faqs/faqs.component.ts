@@ -25,19 +25,19 @@ export class FaqsComponent {
   faqs: FAQ[] = [
     {
       question: 'How does the menu work?',
-      answer: 'With Soumaki\'s menu, you have the flexibility to mix and match different items to create your unique, healthy bowls. You can either enjoy our Sou-made bowls (predesigned bowls) or Build your own healthy bowl out of our fresh ingredients and tasty sauces. Over 100 combinations of the macronutrients (protein, carbs, fat) are awaiting!',
+      answer: 'With EATOMO\'s menu, you have the flexibility to mix and match different items to create your unique, healthy bowls. You can either enjoy our Sou-made bowls (predesigned bowls) or Build your own healthy bowl out of our fresh ingredients and tasty sauces. Over 100 combinations of the macronutrients (protein, carbs, fat) are awaiting!',
       category: 'menu',
       isOpen: false
     },
     {
       question: 'How do I place my order?',
-      answer: ['You can drop by to dine in, pick up your bowls, or order via delivery apps:', 'Our store for dine-in and pick-up: SOUMAKI, 42 Ly Tu Trong, Ben Nghe ward, District 1.', 'Contact us on Facebook, IG, Zalo, or via our hotline 0326238700 from 10 AM to 9 PM, every day', 'We are also available on Grabfood, Shopeefood, and GoFood (10:00 AM – 8:45 PM) for your convenience.'],
+      answer: ['You can drop by to dine in, pick up your bowls, or order via delivery apps:', 'Our store for dine-in and pick-up: EATOMO, 42 Ly Tu Trong, Ben Nghe ward, District 1.', 'Contact us on Facebook, IG, Zalo, or via our hotline 0326238700 from 10 AM to 9 PM, every day', 'We are also available on Grabfood, Shopeefood, and GoFood (10:00 AM – 8:45 PM) for your convenience.'],
       category: 'menu',
       isOpen: false
     },
     {
-      question: 'Who can eat Soumaki food?',
-      answer: 'Absolutely everyone can benefit from our bowls – whether you\'re looking to lose weight, stay fit, or simply lead a healthier lifestyle. want to have a healthier lifestyle.',
+      question: 'Who can eat EATOMO food?',
+      answer: 'Absolutely everyone can benefit from our bowls – whether you\'re looking to lose weight, stay fit, or simply lead a healthier lifestyle.',
       category: 'menu',
       isOpen: false
     },
@@ -48,7 +48,7 @@ export class FaqsComponent {
       isOpen: false
     },
     {
-      question: 'Is Soumaki food suitable for weight loss and muscle gain?',
+      question: 'Is EATOMO food suitable for weight loss and muscle gain?',
       answer: 'Yes. Our food is suitable for any fitness purpose. But don\'t forget that consistency is key to any goals.',
       category: 'menu',
       isOpen: false

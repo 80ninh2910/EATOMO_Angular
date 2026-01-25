@@ -287,10 +287,11 @@
 
 /* Hero Section */
 .hero-bowls {
-  background-image: url('/assets/healthy/images/bowl/Store_Store-Cover-scaled.jpg');
+  background-image: url('/assets/healthy/images/bowl/Sou-made-bowl.jpeg');
   padding: 80px 0;
   text-align: center;
   background-size: cover;
+  background-position: center -140px;
 }
 
 .hero-content {

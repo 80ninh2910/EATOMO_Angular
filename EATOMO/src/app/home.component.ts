@@ -36,24 +36,24 @@ export class HomeComponent implements OnInit {
   
   bowls: BowlItem[] = [
     {
-      name: 'B1',
-      description: 'Tuna, donburi brown rice, beetroot, broccoli',
-      calories: 434,
-      protein: 43,
-      carbs: 48,
-      fat: 8,
-      image: 'assets/healthy/images/index/bowl-b1.jpg',
+      name: 'L1',
+      description: 'Half beef steak, sweet potato, cauliflower, pickles',
+      calories: 274,
+      protein: 25,
+      carbs: 27,
+      fat: 7,
+      image: 'assets/healthy/images/index/L1-bowl.png',
       category: 'low-cal'
     },
     {
-      name: 'B2',
-      description: 'Half beef steak, pasta, mushroom, pak choi, pickles, onsen egg',
-      calories: 438,
-      protein: 35,
-      carbs: 38,
-      fat: 16,
-      image: 'assets/healthy/images/index/bowl-b2.jpg',
-      category: 'balanced'
+      name: 'L2',
+      description: 'Salmon, sweet potato, mixed veggies, pak choi',
+      calories: 331,
+      protein: 24,
+      carbs: 26,
+      fat: 15,
+      image: 'assets/healthy/images/index/L2-bowl.png',
+      category: 'low-cal'
     },
     {
       name: 'B3',
@@ -62,8 +62,8 @@ export class HomeComponent implements OnInit {
       protein: 41,
       carbs: 54,
       fat: 6,
-      image: 'assets/healthy/images/index/bowl-b3.jpg',
-      category: 'low-cal'
+      image: 'assets/healthy/images/index/B3-bowl.png',
+      category: 'balanced'
     },
     {
       name: 'B4',
@@ -72,27 +72,27 @@ export class HomeComponent implements OnInit {
       protein: 31,
       carbs: 42,
       fat: 24,
-      image: 'assets/healthy/images/index/bowl-b4.jpg',
+      image: 'assets/healthy/images/index/B4-bowl.png',
       category: 'balanced'
     },
     {
-      name: 'B5',
-      description: 'Duck breast, donburi brown rice, pickles',
-      calories: 485,
-      protein: 40,
-      carbs: 36,
-      fat: 20,
-      image: 'assets/healthy/images/index/bowl-b5.jpg',
+      name: 'H5',
+      description: 'Half beef steak, full chicken breast, donburi brown rice, pumpkin, french bean',
+      calories: 720,
+      protein: 91,
+      carbs: 46,
+      fat: 19,
+      image: 'assets/healthy/images/index/H5-bowl.png',
       category: 'high-protein'
     },
     {
-      name: 'B6',
-      description: 'Salmon, donburi brown rice, spinach',
-      calories: 455,
-      protein: 32,
-      carbs: 38,
-      fat: 20,
-      image: 'assets/healthy/images/index/bowl-b6.jpg',
+      name: 'V5',
+      description: 'Tofu, pasta, broccoli, edamame, purple cabbage, beetroot',
+      calories: 530,
+      protein: 33,
+      carbs: 85,
+      fat: 7,
+      image: 'assets/healthy/images/index/V5-bowl.png',
       category: 'vegetarian'
     }
   ];

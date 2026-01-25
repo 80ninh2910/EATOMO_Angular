@@ -16,7 +16,7 @@
 
         <div *ngIf="cart.length > 0">
           <div class="cart-item" *ngFor="let item of cart; let i = index">
-            <img [src]="item.image || 'assets/healthy/images/index/bowl-b1.jpg'" alt="{{ item.name }}">
+            <img [src]="item.image || 'assets/healthy/images/index/B1-bowl.png'" alt="{{ item.name }}">
             <div class="item-info">
               <h3>{{ item.name }}</h3>
               <p class="item-description">{{ item.description || 'Delicious healthy bowl' }}</p>
@@ -48,7 +48,7 @@
               <span>₫{{ subtotal | number }}</span>
             </div>
             <div class="summary-row">
-              <span>Tax (10%):</span>
+              <span>Tax (8%):</span>
               <span>₫{{ tax | number }}</span>
             </div>
             <div class="summary-row" *ngIf="shippingFee > 0">

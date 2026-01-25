@@ -22,22 +22,22 @@ export class StoresComponent implements AfterViewInit {
   constructor(private elementRef: ElementRef) {}
   stores: Store[] = [
     {
-      name: 'Soumaki Phu My Hung',
+      name: 'EATOMO Phu My Hung',
       address: 'S27-1, Sky Garden 1, Tan Hung, Ho Chi Minh City (District 7)',
       hours: '10 A.M – 9 P.M (every day)',
-      image: '/assets/healthy/images/stores/Store-nohope_Store_Store-jpg.avif'
+      image: '/assets/healthy/images/stores/SkyGarden-store.png'
     },
     {
-      name: 'Soumaki Ly Tu Trong',
+      name: 'EATOMO Ly Tu Trong',
       address: '42 Ly Tu Trong, Ben Nghe, Ho Chi Minh City (District 1)',
       hours: '10 A.M – 9 P.M (every day)',
-      image: '/assets/healthy/images/stores/Store-web-jpg.avif'
+      image: '/assets/healthy/images/stores/LTT-store.png'
     },
     {
-      name: 'Soumaki Nguyen Van Huong',
+      name: 'EATOMO Nguyen Van Huong',
       address: '250 Nguyen Van Huong, An Khanh Ward, Ho Chi Minh City',
       hours: '10 A.M – 9 P.M (everyday)',
-      image: '/assets/healthy/images/stores/10_05_2025_soumaki_3d_concept_page-0002-3-scaled-e1753158565499.avif'
+      image: '/assets/healthy/images/stores/TD-store.png'
     }
   ];
 

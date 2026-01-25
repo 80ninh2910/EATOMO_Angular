@@ -418,19 +418,25 @@
 
 /* 🔹 Ảnh nền riêng cho từng thẻ */
 .card1 {
-  background: url('/assets/healthy/images/about/1.webp') center/cover no-repeat;
+  background: url('/assets/healthy/images/about/Fresh-Natural.jpeg') center/cover no-repeat;
 }
 
 .card2 {
-  background: url('/assets/healthy/images/about/3.webp') center/cover no-repeat;
+  background: url('/assets/healthy/images/about/Made-with-love.png');
+  background-size: 125%;
+  background-position: center 40%;
+  background-repeat: no-repeat;
 }
 
 .card3 {
-  background: url('/assets/healthy/images/about/2.webp') center/cover no-repeat;
+  background: url('/assets/healthy/images/about/Serving.png');
+  background-size: 125%;
+  background-position: center 40%;
+  background-repeat: no-repeat;
 }
 
 .card4 {
-  background: url('/assets/healthy/images/about/4.webp') center/cover no-repeat;
+  background: url('/assets/healthy/images/about/Sustainable.png') center/cover no-repeat;
 }
 
 
@@ -457,8 +463,8 @@
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 30px; /* giảm chút cho đỡ chật */
 }
 
 .team-member {
@@ -485,7 +491,7 @@
 
 .member-image img {
   width: 100%;
-  height: 400px;
+  height: 300px;
   object-fit: cover;
   transition: var(--transition);
 }
@@ -533,21 +539,24 @@
 }
 
 .member-name {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--primary-color);
   margin-bottom: 8px;
 }
 
 .member-role {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-light);
 }
 
 /* CTA Section */
 .cta-section {
   padding: 200px 0;
-  background-image: url(/assets/healthy/images/about/5.webp);
+  background-image: url(/assets/healthy/images/about/Experience.png);
+  background-size: 125%;
+  background-position: 65% center; /* chỉnh trọng tâm ảnh */
+  background-repeat: no-repeat;
   position: relative;
   overflow: hidden;
 }
