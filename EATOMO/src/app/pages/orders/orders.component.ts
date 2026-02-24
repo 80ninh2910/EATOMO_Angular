@@ -48,11 +48,11 @@ export class OrdersComponent implements OnInit {
   }
 
   get subtotal(): number {
-    return this.cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+    return Math.round(this.cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1))/(1+0.08), 0));
   }
 
   get tax(): number {
-    return this.subtotal * 0.1; // 10% tax
+    return Math.round(this.subtotal * 0.08); // 8% tax
   }
 
   get shippingFee(): number {

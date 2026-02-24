@@ -18,8 +18,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url(/assets/healthy/images/faqs/L17-XO-2048x1152.jpg);
+    background-image: url(/assets/healthy/images/faqs/Faqs-page.png);
     background-size: cover;
+    background-position: center -120px;
 }
 .overlay {
   position: absolute;

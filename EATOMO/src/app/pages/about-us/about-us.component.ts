@@ -31,7 +31,8 @@ export class AboutUsComponent implements AfterViewInit {
     { name: 'Quách An Ninh', role: 'Head Chef & Co-Founder', image: '/assets/healthy/images/about/Ninh.jpg', instagram: 'niqa0192' },
     { name: 'Đoàn Quốc Vinh', role: 'Chief Nutritionist', image: '/assets/healthy/images/about/Vinh.jpg', instagram: 'qdinnh' },
     { name: 'Nguyễn Quốc Thịnh', role: 'Operations Manager', image: '/assets/healthy/images/about/Thịnh.jpg', instagram: 'qdinnh' },
-    { name: 'Ngọc Khuyến', role: 'Chief Nutritionist', image: '/assets/healthy/images/about/Khuyen.jpg', instagram: 'qdinnh' }
+    { name: 'Phan Thị Ngọc Khuyến', role: 'Chief Nutritionist', image: '/assets/healthy/images/about/Khuyen.jpg', instagram: 'vickyphan2005' },
+    { name: 'Ngô Viết Thanh', role: 'Marketing Specialist', image: '/assets/healthy/images/about/Thanh.jpg', instagram: 'ngovietthanh' }
   ];
 
   features = [
