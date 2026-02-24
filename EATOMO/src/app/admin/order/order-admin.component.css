@@ -172,9 +172,8 @@ img {
   display: grid;
   grid-template-columns: 160px minmax(280px, 1fr) 240px 240px;
   gap: 16px;
-  align-items: stretch;
+  align-items: center;
   width: 100%;
-  grid-auto-rows: 48px;
 }
 
 .toolbar-row > *,
@@ -185,7 +184,7 @@ img {
 }
 
 .toolbar-row > * {
-  align-self: stretch;
+  align-self: center;
 }
 
 .toolbar-row.full {
@@ -207,6 +206,7 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  line-height: 48px;
 }
 
 .toolbar-row .search {
