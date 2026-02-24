@@ -1,0 +1,16 @@
+import { TestBed } from '@angular/core/testing';
+import { OrderAdminComponent } from './order-admin.component';
+
+describe('OrderAdminComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [OrderAdminComponent]
+    }).compileComponents();
+  });
+
+  it('should create', () => {
+    const fixture = TestBed.createComponent(OrderAdminComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeTruthy();
+  });
+});

@@ -4,6 +4,8 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
+type LoginMode = 'user' | 'admin';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -13,112 +15,77 @@ import { AuthService } from '../../services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
-  adminForm: FormGroup;
   userForm: FormGroup;
-  
-  adminError = signal<string>('');
-  userError = signal<string>('');
-  adminLoading = signal<boolean>(false);
-  userLoading = signal<boolean>(false);
+  adminForm: FormGroup;
+
+  mode = signal<LoginMode>('user');
+
+  userError = signal('');
+  adminError = signal('');
+  userLoading = signal(false);
+  adminLoading = signal(false);
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
+    private authService: AuthService, // giữ nguyên, không dùng
     private router: Router
   ) {
-    // Admin form với validation
-    this.adminForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
-
-    // User form với validation
     this.userForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+
+    this.adminForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
   }
 
-  async onAdminLogin(): Promise<void> {
-    this.adminError.set('');
-    
-    if (this.adminForm.invalid) {
-      this.adminError.set('Please fill in all fields correctly');
-      return;
-    }
-
-    this.adminLoading.set(true);
-    
-    try {
-      const result = await this.authService.login(this.adminForm.value, true);
-      
-      if (result.success) {
-        // Redirect tới trang đã lưu hoặc trang chủ
-        const redirectUrl = this.authService.getRedirectUrl();
-        this.router.navigate([redirectUrl]);
-      } else {
-        this.adminError.set(result.message);
-      }
-    } catch (error) {
-      this.adminError.set('Login failed. Please try again.');
-    } finally {
-      this.adminLoading.set(false);
-    }
-  }
-
-  async onUserLogin(): Promise<void> {
+  switchToAdmin() {
+    this.mode.set('admin');
     this.userError.set('');
-    
+    this.userForm.reset();
+  }
+
+  switchToUser() {
+    this.mode.set('user');
+    this.adminError.set('');
+    this.adminForm.reset();
+  }
+
+  /* ================= USER LOGIN ================= */
+  async onUserLogin() {
     if (this.userForm.invalid) {
       this.userError.set('Please fill in all fields correctly');
       return;
     }
 
-    this.userLoading.set(true);
-    
-    try {
-      const result = await this.authService.login(this.userForm.value, false);
-      
-      if (result.success) {
-        // Redirect tới trang đã lưu hoặc trang chủ
-        const redirectUrl = this.authService.getRedirectUrl();
-        this.router.navigate([redirectUrl]);
-      } else {
-        this.userError.set(result.message);
-      }
-    } catch (error) {
-      this.userError.set('Login failed. Please try again.');
-    } finally {
-      this.userLoading.set(false);
+    const { username, password } = this.userForm.value;
+
+    if (username === 'user' && password === 'user123') {
+      this.userError.set('');
+      this.router.navigate(['/']); // 🔁 đổi route nếu muốn
+      return;
     }
+
+    this.userError.set('Invalid username or password');
   }
 
-  // Getter methods để kiểm tra validation errors
-  get adminUsernameError(): string {
-    const control = this.adminForm.get('username');
-    if (control?.hasError('required') && control.touched) return 'Username is required';
-    if (control?.hasError('minlength')) return 'Username must be at least 3 characters';
-    return '';
-  }
+  /* ================= ADMIN LOGIN ================= */
+  async onAdminLogin() {
+    if (this.adminForm.invalid) {
+      this.adminError.set('Please fill in all fields correctly');
+      return;
+    }
 
-  get adminPasswordError(): string {
-    const control = this.adminForm.get('password');
-    if (control?.hasError('required') && control.touched) return 'Password is required';
-    if (control?.hasError('minlength')) return 'Password must be at least 6 characters';
-    return '';
-  }
+    const { username, password } = this.adminForm.value;
 
-  get userUsernameError(): string {
-    const control = this.userForm.get('username');
-    if (control?.hasError('required') && control.touched) return 'Username is required';
-    if (control?.hasError('minlength')) return 'Username must be at least 3 characters';
-    return '';
-  }
+    if (username === 'admin' && password === 'admin123') {
+      this.adminError.set('');
+      this.router.navigate(['/admin']); // 🔁 đổi route nếu muốn
+      return;
+    }
 
-  get userPasswordError(): string {
-    const control = this.userForm.get('password');
-    if (control?.hasError('required') && control.touched) return 'Password is required';
-    if (control?.hasError('minlength')) return 'Password must be at least 6 characters';
-    return '';
+    this.adminError.set('Invalid admin username or password');
   }
 }

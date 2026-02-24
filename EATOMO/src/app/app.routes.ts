@@ -9,6 +9,11 @@ import { OurBowlsComponent } from './pages/our-bowls/our-bowls.component';
 import { BuildYourOwnComponent } from './pages/build-your-own/build-your-own.component';
 import { OrdersComponent } from './pages/orders/orders.component';
 import { StaticPageComponent } from './static-page.component';
+import { OrderAdminComponent } from './admin/order/order-admin.component';
+import { ProductAdminComponent } from './admin/product/product-admin.component';
+import { CustomerAdminComponent } from './admin/customer/customer-admin.component';
+import { PromotionAdminComponent } from './admin/promotion/promotion-admin.component';
+import { ReportAdminComponent } from './admin/report/report-admin.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -23,7 +28,11 @@ export const routes: Routes = [
   { path: 'orders', component: OrdersComponent },
   
   // Temporary routes using StaticPageComponent for pages not yet converted
-  { path: 'admin', component: StaticPageComponent, data: { file: 'admin.html' } },
+  { path: 'admin', component: OrderAdminComponent },
+  { path: 'admin/product', component: ProductAdminComponent },
+  { path: 'admin/customer', component: CustomerAdminComponent },
+  { path: 'admin/promotion', component: PromotionAdminComponent },
+  { path: 'admin/report', component: ReportAdminComponent },
   { path: 'order-confirmation', component: StaticPageComponent, data: { file: 'order-confirmation.html' } },
   { path: 'analytics', component: StaticPageComponent, data: { file: 'pages/analytics.html' } },
   { path: 'customers', component: StaticPageComponent, data: { file: 'pages/customers.html' } },

@@ -1,0 +1,226 @@
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="assets/healthy/images/index/image-removebg-preview (36).png" alt="EATOMO logo" />
+      <span>EATOMO ADMIN</span>
+    </div>
+    <nav class="nav">
+      <a class="nav-link" routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span class="nav-icon">🛒</span>Orders</a>
+      <a class="nav-link" routerLink="/admin/product" routerLinkActive="active"><span class="nav-icon">🍱</span>Products</a>
+      <a class="nav-link" routerLink="/admin/customer" routerLinkActive="active"><span class="nav-icon">👤</span>Customers</a>
+      <a class="nav-link" routerLink="/admin/promotion" routerLinkActive="active"><span class="nav-icon">🏷️</span>Promotions</a>
+      <a class="nav-link" routerLink="/admin/report" routerLinkActive="active"><span class="nav-icon">📈</span>Reports</a>
+    </nav>
+  </aside>
+
+  <main class="layout">
+    <header class="page-header">
+      <div>
+        <p class="page-meta">{{ showDetail ? 'Details' : 'Manage' }}</p>
+        <h1>{{ showDetail ? 'Customer details' : 'Customer list' }}</h1>
+      </div>
+      <div class="header-actions">
+        <button *ngIf="showDetail" class="btn ghost" type="button" (click)="backToList()">← Back</button>
+        <button class="btn ghost" type="button">Export data</button>
+        <button *ngIf="!showDetail" class="btn primary" type="button"><span>➕</span>Create customer</button>
+        <button *ngIf="showDetail" class="btn primary" type="button"><span>➕</span>Create order</button>
+      </div>
+    </header>
+
+    <div class="content" [class.detail-mode]="showDetail">
+      <section *ngIf="!showDetail" class="panel">
+        <div class="panel-tabs">
+          <button class="tab active" type="button">All customers</button>
+        </div>
+
+        <div class="panel-toolbar">
+          <div class="search">
+            <input type="text" placeholder="Search by name, phone, or email" />
+            <span class="search-icon">🔍</span>
+          </div>
+          <button class="btn delete" type="button">Delete selected</button>
+          <button class="btn icon" type="button" title="Columns">▦</button>
+        </div>
+
+        <div class="customer-count">Total: {{ customers.length }} customers</div>
+
+        <div class="table-wrap">
+          <table class="customer-table">
+            <thead>
+              <tr>
+                <th class="checkbox-col"><input type="checkbox" aria-label="Select all" /></th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Last order</th>
+                <th>Orders</th>
+                <th>Avg order</th>
+                <th>Debt</th>
+                <th>Total spent</th>
+                <th>Updated</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let customer of customers" (click)="openDetail(customer)">
+                <td><input type="checkbox" (click)="$event.stopPropagation()" /></td>
+                <td class="customer-name">
+                  <button class="customer-link" type="button" (click)="openDetail(customer)">{{ customer.name }}</button>
+                </td>
+                <td>{{ customer.phone }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.address }}</td>
+                <td class="pill-link">{{ customer.lastOrderId }}</td>
+                <td>{{ customer.totalOrders }}</td>
+                <td>{{ customer.avgOrder }}</td>
+                <td>{{ customer.debt }}</td>
+                <td class="money">{{ customer.totalSpent }}</td>
+                <td>{{ customer.updatedAt }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section *ngIf="showDetail" class="panel detail-panel-full">
+        <div class="detail-select">
+          <label for="customerSelect">Select customer</label>
+          <select
+            id="customerSelect"
+            [ngModel]="selectedCustomer"
+            (ngModelChange)="selectCustomer($event)"
+          >
+            <option *ngFor="let customer of customers" [ngValue]="customer">
+              {{ customer.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="detail-hero">
+          <div class="avatar large">{{ getInitials(selectedCustomer.name) }}</div>
+          <div>
+            <h3>{{ selectedCustomer.name }}</h3>
+            <p>Member for: <strong>{{ selectedCustomer.daysActive }} days</strong></p>
+            <p class="pill-status">{{ selectedCustomer.statusLabel }}</p>
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          <button class="btn ghost" type="button" (click)="performAction('Call customer')">Call</button>
+          <button class="btn ghost" type="button" (click)="performAction('Send email')">Email</button>
+          <button class="btn ghost" type="button" (click)="performAction('Send voucher')">Send voucher</button>
+          <button class="btn primary" type="button" (click)="performAction('Create order')">Create order</button>
+          <span class="action-message" *ngIf="actionMessage">{{ actionMessage }}</span>
+        </div>
+
+        <div class="detail-tags">
+          <span class="tag" *ngFor="let segment of selectedCustomer.segments">{{ segment }}</span>
+          <span class="tag" [ngClass]="getRiskClass(selectedCustomer.churnRisk.score)">
+            Churn risk: {{ selectedCustomer.churnRisk.label }}
+          </span>
+          <span class="tag" [ngClass]="getHealthClass(selectedCustomer.healthScore)">
+            Health score: {{ selectedCustomer.healthScore }}%
+          </span>
+        </div>
+
+        <div class="detail-metrics">
+          <div class="stat-card">
+            <h4>Total orders</h4>
+            <p>{{ selectedCustomer.totalOrders }} orders</p>
+          </div>
+          <div class="stat-card">
+            <h4>Total spent</h4>
+            <p>{{ selectedCustomer.totalSpent }}</p>
+          </div>
+          <div class="stat-card">
+            <h4>Recent order</h4>
+            <p>{{ selectedCustomer.lastOrderId }}</p>
+          </div>
+        </div>
+
+        <div class="detail-insights">
+          <div class="stat-card">
+            <h4>Recency</h4>
+            <p>{{ selectedCustomer.rfm.recencyDays }} days</p>
+          </div>
+          <div class="stat-card">
+            <h4>Frequency</h4>
+            <p>{{ selectedCustomer.rfm.frequency }}/5</p>
+          </div>
+          <div class="stat-card">
+            <h4>Monetary</h4>
+            <p>{{ selectedCustomer.rfm.monetary }}/5</p>
+          </div>
+          <div class="stat-card">
+            <h4>CLV</h4>
+            <p>{{ selectedCustomer.clv }}</p>
+          </div>
+        </div>
+
+        <div class="detail-grid three">
+          <div class="info-box">
+            <h4>Contact info</h4>
+            <p>Email: <a href="mailto:{{ selectedCustomer.email }}">{{ selectedCustomer.email }}</a></p>
+            <p>Phone: <span>{{ selectedCustomer.phone }}</span></p>
+            <p>Address: <span>{{ selectedCustomer.address }}</span></p>
+            <p>Marketing consent: <strong>{{ selectedCustomer.marketingStatus }}</strong></p>
+          </div>
+          <div class="info-box">
+            <h4>Lifecycle & source</h4>
+            <p>Source: <strong>{{ selectedCustomer.source }}</strong></p>
+            <p>Campaign: <strong>{{ selectedCustomer.campaign }}</strong></p>
+            <p>Preferred channel: <strong>{{ selectedCustomer.preferredChannel }}</strong></p>
+            <p>Health score</p>
+            <div class="health-bar">
+              <span [style.width.%]="selectedCustomer.healthScore"></span>
+            </div>
+          </div>
+          <div class="info-box">
+            <h4>Support & SLA</h4>
+            <p>Open tickets: <strong>{{ selectedCustomer.support.openTickets }}</strong></p>
+            <p>Owner: <strong>{{ selectedCustomer.support.owner }}</strong></p>
+            <p>Last contact: <strong>{{ selectedCustomer.support.lastContact }}</strong></p>
+            <p>SLA: <strong>{{ selectedCustomer.support.slaHours }}h • {{ selectedCustomer.support.slaStatus }}</strong></p>
+          </div>
+        </div>
+
+        <div class="detail-blocks">
+          <div class="info-box">
+            <h4>Latest order rating</h4>
+            <div class="rating">
+              <span *ngFor="let star of ratingStars; let i = index" [class.inactive]="i >= selectedCustomer.rating">★</span>
+            </div>
+            <h4>Feedback</h4>
+            <div class="feedback">{{ selectedCustomer.feedback }}</div>
+          </div>
+          <div class="info-box">
+            <h4>Timeline</h4>
+            <ul class="timeline">
+              <li *ngFor="let item of selectedCustomer.timeline">{{ item }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="detail-blocks">
+          <div class="info-box">
+            <h4>Internal notes</h4>
+            <ul class="timeline">
+              <li *ngFor="let note of selectedCustomer.notes">{{ note }}</li>
+            </ul>
+            <div class="note-form">
+              <textarea [(ngModel)]="newNote" placeholder="Add a note..."></textarea>
+              <button class="btn ghost" type="button" (click)="addNote()">Add note</button>
+            </div>
+          </div>
+          <div class="info-box">
+            <h4>Audit log</h4>
+            <ul class="timeline">
+              <li *ngFor="let item of selectedCustomer.audit">{{ item }}</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>

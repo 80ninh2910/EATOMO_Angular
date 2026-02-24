@@ -1,0 +1,312 @@
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="assets/healthy/images/index/image-removebg-preview (36).png" alt="EATOMO logo" />
+      <span>EATOMO ADMIN</span>
+    </div>
+    <nav class="nav">
+      <a class="nav-link" routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span class="nav-icon">🛒</span>Orders</a>
+      <a class="nav-link" routerLink="/admin/product" routerLinkActive="active"><span class="nav-icon">🍱</span>Products</a>
+      <a class="nav-link" routerLink="/admin/customer" routerLinkActive="active"><span class="nav-icon">👤</span>Customers</a>
+      <a class="nav-link" routerLink="/admin/promotion" routerLinkActive="active"><span class="nav-icon">🏷️</span>Promotions</a>
+      <a class="nav-link" routerLink="/admin/report" routerLinkActive="active"><span class="nav-icon">📈</span>Reports</a>
+    </nav>
+  </aside>
+
+  <main class="layout">
+    <div class="page-header">
+      <div>
+        <p class="page-meta">Total products: <strong>{{ totalProducts }}</strong></p>
+        <h1>Product list</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn ghost" type="button" (click)="importData()">Import data</button>
+        <button class="btn ghost" type="button" (click)="exportData()">Export data</button>
+        <button class="btn primary" type="button" (click)="createProduct()"><span>➕</span>Create product</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="panel">
+        <div class="panel-tabs" role="tablist">
+          <button class="tab" type="button" [class.active]="activeTab === 'all'" (click)="setActiveTab('all')">All products</button>
+          <button class="tab" type="button" [class.active]="activeTab === 'active'" (click)="setActiveTab('active')">On sale</button>
+          <button class="tab" type="button" [class.active]="activeTab === 'draft'" (click)="setActiveTab('draft')">Draft</button>
+          <button class="tab" type="button" [class.active]="activeTab === 'archive'" (click)="setActiveTab('archive')">Archived</button>
+        </div>
+
+        <div class="panel-toolbar">
+          <button class="btn soft" type="button" (click)="addFilterCondition()">
+            {{ showFilters ? 'Hide filters' : '+ Add filter' }}
+          </button>
+          <label class="search">
+            <input type="search" placeholder="Search products..." (input)="onSearchInput($event)" />
+            <span class="search-icon">🔍</span>
+          </label>
+          <div class="bulk-actions">
+            <button class="btn ghost" type="button" [disabled]="selectedIds.size === 0" (click)="exportSelected()">Export selected</button>
+            <button class="btn ghost" type="button" [disabled]="selectedIds.size === 0" (click)="bulkArchive()">Archive selected</button>
+            <button class="btn danger" type="button" [disabled]="selectedIds.size === 0" (click)="bulkDelete()">Delete selected</button>
+          </div>
+          <button class="btn icon" type="button" title="Grid view" [class.active]="viewMode === 'grid'" (click)="setViewMode('grid')">▦</button>
+          <button class="btn icon" type="button" title="List view" [class.active]="viewMode === 'list'" (click)="setViewMode('list')">☰</button>
+          <button class="btn ghost" type="button" (click)="applyFilters()">Apply</button>
+          <button class="btn ghost" type="button" (click)="resetFilters()">Reset</button>
+        </div>
+
+        <div class="filter-panel" *ngIf="showFilters">
+          <label>
+            Status
+            <select [(ngModel)]="filterStatus">
+              <option value="all">All</option>
+              <option value="active">On sale</option>
+              <option value="draft">Draft</option>
+              <option value="archive">Archived</option>
+            </select>
+          </label>
+          <label>
+            Category
+            <select [(ngModel)]="filterCategory">
+              <option value="all">All</option>
+              <option value="Low calories">Low calories</option>
+              <option value="Balanced">Balanced</option>
+              <option value="High protein">High protein</option>
+              <option value="Vegetarian">Vegetarian</option>
+            </select>
+          </label>
+          <label>
+            Price min
+            <input type="number" min="0" [(ngModel)]="minPrice" placeholder="0" />
+          </label>
+          <label>
+            Price max
+            <input type="number" min="0" [(ngModel)]="maxPrice" placeholder="0" />
+          </label>
+          <label>
+            Calories min
+            <input type="number" min="0" [(ngModel)]="minCalories" placeholder="0" />
+          </label>
+          <label>
+            Calories max
+            <input type="number" min="0" [(ngModel)]="maxCalories" placeholder="0" />
+          </label>
+          <label>
+            Protein min
+            <input type="number" min="0" [(ngModel)]="minProtein" placeholder="0" />
+          </label>
+          <label>
+            Protein max
+            <input type="number" min="0" [(ngModel)]="maxProtein" placeholder="0" />
+          </label>
+        </div>
+
+        <div class="table-wrap" *ngIf="viewMode === 'list'">
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th class="checkbox-col">
+                  <input type="checkbox" [checked]="isAllSelected()" (change)="toggleSelectAll($event)" aria-label="Select all" />
+                </th>
+                <th class="product-main">Product name</th>
+                <th>Category</th>
+                <th>Group</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Updated</th>
+                <th>Updated by</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="isLoading">
+              <tr *ngFor="let i of [1,2,3,4,5,6]">
+                <td colspan="8">
+                  <div class="skeleton-row"></div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="!isLoading && pagedProducts.length === 0">
+              <tr>
+                <td colspan="8" class="empty-state">No products match your filters.</td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="!isLoading && pagedProducts.length > 0">
+              <tr class="product-row" *ngFor="let product of pagedProducts; trackBy: trackById" (click)="selectProduct(product)">
+                <td>
+                  <input
+                    type="checkbox"
+                    [checked]="isSelected(product.id)"
+                    (click)="$event.stopPropagation()"
+                    (change)="toggleSelectProduct(product.id, $event)"
+                  />
+                </td>
+                <td class="product-cell">
+                  <div class="product-info">
+                    <img [src]="product.image" [alt]="product.name" />
+                    <div>
+                      <p class="product-name">{{ product.name }}</p>
+                      <p class="product-sub">{{ product.meta }} • P {{ product.protein }} / C {{ product.carbs }} / F {{ product.fat }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.group }}</td>
+                <td class="price-cell">
+                  <input
+                    type="number"
+                    min="0"
+                    [value]="product.priceValue"
+                    (click)="$event.stopPropagation()"
+                    (change)="updatePrice(product, $event)"
+                  />
+                  <span class="money">{{ product.price }}</span>
+                </td>
+                <td>
+                  <select
+                    class="status-select"
+                    [value]="product.status"
+                    (click)="$event.stopPropagation()"
+                    (change)="updateStatus(product, $any($event.target).value)"
+                  >
+                    <option value="active">On sale</option>
+                    <option value="draft">Draft</option>
+                    <option value="archive">Archived</option>
+                  </select>
+                </td>
+                <td>{{ product.updatedAt }}</td>
+                <td>{{ product.updatedBy }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="product-grid" *ngIf="viewMode === 'grid'">
+          <div class="product-grid-skeleton" *ngIf="isLoading">
+            <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6]"></div>
+          </div>
+          <p class="empty-state" *ngIf="!isLoading && pagedProducts.length === 0">No products match your filters.</p>
+          <article class="product-card" *ngFor="let product of pagedProducts; trackBy: trackById" (click)="selectProduct(product)">
+            <div class="product-card__top">
+              <img [src]="product.image" [alt]="product.name" />
+              <span class="status-pill" [class]="product.status">{{ product.statusLabel }}</span>
+            </div>
+            <h3>{{ product.name }}</h3>
+            <p class="product-sub">{{ product.meta }} • P {{ product.protein }} / C {{ product.carbs }} / F {{ product.fat }}</p>
+            <div class="product-card__meta">
+              <span>{{ product.category }}</span>
+              <span>{{ product.group }}</span>
+              <span class="money">{{ product.price }}</span>
+            </div>
+            <div class="product-card__audit">
+              <span>{{ product.updatedAt }}</span>
+              <span>{{ product.updatedBy }}</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="pagination" *ngIf="!isLoading && filteredProducts.length">
+          <div class="page-info">
+            Showing {{ pageStart }}-{{ pageEnd }} of {{ filteredProducts.length }}
+          </div>
+          <div class="page-controls">
+            <button class="btn ghost" type="button" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">Prev</button>
+            <span>Page {{ currentPage }} / {{ totalPages }}</span>
+            <button class="btn ghost" type="button" [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">Next</button>
+            <select [(ngModel)]="pageSize" (change)="changePage(1)">
+              <option [ngValue]="5">5</option>
+              <option [ngValue]="10">10</option>
+              <option [ngValue]="20">20</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <aside class="detail-panel">
+        <div class="detail skeleton" *ngIf="isLoading">
+          <div class="skeleton-thumb"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-block"></div>
+        </div>
+        <p class="detail-placeholder" *ngIf="!isLoading && !selectedProduct">Click a product to see details.</p>
+        <div class="detail" *ngIf="!isLoading && selectedProduct">
+          <header class="detail-header">
+            <div class="detail-thumb">
+              <img [src]="selectedProduct.image" [alt]="selectedProduct.name" />
+            </div>
+            <div>
+              <div class="detail-status">
+                <span class="status-pill" [class]="selectedProduct.status">{{ selectedProduct.statusLabel }}</span>
+              </div>
+              <h2>{{ selectedProduct.name }}</h2>
+              <p class="detail-meta">{{ selectedProduct.meta }}</p>
+            </div>
+          </header>
+
+          <div class="detail-body">
+            <section>
+              <h3>Overview</h3>
+              <dl>
+                <div>
+                  <dt>Product type</dt>
+                  <dd>{{ selectedProduct.category }}</dd>
+                </div>
+                <div>
+                  <dt>Product group</dt>
+                  <dd>{{ selectedProduct.group }}</dd>
+                </div>
+                <div>
+                  <dt>Price</dt>
+                  <dd>{{ selectedProduct.price }}</dd>
+                </div>
+                <div>
+                  <dt>Updated</dt>
+                  <dd>{{ selectedProduct.updatedAt }}</dd>
+                </div>
+                <div>
+                  <dt>Updated by</dt>
+                  <dd>{{ selectedProduct.updatedBy }}</dd>
+                </div>
+              </dl>
+            </section>
+
+            <section>
+              <h3>Description</h3>
+              <p>{{ selectedProduct.description }}</p>
+            </section>
+
+            <section class="nutrition-section">
+              <h3>Nutrition (per serving)</h3>
+              <div class="nutrition-grid">
+                <div class="nutrition-card">
+                  <span class="label">Protein</span>
+                  <strong>{{ selectedProduct.protein }}</strong>
+                </div>
+                <div class="nutrition-card">
+                  <span class="label">Carbs</span>
+                  <strong>{{ selectedProduct.carbs }}</strong>
+                </div>
+                <div class="nutrition-card">
+                  <span class="label">Fat</span>
+                  <strong>{{ selectedProduct.fat }}</strong>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h3>Product images</h3>
+              <div class="detail-gallery">
+                <img *ngFor="let image of selectedProduct.gallery" [src]="image" [alt]="selectedProduct.name" />
+              </div>
+            </section>
+          </div>
+
+          <footer class="detail-footer">
+            <button class="btn danger" type="button" (click)="deleteProduct()">Delete</button>
+            <div class="spacer"></div>
+            <button class="btn soft" type="button" (click)="addImage()">Add image</button>
+            <button class="btn primary" type="button" (click)="updateProduct()">Update</button>
+          </footer>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>

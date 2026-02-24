@@ -23,6 +23,11 @@
               "src/assets",
               {
                 "glob": "**/*",
+                "input": "src/app/admin/images",
+                "output": "assets/admin/images"
+              },
+              {
+                "glob": "**/*",
                 "input": "public"
               }
             ],
@@ -82,4 +87,3 @@
     }
   }
 }
-
