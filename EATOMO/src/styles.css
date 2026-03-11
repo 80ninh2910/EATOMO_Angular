@@ -1,4 +1,28 @@
 /* Global Styles */
+
+/* ===== CSS CUSTOM PROPERTIES ===== */
+:root {
+  --color-primary: #667eea;
+  --color-primary-dark: #764ba2;
+  --color-success: #22c55e;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+  --color-text: #333333;
+  --color-text-muted: #999999;
+  --color-bg: #fafafa;
+  --color-bg-card: #ffffff;
+  --color-border: #eeeeee;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.12);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.15);
+  --transition: 0.3s ease;
+  --font-base: Roboto, "Helvetica Neue", sans-serif;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -11,6 +35,32 @@ html, body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: #fafafa;
+  font-family: var(--font-base);
+  background-color: var(--color-bg);
+}
+
+/* ===== GLOBAL TOAST (used in home) ===== */
+.home-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
+  padding: 14px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-lg);
+  animation: globalToastIn 0.3s ease;
+}
+
+.toast-success { background: var(--color-success); color: white; }
+.toast-error   { background: var(--color-error); color: white; }
+.toast-info    { background: var(--color-info); color: white; }
+
+@keyframes globalToastIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
 }

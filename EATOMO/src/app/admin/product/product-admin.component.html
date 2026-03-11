@@ -310,3 +310,34 @@
     </div>
   </main>
 </div>
+
+<!-- Create / Edit Product Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <h2 class="modal-title">{{ modalTitle }}</h2>
+    <div class="modal-body">
+      <label>Name <input type="text" [(ngModel)]="form.name" required /></label>
+      <label>Description <textarea [(ngModel)]="form.description"></textarea></label>
+      <label>Price (đ) <input type="number" [(ngModel)]="form.price" min="0" /></label>
+      <label>Calories <input type="number" [(ngModel)]="form.calories" min="0" /></label>
+      <label>Protein (g) <input type="number" [(ngModel)]="form.protein" min="0" /></label>
+      <label>Carbs (g) <input type="number" [(ngModel)]="form.carbs" min="0" /></label>
+      <label>Fat (g) <input type="number" [(ngModel)]="form.fat" min="0" /></label>
+      <label>Category
+        <select [(ngModel)]="form.category">
+          <option value="low-cal">Low calories</option>
+          <option value="balanced">Balanced</option>
+          <option value="high-protein">High protein</option>
+          <option value="vegetarian">Vegetarian</option>
+        </select>
+      </label>
+      <label>Image URL <input type="text" [(ngModel)]="form.image" /></label>
+      <label><input type="checkbox" [(ngModel)]="form.inStock" /> In stock</label>
+      <label><input type="checkbox" [(ngModel)]="form.isFeatured" /> Featured</label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" type="button" (click)="closeModal()">Cancel</button>
+      <button class="btn primary" type="button" (click)="saveModal()">Save</button>
+    </div>
+  </div>
+</div>

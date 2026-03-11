@@ -1,5 +1,13 @@
 <app-header></app-header>
 
+<!-- Toast Notification -->
+@if (toast()) {
+  <div class="home-toast" [class]="'toast-' + toast()!.type">
+    <i class="fas fa-info-circle"></i>
+    {{ toast()!.message }}
+  </div>
+}
+
 <!-- Hero Video Section -->
 <section class="hero-video-section">
   <video autoplay muted loop playsinline class="background-video">
@@ -175,15 +183,16 @@
     <h2 class="section-title">Sou-made bowls</h2>
 
     <div class="filter-tabs">
-      <button class="filter-tab" [class.active]="activeFilter === 'all'" (click)="filterBowls('all')">BASED ON YOUR NEEDS</button>
-      <button class="filter-tab" [class.active]="activeFilter === 'low-cal'" (click)="filterBowls('low-cal')">Low calories</button>
-      <button class="filter-tab" [class.active]="activeFilter === 'balanced'" (click)="filterBowls('balanced')">Balanced</button>
-      <button class="filter-tab" [class.active]="activeFilter === 'high-protein'" (click)="filterBowls('high-protein')">High protein</button>
-      <button class="filter-tab" [class.active]="activeFilter === 'vegetarian'" (click)="filterBowls('vegetarian')">Vegetarian</button>
+      <button class="filter-tab" [class.active]="activeFilter() === 'all'" (click)="filterBowls('all')">BASED ON YOUR NEEDS</button>
+      <button class="filter-tab" [class.active]="activeFilter() === 'low-cal'" (click)="filterBowls('low-cal')">Low calories</button>
+      <button class="filter-tab" [class.active]="activeFilter() === 'balanced'" (click)="filterBowls('balanced')">Balanced</button>
+      <button class="filter-tab" [class.active]="activeFilter() === 'high-protein'" (click)="filterBowls('high-protein')">High protein</button>
+      <button class="filter-tab" [class.active]="activeFilter() === 'vegetarian'" (click)="filterBowls('vegetarian')">Vegetarian</button>
     </div>
 
     <div class="bowls-grid">
-      <div class="bowl-card" *ngFor="let bowl of filteredBowls" [attr.data-category]="bowl.category">
+      @for (bowl of filteredBowls(); track bowl.id) {
+      <div class="bowl-card" [attr.data-category]="bowl.category">
         <div class="bowl-image">
           <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
           <button class="download-recipe" (click)="downloadRecipe(bowl.name)">Download recipe</button>
@@ -210,6 +219,7 @@
           </div>
         </div>
       </div>
+      }
     </div>
   </div>
 </section>
@@ -282,7 +292,8 @@
 </section>
 
 <!-- Customer Reviews Section -->
-<section class="reviews-section" *ngIf="reviews.length > 0">
+@if (reviews().length > 0) {
+<section class="reviews-section">
   <div class="reviews-container">
     <div class="intro">
       <p class="small-text">DON'T JUST TAKE OUR WORD FOR IT</p>
@@ -292,18 +303,21 @@
 
     <div class="right-panel">
       <div id="reviews">
-        <div class="review-card" *ngFor="let review of reviews">
+        @for (review of reviews(); track review.name) {
+        <div class="review-card">
           <div class="review-rating">
-            <span *ngFor="let star of [1,2,3,4,5]">
-              {{ star <= review.rating ? '★' : '☆' }}
-            </span>
+            @for (star of ratingStars; track star) {
+              <span>{{ star <= review.rating ? '★' : '☆' }}</span>
+            }
           </div>
           <p class="review-comment">{{ review.comment }}</p>
           <p class="review-author">- {{ review.name }}</p>
         </div>
+        }
       </div>
     </div>
   </div>
 </section>
+}
 
 <app-footer></app-footer>

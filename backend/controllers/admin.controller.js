@@ -1,0 +1,409 @@
+const Bowl = require('../models/Bowl');
+const Order = require('../models/Order');
+const User = require('../models/User');
+const AdminAction = require('../models/AdminAction');
+
+// ═══════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════
+
+/**
+ * GET /api/admin/dashboard/stats
+ */
+exports.getDashboardStats = async (req, res) => {
+  try {
+    const [revenueResult] = await Order.aggregate([
+      { $match: { status: { $ne: 'cancelled' } } },
+      { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' }, totalOrders: { $sum: 1 } } }
+    ]).exec() || [{ totalRevenue: 0, totalOrders: 0 }];
+
+    const totalRevenue = revenueResult?.totalRevenue || 0;
+    const totalOrders = revenueResult?.totalOrders || 0;
+    const totalCustomers = await User.countDocuments({ role: 'user' });
+    const avgOrderValue = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
+
+    // Growth: compare last 30 days vs previous 30 days
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+    const sixtyDaysAgo = new Date(now - 60 * 24 * 60 * 60 * 1000);
+
+    const [currentResult] = await Order.aggregate([
+      { $match: { status: { $ne: 'cancelled' }, createdAt: { $gte: thirtyDaysAgo } } },
+      { $group: { _id: null, revenue: { $sum: '$totalAmount' } } }
+    ]).exec() || [{ revenue: 0 }];
+
+    const [prevResult] = await Order.aggregate([
+      { $match: { status: { $ne: 'cancelled' }, createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo } } },
+      { $group: { _id: null, revenue: { $sum: '$totalAmount' } } }
+    ]).exec() || [{ revenue: 0 }];
+
+    const currentRevenue = currentResult?.revenue || 0;
+    const prevRevenue = prevResult?.revenue || 0;
+    const revenueGrowth = prevRevenue > 0 ? Math.round(((currentRevenue - prevRevenue) / prevRevenue) * 100) : 0;
+
+    res.json({
+      totalRevenue, totalOrders, totalCustomers, avgOrderValue,
+      revenueGrowth, orderGrowth: 0, customerGrowth: 0
+    });
+  } catch (error) {
+    console.error('Dashboard stats error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get dashboard stats', error: error.message });
+  }
+};
+
+/**
+ * GET /api/admin/dashboard/revenue?period=week|month|year
+ */
+exports.getRevenueChart = async (req, res) => {
+  try {
+    const period = req.query.period || 'week';
+    const now = new Date();
+    let startDate, dateFormat;
+
+    if (period === 'week') {
+      startDate = new Date(now - 7 * 24 * 60 * 60 * 1000);
+      dateFormat = { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } };
+    } else if (period === 'month') {
+      startDate = new Date(now - 30 * 24 * 60 * 60 * 1000);
+      dateFormat = { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } };
+    } else {
+      startDate = new Date(now - 365 * 24 * 60 * 60 * 1000);
+      dateFormat = { $dateToString: { format: '%Y-%m', date: '$createdAt' } };
+    }
+
+    const rows = await Order.aggregate([
+      { $match: { status: { $ne: 'cancelled' }, createdAt: { $gte: startDate } } },
+      { $group: { _id: dateFormat, revenue: { $sum: '$totalAmount' }, orders: { $sum: 1 } } },
+      { $sort: { _id: 1 } },
+      { $project: { _id: 0, label: '$_id', revenue: 1, orders: 1 } }
+    ]);
+
+    res.json(rows);
+  } catch (error) {
+    console.error('Revenue chart error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get revenue data', error: error.message });
+  }
+};
+
+/**
+ * GET /api/admin/dashboard/top-products?limit=10
+ */
+exports.getTopProducts = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+
+    const rows = await Order.aggregate([
+      { $match: { status: { $ne: 'cancelled' } } },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.bowlId',
+          bowlName: { $first: '$items.bowlName' },
+          totalSold: { $sum: '$items.quantity' },
+          totalRevenue: { $sum: '$items.subtotal' }
+        }
+      },
+      { $sort: { totalSold: -1 } },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: 'bowls',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'bowl'
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          bowlId: '$_id',
+          bowlName: 1,
+          image: { $ifNull: [{ $arrayElemAt: ['$bowl.image', 0] }, ''] },
+          totalSold: 1,
+          totalRevenue: 1
+        }
+      }
+    ]);
+
+    res.json(rows);
+  } catch (error) {
+    console.error('Top products error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get top products', error: error.message });
+  }
+};
+
+/**
+ * GET /api/admin/dashboard/recent-orders?limit=10
+ */
+exports.getRecentOrders = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+
+    const orders = await Order.find()
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .lean();
+
+    // Fetch user info for each order
+    const userIds = [...new Set(orders.map(o => o.userId.toString()))];
+    const users = await User.find({ _id: { $in: userIds } }).lean();
+    const userMap = {};
+    users.forEach(u => { userMap[u._id.toString()] = u; });
+
+    res.json(orders.map(o => {
+      const user = userMap[o.userId.toString()] || {};
+      return {
+        id: o._id,
+        orderNumber: o.orderNumber,
+        customerName: user.fullName || user.username || 'Unknown',
+        totalAmount: o.totalAmount,
+        status: o.status,
+        createdAt: o.createdAt
+      };
+    }));
+  } catch (error) {
+    console.error('Recent orders error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get recent orders', error: error.message });
+  }
+};
+
+// ═══════════════════════════════════════════
+//  ADMIN ORDERS
+// ═══════════════════════════════════════════
+
+/**
+ * GET /api/admin/orders
+ */
+exports.getAllOrders = async (req, res) => {
+  try {
+    const { status, page = 1, limit = 20 } = req.query;
+    const filter = {};
+    if (status) filter.status = status;
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const orders = await Order.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .lean();
+
+    // Fetch user info
+    const userIds = [...new Set(orders.map(o => o.userId.toString()))];
+    const users = await User.find({ _id: { $in: userIds } }).lean();
+    const userMap = {};
+    users.forEach(u => { userMap[u._id.toString()] = u; });
+
+    res.json(orders.map(o => {
+      const user = userMap[o.userId.toString()] || {};
+      return {
+        ...o,
+        id: o._id,
+        customerName: user.fullName || user.username || 'Unknown'
+      };
+    }));
+  } catch (error) {
+    console.error('Get all orders error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get orders', error: error.message });
+  }
+};
+
+/**
+ * PATCH /api/admin/orders/:id/status
+ */
+exports.updateOrderStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const validStatuses = ['pending', 'confirmed', 'preparing', 'delivering', 'completed', 'cancelled'];
+
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: `Invalid status. Valid: ${validStatuses.join(', ')}` });
+    }
+
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    // Log admin action
+    await AdminAction.create({
+      adminId: req.user.id,
+      action: 'update_order_status',
+      targetType: 'order',
+      targetId: req.params.id,
+      details: { newStatus: status }
+    });
+
+    res.json({ success: true, message: `Order status updated to ${status}` });
+  } catch (error) {
+    console.error('Update order status error:', error);
+    res.status(500).json({ success: false, message: 'Failed to update order status', error: error.message });
+  }
+};
+
+// ═══════════════════════════════════════════
+//  ADMIN BOWLS CRUD
+// ═══════════════════════════════════════════
+
+/**
+ * POST /api/admin/bowls — Tạo bowl mới
+ */
+exports.createBowl = async (req, res) => {
+  try {
+    const { id, name, description, price, calories, protein, carbs, fat, category, image, inStock, isFeatured } = req.body;
+
+    if (!name || !price || !category) {
+      return res.status(400).json({ success: false, message: 'Name, price and category are required' });
+    }
+
+    const bowl = await Bowl.create({
+      _id: id || undefined,
+      name, description, price,
+      calories: calories || 0,
+      protein: protein || 0,
+      carbs: carbs || 0,
+      fat: fat || 0,
+      category,
+      image: image || '',
+      inStock: inStock !== false,
+      isFeatured: isFeatured || false
+    });
+
+    res.status(201).json(bowl);
+  } catch (error) {
+    console.error('Create bowl error:', error);
+    res.status(500).json({ success: false, message: 'Failed to create bowl', error: error.message });
+  }
+};
+
+/**
+ * PATCH /api/admin/bowls/:id — Cập nhật bowl
+ */
+exports.updateBowl = async (req, res) => {
+  try {
+    const updates = {};
+    const allowed = ['name', 'description', 'price', 'calories', 'protein', 'carbs', 'fat', 'category', 'image', 'inStock', 'isFeatured'];
+
+    for (const key of allowed) {
+      if (req.body[key] !== undefined) {
+        updates[key] = req.body[key];
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ success: false, message: 'No fields to update' });
+    }
+
+    const bowl = await Bowl.findByIdAndUpdate(req.params.id, updates, { new: true });
+
+    if (!bowl) {
+      return res.status(404).json({ success: false, message: 'Bowl not found' });
+    }
+
+    res.json(bowl);
+  } catch (error) {
+    console.error('Update bowl error:', error);
+    res.status(500).json({ success: false, message: 'Failed to update bowl', error: error.message });
+  }
+};
+
+/**
+ * DELETE /api/admin/bowls/:id — Xóa bowl
+ */
+exports.deleteBowl = async (req, res) => {
+  try {
+    const bowl = await Bowl.findByIdAndDelete(req.params.id);
+
+    if (!bowl) {
+      return res.status(404).json({ success: false, message: 'Bowl not found' });
+    }
+
+    res.json({ success: true, message: 'Bowl deleted' });
+  } catch (error) {
+    console.error('Delete bowl error:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete bowl', error: error.message });
+  }
+};
+
+// ═══════════════════════════════════════════
+//  ADMIN CUSTOMERS
+// ═══════════════════════════════════════════
+
+/**
+ * GET /api/admin/customers
+ */
+exports.getCustomers = async (req, res) => {
+  try {
+    const users = await User.find({ role: 'user' }).sort({ createdAt: -1 }).lean();
+
+    // Aggregate order stats per user
+    const userIds = users.map(u => u._id);
+    const orderStats = await Order.aggregate([
+      { $match: { userId: { $in: userIds } } },
+      {
+        $group: {
+          _id: '$userId',
+          totalOrders: { $sum: 1 },
+          totalSpent: { $sum: '$totalAmount' }
+        }
+      }
+    ]);
+
+    const statsMap = {};
+    orderStats.forEach(s => { statsMap[s._id.toString()] = s; });
+
+    res.json(users.map(u => {
+      const stats = statsMap[u._id.toString()] || { totalOrders: 0, totalSpent: 0 };
+      return {
+        id: u._id,
+        username: u.username,
+        email: u.email,
+        fullName: u.fullName,
+        phone: u.phone,
+        address: u.address,
+        role: u.role,
+        createdAt: u.createdAt,
+        totalOrders: stats.totalOrders,
+        totalSpent: stats.totalSpent
+      };
+    }));
+  } catch (error) {
+    console.error('Get customers error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get customers', error: error.message });
+  }
+};
+
+/**
+ * GET /api/admin/customers/:id
+ */
+exports.getCustomerById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Customer not found' });
+    }
+
+    const orders = await Order.find({ userId: user._id }).sort({ createdAt: -1 });
+
+    res.json({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      fullName: user.fullName,
+      phone: user.phone,
+      address: user.address,
+      role: user.role,
+      createdAt: user.createdAt,
+      orders
+    });
+  } catch (error) {
+    console.error('Get customer error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get customer', error: error.message });
+  }
+};

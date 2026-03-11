@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
@@ -19,10 +19,9 @@ interface FAQ {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaqsComponent {
-  activeTab: 'menu' | 'food' | 'delivery' | 'payment' = 'menu';
-  readonly objectTypeOf = (obj: any) => typeof obj;
+  activeTab = signal<'menu' | 'food' | 'delivery' | 'payment'>('menu');
 
-  faqs: FAQ[] = [
+  faqs = signal<FAQ[]>([
     {
       question: 'How does the menu work?',
       answer: 'With EATOMO\'s menu, you have the flexibility to mix and match different items to create your unique, healthy bowls. You can either enjoy our Sou-made bowls (predesigned bowls) or Build your own healthy bowl out of our fresh ingredients and tasty sauces. Over 100 combinations of the macronutrients (protein, carbs, fat) are awaiting!',
@@ -173,17 +172,23 @@ export class FaqsComponent {
       category: 'payment',
       isOpen: false
     }
-  ];
+  ]);
 
-  toggleFaq(faq: FAQ): void {
-    faq.isOpen = !faq.isOpen;
+  filteredFaqs = computed(() =>
+    this.faqs().filter(faq => faq.category === this.activeTab())
+  );
+
+  toggleFaq(index: number): void {
+    this.faqs.update(list =>
+      list.map((faq, i) => i === index ? { ...faq, isOpen: !faq.isOpen } : faq)
+    );
   }
 
   switchTab(tab: 'menu' | 'food' | 'delivery' | 'payment'): void {
-    this.activeTab = tab;
+    this.activeTab.set(tab);
   }
 
-  getFilteredFaqs(): FAQ[] {
-    return this.faqs.filter(faq => faq.category === this.activeTab);
+  isString(value: unknown): boolean {
+    return typeof value === 'string';
   }
 }

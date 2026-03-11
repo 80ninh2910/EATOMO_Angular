@@ -13,9 +13,9 @@ export class FooterComponent {
   currentYear = new Date().getFullYear();
 
   socialLinks = [
-    { icon: 'fab fa-facebook-f', url: '#', label: 'Facebook' },
-    { icon: 'fab fa-instagram', url: '#', label: 'Instagram' },
-    { icon: 'fab fa-twitter', url: '#', label: 'Twitter' }
+    { icon: 'fab fa-facebook-f', url: 'https://www.facebook.com/eatomo.vietnam', label: 'Facebook' },
+    { icon: 'fab fa-instagram', url: 'https://www.instagram.com/eatomo_vietnam', label: 'Instagram' },
+    { icon: 'fab fa-tiktok', url: 'https://www.tiktok.com/@eatomo_vietnam', label: 'TikTok' }
   ];
 
   quickLinks = [

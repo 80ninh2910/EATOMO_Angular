@@ -1,9 +1,24 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BowlService } from '../../services/bowl.service';
 import { Bowl } from '../../models/bowl.model';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+
+interface ProductForm {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  category: 'low-cal' | 'balanced' | 'high-protein' | 'vegetarian';
+  image: string;
+  inStock: boolean;
+  isFeatured: boolean;
+}
 
 type ProductStatus = 'active' | 'draft' | 'archive';
 
@@ -59,13 +74,26 @@ export class ProductAdminComponent implements OnInit {
   currentPage = 1;
   selectedIds = new Set<string>();
 
+  private cdr = inject(ChangeDetectorRef);
+
+  showModal = false;
+  editMode = false;
+  modalTitle = '';
+  editingId = '';
+  form: ProductForm = this.emptyForm();
+
   constructor(private bowlService: BowlService) {}
+
+  private emptyForm(): ProductForm {
+    return { id: '', name: '', description: '', price: 0, calories: 0, protein: 0, carbs: 0, fat: 0, category: 'balanced', image: '', inStock: true, isFeatured: false };
+  }
 
   ngOnInit(): void {
     this.bowlService.getBowls().subscribe((bowls) => {
       this.products = bowls.map((bowl, index) => this.mapBowlToProduct(bowl, index));
       this.selectedProduct = this.products[0] ?? null;
       this.isLoading = false;
+      this.cdr.markForCheck();
     });
   }
 
@@ -220,14 +248,26 @@ export class ProductAdminComponent implements OnInit {
     alert(`Archived ${this.selectedIds.size} products`);
   }
 
-  bulkDelete() {
-    if (this.selectedIds.size === 0) {
-      return;
-    }
-    this.products = this.products.filter((product) => !this.selectedIds.has(product.id));
-    this.selectedIds.clear();
-    this.currentPage = 1;
-    alert('Deleted selected products');
+  bulkDelete(): void {
+    if (this.selectedIds.size === 0) return;
+    if (!confirm(`Xóa ${this.selectedIds.size} sản phẩm?`)) return;
+    const ids = Array.from(this.selectedIds);
+    let completed = 0;
+    ids.forEach(id => {
+      this.bowlService.deleteBowl(id).subscribe({
+        next: () => {
+          completed++;
+          if (completed === ids.length) {
+            this.products = this.products.filter(p => !this.selectedIds.has(p.id));
+            this.selectedIds.clear();
+            this.selectedProduct = this.products[0] ?? null;
+            this.currentPage = 1;
+            this.cdr.markForCheck();
+          }
+        },
+        error: () => completed++
+      });
+    });
   }
 
   exportSelected() {
@@ -245,30 +285,113 @@ export class ProductAdminComponent implements OnInit {
     alert('Export product data');
   }
 
-  createProduct() {
-    alert('Create new product');
+  createProduct(): void {
+    this.editMode = false;
+    this.editingId = '';
+    this.form = this.emptyForm();
+    this.modalTitle = 'Create product';
+    this.showModal = true;
+  }
+
+  editProduct(): void {
+    if (!this.selectedProduct) return;
+    this.editMode = true;
+    this.editingId = this.selectedProduct.id;
+    const p = this.selectedProduct;
+    this.form = {
+      id: p.id,
+      name: p.name,
+      description: p.description,
+      price: p.priceValue,
+      calories: p.caloriesValue,
+      protein: p.proteinValue,
+      carbs: Number(p.carbs),
+      fat: Number(p.fat),
+      category: this.reverseCategoryLabel(p.category),
+      image: p.image,
+      inStock: p.status !== 'archive',
+      isFeatured: false
+    };
+    this.modalTitle = 'Edit product';
+    this.showModal = true;
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+  }
+
+  saveModal(): void {
+    if (this.editMode) {
+      this.bowlService.updateBowl(this.editingId, {
+        name: this.form.name,
+        description: this.form.description,
+        price: this.form.price,
+        calories: this.form.calories,
+        protein: this.form.protein,
+        carbs: this.form.carbs,
+        fat: this.form.fat,
+        category: this.form.category,
+        image: this.form.image,
+        inStock: this.form.inStock,
+        isFeatured: this.form.isFeatured
+      }).subscribe({
+        next: (bowl) => {
+          const idx = this.products.findIndex(p => p.id === this.editingId);
+          if (idx >= 0) {
+            this.products[idx] = this.mapBowlToProduct(bowl, idx);
+            this.selectedProduct = this.products[idx];
+          }
+          this.showModal = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Cập nhật sản phẩm thất bại.');
+        }
+      });
+    } else {
+      this.bowlService.createBowl(this.form).subscribe({
+        next: (bowl) => {
+          this.products = [...this.products, this.mapBowlToProduct(bowl, this.products.length)];
+          this.selectedProduct = this.products[this.products.length - 1];
+          this.showModal = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Tạo sản phẩm thất bại.');
+        }
+      });
+    }
   }
 
   addFilterCondition() {
     this.toggleFilters();
   }
 
-  deleteProduct() {
-    if (this.selectedProduct) {
-      alert(`Delete product: ${this.selectedProduct.name}`);
-    }
+  deleteProduct(): void {
+    if (!this.selectedProduct) return;
+    if (!confirm(`Xóa sản phẩm "${this.selectedProduct.name}"?`)) return;
+    const id = this.selectedProduct.id;
+    this.bowlService.deleteBowl(id).subscribe({
+      next: () => {
+        this.products = this.products.filter(p => p.id !== id);
+        this.selectedProduct = this.products[0] ?? null;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Xóa sản phẩm thất bại.');
+      }
+    });
   }
 
-  addImage() {
-    if (this.selectedProduct) {
-      alert(`Add image for: ${this.selectedProduct.name}`);
-    }
+  addImage(): void {
+    alert('Tính năng upload ảnh sẽ được thêm sau.');
   }
 
-  updateProduct() {
-    if (this.selectedProduct) {
-      alert(`Update product: ${this.selectedProduct.name}`);
-    }
+  updateProduct(): void {
+    this.editProduct();
   }
 
   private mapBowlToProduct(bowl: Bowl, index: number): ProductItem {
@@ -349,16 +472,20 @@ export class ProductAdminComponent implements OnInit {
 
   private getCategoryLabel(category: Bowl['category']) {
     switch (category) {
-      case 'low-cal':
-        return 'Low calories';
-      case 'balanced':
-        return 'Balanced';
-      case 'high-protein':
-        return 'High protein';
-      case 'vegetarian':
-        return 'Vegetarian';
-      default:
-        return 'Our Bowls';
+      case 'low-cal': return 'Low calories';
+      case 'balanced': return 'Balanced';
+      case 'high-protein': return 'High protein';
+      case 'vegetarian': return 'Vegetarian';
+      default: return 'Our Bowls';
+    }
+  }
+
+  private reverseCategoryLabel(label: string): 'low-cal' | 'balanced' | 'high-protein' | 'vegetarian' {
+    switch (label) {
+      case 'Low calories': return 'low-cal';
+      case 'High protein': return 'high-protein';
+      case 'Vegetarian': return 'vegetarian';
+      default: return 'balanced';
     }
   }
 }

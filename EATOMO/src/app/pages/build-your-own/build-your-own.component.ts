@@ -108,6 +108,13 @@ export class BuildYourOwnComponent {
 
   constructor(private cartService: CartService) {}
 
+  toast = signal<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  showToast(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
+    this.toast.set({ message, type });
+    setTimeout(() => this.toast.set(null), 3000);
+  }
+
   /**
    * Select an ingredient
    */
@@ -138,10 +145,10 @@ export class BuildYourOwnComponent {
   }
 
   /**
-   * Download recipe (placeholder)
+   * Download recipe (coming soon)
    */
   downloadRecipe(): void {
-    alert('Download recipe feature coming soon!');
+    this.showToast('Recipe download coming soon!', 'info');
   }
 
   /**
@@ -151,14 +158,14 @@ export class BuildYourOwnComponent {
     const items = this.selectedItems();
     
     if (!items.protein || !items.carbs || !items.side || !items.sauce) {
-      alert('Please select all ingredients before adding to cart');
+      this.showToast('Please select all ingredients before adding to cart', 'error');
       return;
     }
 
     const cartItem = {
       id: `custom-${Date.now()}`,
       name: 'Custom Bowl',
-      price: 89000, // Base price for custom bowl
+      price: 89000,
       quantity: 1,
       proteins: [items.protein.name],
       carbs: [items.carbs.name],
@@ -167,7 +174,7 @@ export class BuildYourOwnComponent {
     };
 
     this.cartService.addToCart(cartItem);
-    alert('Added to cart!');
+    this.showToast('Custom bowl added to cart!', 'success');
     this.clearSelections();
   }
 }

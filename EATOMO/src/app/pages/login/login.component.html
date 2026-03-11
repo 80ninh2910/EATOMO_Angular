@@ -26,7 +26,9 @@
           <input type="password" formControlName="password" placeholder="Enter your password">
         </div>
 
-        <button type="submit">Login</button>
+        <button type="submit" [disabled]="userForm.invalid || userLoading()">
+          {{ userLoading() ? 'Logging in...' : 'Login' }}
+        </button>
       </form>
 
       <button class="secondary-btn" (click)="switchToAdmin()">
@@ -54,7 +56,9 @@
           <input type="password" formControlName="password" placeholder="Enter admin password">
         </div>
 
-        <button type="submit">Login</button>
+        <button type="submit" [disabled]="adminForm.invalid || adminLoading()">
+          {{ adminLoading() ? 'Logging in...' : 'Login' }}
+        </button>
       </form>
 
       <button class="secondary-btn" (click)="switchToUser()">

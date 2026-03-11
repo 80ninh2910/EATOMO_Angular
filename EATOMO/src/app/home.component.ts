@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { HttpClient } from '@angular/common/http';
+import { BowlService } from './services/bowl.service';
+import { Bowl } from './models/bowl.model';
 
 interface Review {
   name: string;
@@ -12,127 +14,64 @@ interface Review {
   avatar?: string;
 }
 
-interface BowlItem {
-  name: string;
-  description: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  image: string;
-  category: string;
-}
-
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, RouterModule, HeaderComponent, FooterComponent],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
-  activeFilter = 'all';
-  reviews: Review[] = [];
-  
-  bowls: BowlItem[] = [
-    {
-      name: 'L1',
-      description: 'Half beef steak, sweet potato, cauliflower, pickles',
-      calories: 274,
-      protein: 25,
-      carbs: 27,
-      fat: 7,
-      image: 'assets/healthy/images/index/L1-bowl.png',
-      category: 'low-cal'
-    },
-    {
-      name: 'L2',
-      description: 'Salmon, sweet potato, mixed veggies, pak choi',
-      calories: 331,
-      protein: 24,
-      carbs: 26,
-      fat: 15,
-      image: 'assets/healthy/images/index/L2-bowl.png',
-      category: 'low-cal'
-    },
-    {
-      name: 'B3',
-      description: 'Prawns, Japanese cold soba, French bean, tofu',
-      calories: 435,
-      protein: 41,
-      carbs: 54,
-      fat: 6,
-      image: 'assets/healthy/images/index/B3-bowl.png',
-      category: 'balanced'
-    },
-    {
-      name: 'B4',
-      description: 'Salmon, pasta, spinach, salad and mix nuts',
-      calories: 508,
-      protein: 31,
-      carbs: 42,
-      fat: 24,
-      image: 'assets/healthy/images/index/B4-bowl.png',
-      category: 'balanced'
-    },
-    {
-      name: 'H5',
-      description: 'Half beef steak, full chicken breast, donburi brown rice, pumpkin, french bean',
-      calories: 720,
-      protein: 91,
-      carbs: 46,
-      fat: 19,
-      image: 'assets/healthy/images/index/H5-bowl.png',
-      category: 'high-protein'
-    },
-    {
-      name: 'V5',
-      description: 'Tofu, pasta, broccoli, edamame, purple cabbage, beetroot',
-      calories: 530,
-      protein: 33,
-      carbs: 85,
-      fat: 7,
-      image: 'assets/healthy/images/index/V5-bowl.png',
-      category: 'vegetarian'
-    }
-  ];
+  activeFilter = signal('all');
+  reviews = signal<Review[]>([]);
+  allBowls = signal<Bowl[]>([]);
+  isBowlsLoading = signal(true);
+  toast = signal<{ message: string; type: 'success' | 'info' } | null>(null);
 
-  constructor(private http: HttpClient) {}
+  filteredBowls = computed(() => {
+    const filter = this.activeFilter();
+    const bowls = this.allBowls();
+    return filter === 'all' ? bowls : bowls.filter(b => b.category === filter);
+  });
+
+  ratingStars = [1, 2, 3, 4, 5];
+
+  constructor(private http: HttpClient, private bowlService: BowlService) {}
 
   ngOnInit(): void {
     this.loadReviews();
+    this.loadBowls();
   }
 
   loadReviews(): void {
     this.http.get<any>('assets/healthy/json/reviews.json')
       .subscribe({
-        next: (data) => {
-          this.reviews = data.reviews || [];
-        },
-        error: () => {
-          // Fallback reviews if file doesn't exist
-          this.reviews = [
-            { name: 'Customer 1', rating: 5, comment: 'Amazing food and great service!' },
-            { name: 'Customer 2', rating: 5, comment: 'Healthy and delicious!' }
-          ];
-        }
+        next: (data) => this.reviews.set(data.reviews || []),
+        error: () => this.reviews.set([
+          { name: 'Customer 1', rating: 5, comment: 'Amazing food and great service!' },
+          { name: 'Customer 2', rating: 5, comment: 'Healthy and delicious!' }
+        ])
       });
   }
 
-  filterBowls(category: string): void {
-    this.activeFilter = category;
+  loadBowls(): void {
+    this.bowlService.getBowls().subscribe({
+      next: (bowls) => {
+        this.allBowls.set(bowls);
+        this.isBowlsLoading.set(false);
+      },
+      error: () => this.isBowlsLoading.set(false)
+    });
   }
 
-  get filteredBowls(): BowlItem[] {
-    if (this.activeFilter === 'all') {
-      return this.bowls;
-    }
-    return this.bowls.filter(bowl => bowl.category === this.activeFilter);
+  filterBowls(category: string): void {
+    this.activeFilter.set(category);
   }
 
   downloadRecipe(bowlName: string): void {
-    console.log(`Downloading recipe for ${bowlName}`);
-    // Implement download logic
+    this.toast.set({ message: 'Recipe download coming soon!', type: 'info' });
+    setTimeout(() => this.toast.set(null), 3000);
   }
 
   scrollToTop(): void {

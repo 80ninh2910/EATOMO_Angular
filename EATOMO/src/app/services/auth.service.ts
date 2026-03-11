@@ -1,175 +1,106 @@
 import { Injectable, signal, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable, tap, catchError, of, map } from 'rxjs';
+import { User, LoginCredentials, RegisterData, AuthResponse } from '../models/user.model';
 
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  role: 'admin' | 'user';
-}
-
-export interface LoginCredentials {
-  username: string;
-  password: string;
-}
-
-export interface RegisterData {
-  username: string;
-  email: string;
-  password: string;
-}
+const API_URL = 'http://localhost:3000/api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private platformId = inject(PLATFORM_ID);
-  
-  // Signal để theo dõi trạng thái đăng nhập
-  private currentUserSignal = signal<User | null>(null);
-  currentUser = this.currentUserSignal.asReadonly();
+  private http = inject(HttpClient);
+  private router = inject(Router);
 
-  // URL để redirect sau khi login thành công
+  // Signals
+  private currentUserSignal = signal<User | null>(null);
+  private tokenSignal = signal<string | null>(null);
+
+  currentUser = this.currentUserSignal.asReadonly();
+  token = this.tokenSignal.asReadonly();
+
+  // URL để redirect sau khi login
   private redirectUrl: string | null = null;
 
-  constructor(private router: Router) {
-    // Khôi phục session từ localStorage khi khởi tạo
-    this.loadUserFromStorage();
+  constructor() {
+    this.loadFromStorage();
   }
 
   /**
-   * Đăng nhập - Chuẩn bị cho backend integration
-   * TODO: Thay thế mock login bằng HTTP call tới backend API
+   * Đăng nhập → POST /api/auth/login
    */
-  login(credentials: LoginCredentials, isAdmin: boolean = false): Promise<{ success: boolean; message: string }> {
-    return new Promise((resolve) => {
-      // Giả lập API call delay
-      setTimeout(() => {
-        // Mock validation - Sau này thay bằng HTTP request
-        if (!credentials.username || !credentials.password) {
-          resolve({ success: false, message: 'Please fill in all fields' });
-          return;
-        }
-
-        // Mock login success
-        const mockUser: User = {
-          id: Math.random().toString(36).substr(2, 9),
-          username: credentials.username,
-          email: `${credentials.username}@example.com`,
-          role: isAdmin ? 'admin' : 'user'
-        };
-
-        // Lưu user vào signal và localStorage
-        this.currentUserSignal.set(mockUser);
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('currentUser', JSON.stringify(mockUser));
-        }
-
-        resolve({ success: true, message: 'Login successful' });
-      }, 500);
-    });
+  login(credentials: LoginCredentials): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${API_URL}/auth/login`, credentials).pipe(
+      tap(response => {
+        this.setSession(response);
+      })
+    );
   }
 
   /**
-   * Đăng ký - Chuẩn bị cho backend integration
-   * TODO: Thay thế mock register bằng HTTP POST tới /api/register
+   * Đăng ký → POST /api/auth/register
    */
-  register(data: RegisterData): Promise<{ success: boolean; message: string }> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Validation
-        if (!data.username || !data.email || !data.password) {
-          resolve({ success: false, message: 'Please fill in all fields' });
-          return;
-        }
-
-        if (!data.email.includes('@')) {
-          resolve({ success: false, message: 'Invalid email format' });
-          return;
-        }
-
-        if (data.password.length < 6) {
-          resolve({ success: false, message: 'Password must be at least 6 characters' });
-          return;
-        }
-
-        // Mock successful registration
-        // TODO: Gửi data tới backend API: POST /api/register
-        console.log('Registration data to send to backend:', data);
-
-        const newUser: User = {
-          id: Math.random().toString(36).substr(2, 9),
-          username: data.username,
-          email: data.email,
-          role: 'user'
-        };
-
-        // Auto login sau khi đăng ký thành công
-        this.currentUserSignal.set(newUser);
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('currentUser', JSON.stringify(newUser));
-        }
-
-        resolve({ success: true, message: 'Registration successful! Welcome to EATOMO.' });
-      }, 500);
-    });
+  register(data: RegisterData): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${API_URL}/auth/register`, data).pipe(
+      tap(response => {
+        this.setSession(response);
+      })
+    );
   }
 
   /**
-   * Đăng xuất
+   * Lấy profile → GET /api/auth/profile
+   */
+  getProfile(): Observable<User> {
+    return this.http.get<User>(`${API_URL}/auth/profile`);
+  }
+
+  /**
+   * Đăng xuất — xóa token + user, navigate về home
    */
   logout(): void {
     this.currentUserSignal.set(null);
+    this.tokenSignal.set(null);
     if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('access_token');
       localStorage.removeItem('currentUser');
     }
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
   }
 
   /**
-   * Kiểm tra xem user có đăng nhập hay không
+   * Kiểm tra đăng nhập
    */
   isLoggedIn(): boolean {
-    return this.currentUserSignal() !== null;
+    return this.currentUserSignal() !== null && this.tokenSignal() !== null;
   }
 
   /**
-   * Kiểm tra xem user có phải admin không
+   * Kiểm tra admin
    */
   isAdmin(): boolean {
     return this.currentUserSignal()?.role === 'admin';
   }
 
   /**
-   * Lấy thông tin user hiện tại
+   * Lấy user hiện tại
    */
   getCurrentUser(): User | null {
     return this.currentUserSignal();
   }
 
   /**
-   * Khôi phục user từ localStorage khi refresh page
+   * Lấy token hiện tại (dùng trong interceptor)
    */
-  private loadUserFromStorage(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-    
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser) as User;
-        this.currentUserSignal.set(user);
-      } catch (error) {
-        console.error('Failed to parse stored user:', error);
-        localStorage.removeItem('currentUser');
-      }
-    }
+  getToken(): string | null {
+    return this.tokenSignal();
   }
 
   /**
-   * Lưu URL để redirect sau khi login
+   * Lưu redirect URL
    */
   setRedirectUrl(url: string): void {
     this.redirectUrl = url;
@@ -182,5 +113,52 @@ export class AuthService {
     const url = this.redirectUrl || '/';
     this.redirectUrl = null;
     return url;
+  }
+
+  /**
+   * Validate token còn hợp lệ không — gọi khi app khởi tạo
+   */
+  validateToken(): Observable<boolean> {
+    if (!this.tokenSignal()) {
+      return of(false);
+    }
+    return this.getProfile().pipe(
+      tap(user => this.currentUserSignal.set(user)),
+      map(() => true),
+      catchError(() => {
+        this.logout();
+        return of(false);
+      })
+    );
+  }
+
+  // ───────── Private ─────────
+
+  private setSession(response: AuthResponse): void {
+    this.currentUserSignal.set(response.user);
+    this.tokenSignal.set(response.access_token);
+
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('access_token', response.access_token);
+      localStorage.setItem('currentUser', JSON.stringify(response.user));
+    }
+  }
+
+  private loadFromStorage(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const token = localStorage.getItem('access_token');
+    const storedUser = localStorage.getItem('currentUser');
+
+    if (token && storedUser) {
+      try {
+        const user = JSON.parse(storedUser) as User;
+        this.currentUserSignal.set(user);
+        this.tokenSignal.set(token);
+      } catch {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('currentUser');
+      }
+    }
   }
 }

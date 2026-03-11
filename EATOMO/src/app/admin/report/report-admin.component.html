@@ -16,13 +16,120 @@
   <main class="layout">
     <div class="page-header">
       <div>
-        <p class="page-meta">Overview reports</p>
-        <h1>Reports</h1>
+        <p class="page-meta">Business overview</p>
+        <h1>Reports &amp; Analytics</h1>
       </div>
+      <button class="btn ghost" type="button" (click)="loadAll()">🔄 Refresh</button>
     </div>
 
-    <section class="panel placeholder">
-      <p>Reports page is under construction. Please choose another item in the sidebar.</p>
+    <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+    <!-- KPI Cards -->
+    <section class="kpi-grid" *ngIf="stats; else statsLoading">
+      <div class="kpi-card">
+        <p class="kpi-label">Total Revenue</p>
+        <p class="kpi-value">{{ stats.totalRevenue | number:'1.0-0' }} đ</p>
+        <p class="kpi-growth" [class.negative]="stats.revenueGrowth < 0">{{ growthLabel(stats.revenueGrowth) }} vs last period</p>
+      </div>
+      <div class="kpi-card">
+        <p class="kpi-label">Total Orders</p>
+        <p class="kpi-value">{{ stats.totalOrders | number }}</p>
+        <p class="kpi-growth" [class.negative]="stats.orderGrowth < 0">{{ growthLabel(stats.orderGrowth) }} vs last period</p>
+      </div>
+      <div class="kpi-card">
+        <p class="kpi-label">Total Customers</p>
+        <p class="kpi-value">{{ stats.totalCustomers | number }}</p>
+        <p class="kpi-growth" [class.negative]="stats.customerGrowth < 0">{{ growthLabel(stats.customerGrowth) }} vs last period</p>
+      </div>
+      <div class="kpi-card">
+        <p class="kpi-label">Avg Order Value</p>
+        <p class="kpi-value">{{ stats.avgOrderValue | number:'1.0-0' }} đ</p>
+      </div>
     </section>
+    <ng-template #statsLoading>
+      <div class="state-msg">Loading stats...</div>
+    </ng-template>
+
+    <!-- Revenue Chart -->
+    <section class="panel">
+      <div class="section-header">
+        <h2 class="section-title">Revenue Chart</h2>
+        <div class="period-tabs">
+          <button class="period-btn" [class.active]="period === 'daily'" (click)="onPeriodChange('daily')">Daily</button>
+          <button class="period-btn" [class.active]="period === 'weekly'" (click)="onPeriodChange('weekly')">Weekly</button>
+          <button class="period-btn" [class.active]="period === 'monthly'" (click)="onPeriodChange('monthly')">Monthly</button>
+        </div>
+      </div>
+      <div class="state-msg" *ngIf="isLoadingChart">Loading chart...</div>
+      <div class="chart-area" *ngIf="!isLoadingChart && revenueChart.length > 0">
+        <div class="bar-group" *ngFor="let d of revenueChart; trackBy: trackByLabel">
+          <div class="bar-wrap" title="{{ d.revenue | number:'1.0-0' }} đ">
+            <div class="bar" [style.height.%]="barHeight(d.revenue)"></div>
+          </div>
+          <p class="bar-label">{{ d.label }}</p>
+          <p class="bar-orders">{{ d.orders }} orders</p>
+        </div>
+      </div>
+      <div class="state-msg" *ngIf="!isLoadingChart && revenueChart.length === 0">No chart data available.</div>
+    </section>
+
+    <!-- Two-column: Top Products + Recent Orders -->
+    <div class="two-col">
+
+      <!-- Top Products -->
+      <section class="panel">
+        <h2 class="section-title">Top Products</h2>
+        <div class="state-msg" *ngIf="isLoadingProducts">Loading products...</div>
+        <table class="data-table" *ngIf="!isLoadingProducts && topProducts.length > 0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product</th>
+              <th>Sold</th>
+              <th>Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of topProducts; let i = index; trackBy: trackByBowl">
+              <td class="rank">{{ i + 1 }}</td>
+              <td class="product-cell">
+                <img *ngIf="p.image" [src]="p.image" class="product-thumb" [alt]="p.bowlName" />
+                <span>{{ p.bowlName }}</span>
+              </td>
+              <td>{{ p.totalSold }}</td>
+              <td class="money">{{ p.totalRevenue | number:'1.0-0' }} đ</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="state-msg" *ngIf="!isLoadingProducts && topProducts.length === 0">No data.</div>
+      </section>
+
+      <!-- Recent Orders -->
+      <section class="panel">
+        <h2 class="section-title">Recent Orders</h2>
+        <div class="state-msg" *ngIf="isLoadingOrders">Loading orders...</div>
+        <table class="data-table" *ngIf="!isLoadingOrders && recentOrders.length > 0">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Customer</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let o of recentOrders; trackBy: trackByOrder">
+              <td class="order-num">#{{ o.orderNumber }}</td>
+              <td>{{ o.customerName }}</td>
+              <td class="money">{{ o.totalAmount | number:'1.0-0' }} đ</td>
+              <td><span class="badge" [ngClass]="statusClass(o.status)">{{ o.status }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="state-msg" *ngIf="!isLoadingOrders && recentOrders.length === 0">No recent orders.</div>
+      </section>
+
+    </div>
   </main>
 </div>
+

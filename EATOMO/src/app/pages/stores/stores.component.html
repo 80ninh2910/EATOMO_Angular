@@ -19,7 +19,8 @@
 <!--Stores Section-->
 <div class="container">
   <div class="stores-section">
-    <div class="store-card" *ngFor="let store of stores">
+    @for (store of stores; track store.name) {
+    <div class="store-card">
       <div class="store-image">
         <img [src]="store.image" [alt]="store.name">
       </div>
@@ -35,6 +36,7 @@
         </div>
       </div>
     </div>
+    }
   </div>
 </div>
 

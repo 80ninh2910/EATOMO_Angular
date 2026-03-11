@@ -2,110 +2,237 @@
 
 <div class="orders-container">
   <div class="container">
-    <h1>Shopping Cart</h1>
 
-    <div class="orders-grid">
-      <!-- Cart Items -->
-      <div class="cart-items">
-        <div *ngIf="cart.length === 0" class="empty-cart">
-          <i class="fas fa-shopping-cart"></i>
-          <h2>Your cart is empty</h2>
-          <p>Add some delicious bowls to get started!</p>
-          <a routerLink="/our-bowls" class="btn btn-primary">Continue Shopping</a>
-        </div>
-
-        <div *ngIf="cart.length > 0">
-          <div class="cart-item" *ngFor="let item of cart; let i = index">
-            <img [src]="item.image || 'assets/healthy/images/index/B1-bowl.png'" alt="{{ item.name }}">
-            <div class="item-info">
-              <h3>{{ item.name }}</h3>
-              <p class="item-description">{{ item.description || 'Delicious healthy bowl' }}</p>
-              <p class="item-price">₫{{ item.price | number }}</p>
-            </div>
-            <div class="item-quantity">
-              <label>Qty:</label>
-              <input type="number" min="1" [value]="item.quantity || 1" (change)="updateQuantity(i, +$event.target.value)">
-            </div>
-            <div class="item-total">
-              <p class="total">₫{{ (item.price * (item.quantity || 1)) | number }}</p>
-              <button class="remove-btn" (click)="removeFromCart(i)">
-                <i class="fas fa-trash"></i> Remove
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Checkout Sidebar -->
-      <div class="checkout-sidebar">
-        <div class="checkout-card">
-          <h2>Order Summary</h2>
-
-          <!-- Order Summary -->
-          <div class="summary">
-            <div class="summary-row">
-              <span>Subtotal:</span>
-              <span>₫{{ subtotal | number }}</span>
-            </div>
-            <div class="summary-row">
-              <span>Tax (8%):</span>
-              <span>₫{{ tax | number }}</span>
-            </div>
-            <div class="summary-row" *ngIf="shippingFee > 0">
-              <span>Shipping:</span>
-              <span>₫{{ shippingFee | number }}</span>
-            </div>
-            <div class="summary-row" *ngIf="shippingFee === 0">
-              <span>Shipping:</span>
-              <span class="free">FREE</span>
-            </div>
-            <div class="divider"></div>
-            <div class="summary-row total-row">
-              <span>Total:</span>
-              <span class="total-amount">₫{{ total | number }}</span>
-            </div>
-          </div>
-
-          <!-- Customer Info -->
-          <div class="customer-info" *ngIf="cart.length > 0">
-            <h3>Delivery Information</h3>
-            <form>
-              <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" [(ngModel)]="customerName" name="name" placeholder="Enter your name" required>
-              </div>
-              <div class="form-group">
-                <label>Phone Number</label>
-                <input type="tel" [(ngModel)]="customerPhone" name="phone" placeholder="Enter your phone" required>
-              </div>
-              <div class="form-group">
-                <label>Delivery Address</label>
-                <textarea [(ngModel)]="customerAddress" name="address" placeholder="Enter delivery address" required></textarea>
-              </div>
-              <div class="form-group">
-                <label>Payment Method</label>
-                <select [(ngModel)]="paymentMethod" name="payment">
-                  <option value="cash">Cash on Delivery</option>
-                  <option value="card">Credit Card</option>
-                  <option value="bank">Bank Transfer</option>
-                </select>
-              </div>
-            </form>
-          </div>
-
-          <!-- Checkout Button -->
-          <button class="checkout-btn" (click)="checkout()" [disabled]="cart.length === 0">
-            <i class="fas fa-check-circle"></i> Place Order
-          </button>
-
-          <button class="continue-btn" (click)="continueShopping()">
-            <i class="fas fa-arrow-left"></i> Continue Shopping
-          </button>
-
-          <p class="note">Free shipping for orders over ₫500,000</p>
-        </div>
-      </div>
+    <!-- Tab Navigation -->
+    <div class="orders-tabs">
+      <button class="tab-btn" [class.active]="activeTab() === 'cart'" (click)="activeTab.set('cart')">
+        <i class="fas fa-shopping-cart"></i> Shopping Cart
+        @if (cartService.totalItems() > 0) {
+          <span class="tab-badge">{{ cartService.totalItems() }}</span>
+        }
+      </button>
+      <button class="tab-btn" [class.active]="activeTab() === 'history'" (click)="switchToHistory()">
+        <i class="fas fa-history"></i> Order History
+      </button>
     </div>
+
+    <!-- ============ CART TAB ============ -->
+    @if (activeTab() === 'cart') {
+
+      <!-- Checkout Success -->
+      @if (checkoutSuccess()) {
+        <div class="order-success-card">
+          <i class="fas fa-check-circle"></i>
+          <h2>Order Placed Successfully!</h2>
+          <p>{{ checkoutSuccess() }}</p>
+          <div class="success-actions">
+            <a routerLink="/our-bowls" class="btn btn-primary">Continue Shopping</a>
+            <button class="btn btn-secondary" (click)="switchToHistory()">View My Orders</button>
+          </div>
+        </div>
+      } @else {
+
+        <div class="orders-grid">
+          <!-- Cart Items -->
+          <div class="cart-items">
+            @if (cartService.isEmpty()) {
+              <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <h2>Your cart is empty</h2>
+                <p>Add some delicious bowls to get started!</p>
+                <a routerLink="/our-bowls" class="btn btn-primary">Continue Shopping</a>
+              </div>
+            } @else {
+              @for (item of cartService.cartItems(); track item.id) {
+                <div class="cart-item">
+                  <img [src]="item.image || 'assets/healthy/images/index/B1-bowl.png'" [alt]="item.name">
+                  <div class="item-info">
+                    <h3>{{ item.name }}</h3>
+                    <p class="item-price">₫{{ item.price | number }}</p>
+                  </div>
+                  <div class="item-quantity">
+                    <label>Qty:</label>
+                    <input type="number" min="1" [value]="item.quantity" (change)="updateQuantity(item.id, +$any($event.target).value)">
+                  </div>
+                  <div class="item-total">
+                    <p class="total">₫{{ (item.price * item.quantity) | number }}</p>
+                    <button class="remove-btn" (click)="removeFromCart(item.id)">
+                      <i class="fas fa-trash"></i> Remove
+                    </button>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+
+          <!-- Checkout Sidebar -->
+          <div class="checkout-sidebar">
+            <div class="checkout-card">
+              <h2>Order Summary</h2>
+
+              <!-- Order Summary -->
+              <div class="summary">
+                <div class="summary-row">
+                  <span>Subtotal:</span>
+                  <span>₫{{ subtotal | number }}</span>
+                </div>
+                <div class="summary-row">
+                  <span>Tax (8%):</span>
+                  <span>₫{{ tax | number }}</span>
+                </div>
+                @if (shippingFee > 0) {
+                  <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span>₫{{ shippingFee | number }}</span>
+                  </div>
+                } @else {
+                  <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span class="free">FREE</span>
+                  </div>
+                }
+                @if (discountAmount() > 0) {
+                  <div class="summary-row discount-row">
+                    <span>Discount:</span>
+                    <span class="discount-amount">-₫{{ discountAmount() | number }}</span>
+                  </div>
+                }
+                <div class="divider"></div>
+                <div class="summary-row total-row">
+                  <span>Total:</span>
+                  <span class="total-amount">₫{{ total | number }}</span>
+                </div>
+              </div>
+
+              <!-- Voucher Section -->
+              @if (!cartService.isEmpty()) {
+                <div class="voucher-section">
+                  <h3>Voucher Code</h3>
+                  <div class="voucher-input-group">
+                    <input type="text" [(ngModel)]="voucherCode" name="voucher"
+                           placeholder="Enter voucher code"
+                           [disabled]="!!voucherValidation()?.valid">
+                    @if (!voucherValidation()?.valid) {
+                      <button class="voucher-btn apply" (click)="validateVoucher()" [disabled]="isValidatingVoucher() || !voucherCode.trim()">
+                        {{ isValidatingVoucher() ? 'Checking...' : 'Apply' }}
+                      </button>
+                    } @else {
+                      <button class="voucher-btn remove" (click)="removeVoucher()">Remove</button>
+                    }
+                  </div>
+                  @if (voucherValidation(); as v) {
+                    <p class="voucher-msg" [class.success]="v.valid" [class.error]="!v.valid">
+                      {{ v.message }}
+                    </p>
+                  }
+                </div>
+              }
+
+              <!-- Customer Info -->
+              @if (!cartService.isEmpty()) {
+                <div class="customer-info">
+                  <h3>Delivery Information</h3>
+                  <form>
+                    <div class="form-group">
+                      <label>Full Name</label>
+                      <input type="text" [(ngModel)]="customerName" name="name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Phone Number</label>
+                      <input type="tel" [(ngModel)]="customerPhone" name="phone" placeholder="Enter your phone" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Delivery Address</label>
+                      <textarea [(ngModel)]="customerAddress" name="address" placeholder="Enter delivery address" required></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>Delivery Notes (optional)</label>
+                      <input type="text" [(ngModel)]="deliveryNotes" name="notes" placeholder="E.g. ring doorbell">
+                    </div>
+                    <div class="form-group">
+                      <label>Payment Method</label>
+                      <select [(ngModel)]="paymentMethod" name="payment">
+                        <option value="cash">Cash on Delivery</option>
+                        <option value="card">Credit Card</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="momo">MoMo Wallet</option>
+                      </select>
+                    </div>
+                  </form>
+                </div>
+              }
+
+              <!-- Error Message -->
+              @if (checkoutError()) {
+                <div class="alert alert-error">
+                  <i class="fas fa-exclamation-circle"></i> {{ checkoutError() }}
+                </div>
+              }
+
+              <!-- Checkout Button -->
+              <button class="checkout-btn" (click)="checkout()" [disabled]="cartService.isEmpty() || isCheckingOut()">
+                @if (isCheckingOut()) {
+                  <i class="fas fa-spinner fa-spin"></i> Processing...
+                } @else {
+                  <i class="fas fa-check-circle"></i> Place Order
+                }
+              </button>
+
+              <button class="continue-btn" (click)="continueShopping()">
+                <i class="fas fa-arrow-left"></i> Continue Shopping
+              </button>
+
+              <p class="note">Free shipping for orders over ₫500,000</p>
+            </div>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- ============ ORDER HISTORY TAB ============ -->
+    @if (activeTab() === 'history') {
+      <div class="order-history">
+        @if (isLoadingHistory()) {
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading your orders...</p>
+          </div>
+        } @else if (orderHistory().length === 0) {
+          <div class="empty-history">
+            <i class="fas fa-receipt"></i>
+            <h2>No orders yet</h2>
+            <p>Start by ordering some delicious bowls!</p>
+            <a routerLink="/our-bowls" class="btn btn-primary">Browse Menu</a>
+          </div>
+        } @else {
+          <div class="history-list">
+            @for (order of orderHistory(); track order.id) {
+              <div class="history-card">
+                <div class="history-header">
+                  <div>
+                    <span class="order-number">#{{ order.orderNumber }}</span>
+                    <span class="order-date">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                  <span class="order-status" [class]="'status-' + order.status">{{ order.status }}</span>
+                </div>
+                <div class="history-items">
+                  @for (item of order.items; track item.bowlId) {
+                    <span class="history-item">{{ item.bowlName }} x{{ item.quantity }}</span>
+                  }
+                </div>
+                <div class="history-footer">
+                  <span class="order-total">₫{{ order.totalAmount | number }}</span>
+                  @if (order.status === 'pending') {
+                    <button class="cancel-btn" (click)="cancelOrder(order.id)">Cancel</button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
   </div>
 </div>
 

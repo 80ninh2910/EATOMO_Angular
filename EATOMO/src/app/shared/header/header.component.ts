@@ -1,6 +1,9 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -14,19 +17,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isScrolled = false;
   isHomePage = false;
 
+  authService = inject(AuthService);
+  cartService = inject(CartService);
+  private destroyRef = inject(DestroyRef);
+
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    // Check if on home page
     this.updateHomePageStatus();
-    this.router.events.subscribe(() => {
-      this.updateHomePageStatus();
-    });
+    this.router.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.updateHomePageStatus());
   }
 
-  ngOnDestroy(): void {
-    // Cleanup if needed
-  }
+  ngOnDestroy(): void {}
 
   private updateHomePageStatus(): void {
     this.isHomePage = this.router.url === '/' || this.router.url === '/index';
@@ -51,5 +55,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/']);
     }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.closeMenu();
   }
 }

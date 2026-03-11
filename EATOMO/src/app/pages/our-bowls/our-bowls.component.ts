@@ -1,24 +1,28 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { BowlService } from '../../services/bowl.service';
-import { Bowl, CartItem } from '../../models/bowl.model';
+import { CartService } from '../../services/cart.service';
+import { Bowl } from '../../models/bowl.model';
 
 @Component({
   selector: 'app-our-bowls',
   standalone: true,
   imports: [CommonModule, HeaderComponent, FooterComponent, RouterModule],
   templateUrl: './our-bowls.component.html',
-  styleUrl: './our-bowls.component.css'
+  styleUrl: './our-bowls.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OurBowlsComponent implements OnInit {
-  activeFilter: string = 'all';
-  showModal = false;
-  allBowls: Bowl[] = [];
-  cartItems: CartItem[] = [];
-  
+  activeFilter = signal<string>('all');
+  showModal = signal(false);
+  allBowls = signal<Bowl[]>([]);
+  isLoading = signal(true);
+  loadError = signal('');
+  toast = signal<{ message: string; type: 'success' | 'error' } | null>(null);
+
   filters = [
     { value: 'all', label: 'All' },
     { value: 'low-cal', label: 'Low calories' },
@@ -27,107 +31,92 @@ export class OurBowlsComponent implements OnInit {
     { value: 'vegetarian', label: 'Vegetarian' }
   ];
 
+  lowCalBowls = computed(() => this.allBowls().filter(b => b.category === 'low-cal'));
+  balancedBowls = computed(() => this.allBowls().filter(b => b.category === 'balanced'));
+  highProteinBowls = computed(() => this.allBowls().filter(b => b.category === 'high-protein'));
+  vegetarianBowls = computed(() => this.allBowls().filter(b => b.category === 'vegetarian'));
+
+  showLowCal = computed(() => this.activeFilter() === 'all' || this.activeFilter() === 'low-cal');
+  showBalanced = computed(() => this.activeFilter() === 'all' || this.activeFilter() === 'balanced');
+  showHighProtein = computed(() => this.activeFilter() === 'all' || this.activeFilter() === 'high-protein');
+  showVegetarian = computed(() => this.activeFilter() === 'all' || this.activeFilter() === 'vegetarian');
+
   constructor(
     private bowlService: BowlService,
+    private cartService: CartService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.bowlService.getBowls().subscribe(bowls => {
-      this.allBowls = bowls;
+    this.bowlService.getBowls().subscribe({
+      next: (bowls) => {
+        this.allBowls.set(bowls);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        this.loadError.set('Failed to load bowls. Please try again.');
+        this.isLoading.set(false);
+      }
     });
-    this.loadCart();
   }
 
   filterBowls(category: string): void {
-    this.activeFilter = category;
+    this.activeFilter.set(category);
   }
 
-  shouldShowCategory(category: string): boolean {
-    return this.activeFilter === 'all' || this.activeFilter === category;
-  }
-
-  getLowCalBowls(): Bowl[] {
-    return this.allBowls.filter(bowl => bowl.category === 'low-cal');
-  }
-
-  getBalancedBowls(): Bowl[] {
-    return this.allBowls.filter(bowl => bowl.category === 'balanced');
-  }
-
-  getHighProteinBowls(): Bowl[] {
-    return this.allBowls.filter(bowl => bowl.category === 'high-protein');
-  }
-
-  getVegetarianBowls(): Bowl[] {
-    return this.allBowls.filter(bowl => bowl.category === 'vegetarian');
-  }
-
-  onBowlClick(bowl: Bowl): void {
-    console.log('Bowl clicked:', bowl.name);
-  }
+  onBowlClick(bowl: Bowl): void {}
 
   addToBag(bowl: Bowl, event: Event): void {
     event.stopPropagation();
-    
-    const existingItem = this.cartItems.find(item => item.id === bowl.id);
-    if (existingItem) {
-      existingItem.quantity++;
-    } else {
-      this.cartItems.push({
-        id: bowl.id,
-        name: bowl.name,
-        price: bowl.price,
-        quantity: 1,
-        image: bowl.image
-      });
-    }
-    
-    this.saveCart();
-    this.showModal = true;
+    this.cartService.addToCart({
+      id: bowl.id,
+      name: bowl.name,
+      price: bowl.price,
+      quantity: 1,
+      image: bowl.image
+    });
+    this.showModal.set(true);
   }
 
   removeFromCart(index: number): void {
-    this.cartItems.splice(index, 1);
-    this.saveCart();
+    const items = this.cartService.cartItems();
+    if (items[index]) {
+      this.cartService.removeFromCart(items[index].id);
+    }
   }
 
   closeModal(): void {
-    this.showModal = false;
+    this.showModal.set(false);
   }
 
   viewCart(): void {
-    this.showModal = false;
+    this.showModal.set(false);
     this.router.navigate(['/orders']);
   }
 
   viewFullMenu(event: Event): void {
     event.preventDefault();
-    this.activeFilter = 'all';
+    this.activeFilter.set('all');
   }
 
   downloadRecipe(bowlId: string, event: Event): void {
     event.stopPropagation();
-    console.log('Downloading recipe for bowl:', bowlId);
-    // Sau này: Implement download recipe functionality
+    this.showToast('Recipe download coming soon!', 'success');
   }
 
-  get totalItems(): number {
-    return this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  showToast(message: string, type: 'success' | 'error'): void {
+    this.toast.set({ message, type });
+    setTimeout(() => this.toast.set(null), 3000);
   }
 
-  get totalPrice(): number {
-    return this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  reloadBowls(): void {
+    this.isLoading.set(true);
+    this.loadError.set('');
+    this.ngOnInit();
   }
 
-  private loadCart(): void {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      this.cartItems = JSON.parse(savedCart);
-    }
-  }
-
-  private saveCart(): void {
-    localStorage.setItem('cart', JSON.stringify(this.cartItems));
-  }
+  // Delegate to CartService signals
+  get cartItems() { return this.cartService.cartItems(); }
+  get totalItems(): number { return this.cartService.totalItems(); }
+  get totalPrice(): number { return this.cartService.totalPrice(); }
 }

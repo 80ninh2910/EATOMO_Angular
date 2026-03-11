@@ -27,7 +27,7 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService, // giữ nguyên, không dùng
+    private authService: AuthService,
     private router: Router
   ) {
     this.userForm = this.fb.group({
@@ -54,38 +54,61 @@ export class LoginComponent {
   }
 
   /* ================= USER LOGIN ================= */
-  async onUserLogin() {
+  onUserLogin() {
     if (this.userForm.invalid) {
       this.userError.set('Please fill in all fields correctly');
       return;
     }
 
+    this.userLoading.set(true);
+    this.userError.set('');
+
     const { username, password } = this.userForm.value;
 
-    if (username === 'user' && password === 'user123') {
-      this.userError.set('');
-      this.router.navigate(['/']); // 🔁 đổi route nếu muốn
-      return;
-    }
-
-    this.userError.set('Invalid username or password');
+    this.authService.login({ username, password }).subscribe({
+      next: (response) => {
+        this.userLoading.set(false);
+        if (response.user.role === 'admin') {
+          // Nếu admin đăng nhập ở tab user → redirect admin
+          this.router.navigate(['/admin']);
+        } else {
+          const redirectUrl = this.authService.getRedirectUrl();
+          this.router.navigate([redirectUrl]);
+        }
+      },
+      error: (err) => {
+        this.userLoading.set(false);
+        this.userError.set(err.error?.message || 'Invalid username or password');
+      }
+    });
   }
 
   /* ================= ADMIN LOGIN ================= */
-  async onAdminLogin() {
+  onAdminLogin() {
     if (this.adminForm.invalid) {
       this.adminError.set('Please fill in all fields correctly');
       return;
     }
 
+    this.adminLoading.set(true);
+    this.adminError.set('');
+
     const { username, password } = this.adminForm.value;
 
-    if (username === 'admin' && password === 'admin123') {
-      this.adminError.set('');
-      this.router.navigate(['/admin']); // 🔁 đổi route nếu muốn
-      return;
-    }
-
-    this.adminError.set('Invalid admin username or password');
+    this.authService.login({ username, password }).subscribe({
+      next: (response) => {
+        this.adminLoading.set(false);
+        if (response.user.role === 'admin') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.adminError.set('This account does not have admin privileges');
+          this.authService.logout();
+        }
+      },
+      error: (err) => {
+        this.adminLoading.set(false);
+        this.adminError.set(err.error?.message || 'Invalid admin username or password');
+      }
+    });
   }
 }

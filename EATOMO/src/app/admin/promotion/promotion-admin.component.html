@@ -16,13 +16,94 @@
   <main class="layout">
     <div class="page-header">
       <div>
-        <p class="page-meta">Promotion programs</p>
+        <p class="page-meta">Total: <strong>{{ promotions.length }}</strong> promotions</p>
         <h1>Promotions</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn primary" type="button" (click)="openCreate()">➕ Create promotion</button>
       </div>
     </div>
 
-    <section class="panel placeholder">
-      <p>Promotions page is under construction. Please choose another item in the sidebar.</p>
+    <!-- Loading / Error -->
+    <div class="state-msg" *ngIf="isLoading">Đang tải promotions...</div>
+    <div class="state-msg error" *ngIf="error">{{ error }}</div>
+
+    <section class="panel" *ngIf="!isLoading && !error">
+      <div class="table-wrap">
+        <table class="promo-table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Description</th>
+              <th>Discount</th>
+              <th>Min order</th>
+              <th>Valid from</th>
+              <th>Valid until</th>
+              <th>Uses</th>
+              <th>Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="promotions.length === 0">
+              <td colspan="9" style="text-align:center;padding:2rem">Chưa có promotion nào.</td>
+            </tr>
+            <tr *ngFor="let p of promotions; trackBy: trackById">
+              <td><span class="code-pill">{{ p.code }}</span></td>
+              <td>{{ p.description || '—' }}</td>
+              <td class="money">{{ formatDiscount(p) }}</td>
+              <td class="money">{{ p.minOrderValue | number:'1.0-0' }} đ</td>
+              <td>{{ p.validFrom | date:'dd/MM/yyyy' }}</td>
+              <td>{{ p.validUntil ? (p.validUntil | date:'dd/MM/yyyy') : '∞' }}</td>
+              <td>{{ p.currentUses }} / {{ p.maxUses }}</td>
+              <td>
+                <button class="toggle-btn" [class.active]="p.isActive" type="button" (click)="toggleActive(p)">
+                  {{ p.isActive ? 'Active' : 'Inactive' }}
+                </button>
+              </td>
+              <td class="actions-cell">
+                <button class="btn ghost small" type="button" (click)="openEdit(p)">Edit</button>
+                <button class="btn danger small" type="button" (click)="deletePromotion(p)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
   </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <h2 class="modal-title">{{ modalTitle }}</h2>
+    <div class="modal-body">
+      <label *ngIf="!editMode">Code <input type="text" [(ngModel)]="form.code" placeholder="SUMMER20" style="text-transform:uppercase" /></label>
+      <label>Description <input type="text" [(ngModel)]="form.description" /></label>
+      <label>Discount type
+        <select [(ngModel)]="form.discountType">
+          <option value="percentage">Percentage (%)</option>
+          <option value="fixed">Fixed amount (đ)</option>
+        </select>
+      </label>
+      <label>Discount value <input type="number" [(ngModel)]="form.discountValue" min="0" /></label>
+      <label>Min order value (đ) <input type="number" [(ngModel)]="form.minOrderValue" min="0" /></label>
+      <label>Max discount (đ, 0 = unlimited) <input type="number" [(ngModel)]="form.maxDiscountAmount" min="0" /></label>
+      <label>Valid from <input type="date" [(ngModel)]="form.validFrom" /></label>
+      <label>Valid until (leave blank = no expiry) <input type="date" [(ngModel)]="form.validUntil" /></label>
+      <label>Max uses <input type="number" [(ngModel)]="form.maxUses" min="1" /></label>
+      <label>Target
+        <select [(ngModel)]="form.target">
+          <option value="all">All customers</option>
+          <option value="new_customer">New customers</option>
+          <option value="vip">VIP</option>
+          <option value="specific_category">Specific category</option>
+        </select>
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" type="button" (click)="closeModal()">Cancel</button>
+      <button class="btn primary" type="button" (click)="saveModal()">Save</button>
+    </div>
+  </div>
 </div>

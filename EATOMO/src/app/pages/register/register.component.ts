@@ -56,7 +56,7 @@ export class RegisterComponent {
     return null;
   }
 
-  async onRegister(): Promise<void> {
+  onRegister(): void {
     this.errorMessage.set('');
     this.successMessage.set('');
 
@@ -70,24 +70,22 @@ export class RegisterComponent {
 
     this.isLoading.set(true);
 
-    try {
-      const { confirmPassword, ...registerData } = this.registerForm.value;
-      const result = await this.authService.register(registerData);
+    const { confirmPassword, ...registerData } = this.registerForm.value;
 
-      if (result.success) {
-        this.successMessage.set(result.message);
+    this.authService.register(registerData).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.successMessage.set('Registration successful! Welcome to EATOMO.');
         // Auto redirect về home sau khi đăng ký thành công (đã auto login trong service)
         setTimeout(() => {
           this.router.navigate(['/']);
         }, 1500);
-      } else {
-        this.errorMessage.set(result.message);
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(err.error?.message || 'Registration failed. Please try again.');
       }
-    } catch (error) {
-      this.errorMessage.set('Registration failed. Please try again.');
-    } finally {
-      this.isLoading.set(false);
-    }
+    });
   }
 
   // Getter methods để lấy validation errors
