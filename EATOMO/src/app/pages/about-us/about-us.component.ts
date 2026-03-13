@@ -13,7 +13,7 @@ import { FooterComponent } from '../../shared/footer/footer.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AboutUsComponent implements AfterViewInit {
-  constructor(private elementRef: ElementRef) {}
+  constructor(private elementRef: ElementRef) { }
   stats = [
     { number: '100%', label: 'Fresh Ingredients' },
     { number: '90%', label: 'Nutrients Retained' },
@@ -32,7 +32,7 @@ export class AboutUsComponent implements AfterViewInit {
     { name: 'Đoàn Quốc Vinh', role: 'Chief Nutritionist', image: '/assets/healthy/images/about/Vinh.jpg', instagram: 'qdinnh' },
     { name: 'Nguyễn Quốc Thịnh', role: 'Operations Manager', image: '/assets/healthy/images/about/Thịnh.jpg', instagram: 'qdinnh' },
     { name: 'Phan Thị Ngọc Khuyến', role: 'Chief Nutritionist', image: '/assets/healthy/images/about/Khuyen.jpg', instagram: 'vickyphan2005' },
-    { name: 'Ngô Viết Thanh', role: 'Marketing Specialist', image: '/assets/healthy/images/about/Thanh.jpg', instagram: 'ngovietthanh' }
+    { name: 'Ngô Viết Thanh', role: 'Marketing Specialist', image: '/assets/healthy/images/about/Thanh.jpg', instagram: 'ngo.thanhh' }
   ];
 
   features = [
