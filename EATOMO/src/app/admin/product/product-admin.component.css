@@ -39,6 +39,15 @@ img {
   height: 100vh;
   overflow: auto;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-link.logout {
+  margin-top: auto;
+  background: #fdecea;
+  color: #c0392b;
+  border: 1px solid rgba(192, 57, 43, 0.15);
 }
 
 .brand {

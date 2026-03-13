@@ -44,6 +44,15 @@ img {
   height: 100vh;
   overflow: auto;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-link.logout {
+  margin-top: auto;
+  background: #fdecea;
+  color: #c0392b;
+  border: 1px solid rgba(192, 57, 43, 0.15);
 }
 
 .brand {
@@ -169,8 +178,7 @@ img {
 }
 
 .toolbar-row {
-  display: grid;
-  grid-template-columns: 160px minmax(280px, 1fr) 240px 240px;
+  display: flex;
   gap: 16px;
   align-items: center;
   width: 100%;
@@ -181,14 +189,10 @@ img {
 .toolbar-row select,
 .toolbar-row button {
   height: 48px;
-}
-
-.toolbar-row > * {
-  align-self: center;
+  box-sizing: border-box;
 }
 
 .toolbar-row.full {
-  grid-template-columns: 1fr;
   margin-top: 8px;
 }
 
@@ -200,17 +204,16 @@ img {
 }
 
 .toolbar-row .btn {
-  width: 100%;
-  min-width: 160px;
-  justify-self: stretch;
+  flex-shrink: 0;
+  min-width: 120px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  line-height: 48px;
 }
 
 .toolbar-row .search {
-  width: 100%;
+  flex: 1;
+  min-width: 150px;
 }
 
 .bulk-actions {
@@ -226,19 +229,18 @@ img {
   height: 48px;
   font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   background: #fff;
-  width: 100%;
-}
-
-
-@media (max-width: 1100px) {
-  .toolbar-row {
-    grid-template-columns: 1fr 1fr;
-  }
+  flex-shrink: 0;
+  width: 200px;
 }
 
 @media (max-width: 800px) {
   .toolbar-row {
-    grid-template-columns: 1fr;
+    flex-wrap: wrap;
+  }
+
+  .field-input {
+    width: 100%;
+    flex-shrink: 1;
   }
 }
 
