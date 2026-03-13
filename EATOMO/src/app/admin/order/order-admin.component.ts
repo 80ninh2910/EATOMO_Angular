@@ -1,4 +1,4 @@
-﻿import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -248,7 +248,10 @@ export class OrderAdminComponent implements OnInit {
 
   isOpen(orderId: string): boolean { return this.openOrders.has(orderId); }
   filterTab(tab: 'all' | 'pending' | 'shipping' | 'delivered'): void { this.activeTab = tab; }
-  onSearchInput(e: Event): void { this.searchTerm = (e.target as HTMLInputElement).value.toLowerCase(); }
+  onSearchInput(e: Event): void {
+    this.searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+    this.appliedSearchTerm = this.searchTerm.trim();
+  }
   changeView(view: 'grid' | 'list'): void { this.viewMode = view; }
   applyFilters(): void { this.appliedSearchTerm = this.searchTerm.trim(); }
   toggleColumnPanel(): void { this.showColumnPanel = !this.showColumnPanel; }
