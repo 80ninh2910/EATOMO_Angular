@@ -89,16 +89,28 @@ async function seed() {
 
   const userMap = {};
   let newUsers = 0;
+  let updatedUsers = 0;
   for (const u of usersData) {
     let doc = await User.findOne({ username: u.username });
     if (!doc) {
       doc = await User.create(u);
       console.log(`  [+] User: ${u.username.padEnd(14)} (${u.fullName})`);
       newUsers++;
+    } else {
+      // Keep seeded credentials and profile deterministic across reruns.
+      doc.email = u.email;
+      doc.password = u.password;
+      doc.fullName = u.fullName;
+      doc.phone = u.phone;
+      doc.address = u.address;
+      doc.role = u.role;
+      await doc.save();
+      updatedUsers++;
     }
     userMap[u.username] = doc;
   }
-  if (newUsers === 0) console.log('  [i] Tat ca users da ton tai');
+  if (newUsers === 0 && updatedUsers === 0) console.log('  [i] Tat ca users da ton tai');
+  if (updatedUsers > 0) console.log(`  [~] Da cap nhat ${updatedUsers} users da ton tai`);
   console.log(`  --> ${newUsers > 0 ? newUsers + ' users moi' : 'skip'}\n`);
 
   /* 2. BOWLS */

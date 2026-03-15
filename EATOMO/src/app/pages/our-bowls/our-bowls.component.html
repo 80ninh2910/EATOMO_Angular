@@ -104,7 +104,7 @@
         </div>
         <div class="bowls-grid">
           @for (bowl of lowCalBowls(); track bowl.id) {
-            <div class="bowl-card" (click)="onBowlClick(bowl)">
+            <div class="bowl-card" [attr.id]="'bowl-' + bowl.id" [class.chatbot-target]="isFocusedBowl(bowl.id)" (click)="onBowlClick(bowl)">
               <div class="bowl-image">
                 <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
                 <button class="download-recipe" (click)="downloadRecipe(bowl.id, $event)">Download recipe</button>
@@ -139,7 +139,7 @@
         </div>
         <div class="bowls-grid">
           @for (bowl of balancedBowls(); track bowl.id) {
-            <div class="bowl-card" (click)="onBowlClick(bowl)">
+            <div class="bowl-card" [attr.id]="'bowl-' + bowl.id" [class.chatbot-target]="isFocusedBowl(bowl.id)" (click)="onBowlClick(bowl)">
               <div class="bowl-image">
                 <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
                 <button class="download-recipe" (click)="downloadRecipe(bowl.id, $event)">Download recipe</button>
@@ -174,7 +174,7 @@
         </div>
         <div class="bowls-grid">
           @for (bowl of highProteinBowls(); track bowl.id) {
-            <div class="bowl-card" (click)="onBowlClick(bowl)">
+            <div class="bowl-card" [attr.id]="'bowl-' + bowl.id" [class.chatbot-target]="isFocusedBowl(bowl.id)" (click)="onBowlClick(bowl)">
               <div class="bowl-image">
                 <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
                 <button class="download-recipe" (click)="downloadRecipe(bowl.id, $event)">Download recipe</button>
@@ -209,7 +209,7 @@
         </div>
         <div class="bowls-grid">
           @for (bowl of vegetarianBowls(); track bowl.id) {
-            <div class="bowl-card" (click)="onBowlClick(bowl)">
+            <div class="bowl-card" [attr.id]="'bowl-' + bowl.id" [class.chatbot-target]="isFocusedBowl(bowl.id)" (click)="onBowlClick(bowl)">
               <div class="bowl-image">
                 <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
                 <button class="download-recipe" (click)="downloadRecipe(bowl.id, $event)">Download recipe</button>

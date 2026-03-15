@@ -1,0 +1,242 @@
+@if (!hideWidget()) {
+  <div class="chat-widget" [class.open]="isOpen()">
+    <button
+      class="chat-toggle"
+      type="button"
+      (click)="toggleOpen()"
+      [attr.aria-expanded]="isOpen()"
+      aria-controls="eatomo-chat-panel"
+      aria-label="Open EATOMO assistant"
+    >
+      @if (isOpen()) {
+        <span>×</span>
+      } @else {
+        @if (showToggleImage()) {
+          <img
+            class="chat-toggle-icon"
+            [src]="chatToggleIcon"
+            alt="EATOMO AI"
+            loading="lazy"
+            (error)="onToggleIconError()"
+          >
+        } @else {
+          <span>AI</span>
+        }
+      }
+    </button>
+
+    @if (isOpen()) {
+      <section class="chat-panel" id="eatomo-chat-panel">
+        <header class="chat-header">
+          <div class="chat-header-main">
+            <h3>EATOMO Assistant</h3>
+            <p>Tư vấn nhanh, rõ ràng, theo nhu cầu của bạn</p>
+          </div>
+          <button class="chat-clear" type="button" (click)="clearConversation()">Mới</button>
+        </header>
+
+        <div class="chat-history" #chatHistory aria-live="polite">
+          @for (m of messages(); track trackByIndex($index)) {
+            <div class="msg-wrap" [class.user]="m.role === 'user'" [class.assistant]="m.role === 'assistant'">
+              <div class="msg" [class.user]="m.role === 'user'" [class.assistant]="m.role === 'assistant'">
+                {{ m.content }}
+              </div>
+              <span class="msg-time">{{ formatTime(m.timestamp) }}</span>
+            </div>
+          }
+
+          @if (isSending()) {
+            <div class="msg-wrap assistant">
+              <div class="msg assistant pending">Đang phân tích...</div>
+            </div>
+          }
+
+          @if (highlightedBowls().length > 0) {
+            <section class="bowl-reco-block" aria-label="Bowl đề xuất">
+              <div class="bowl-reco-head">
+                <p>Bowl đề xuất cho bạn</p>
+                <span>Dữ liệu theo mục tiêu dinh dưỡng</span>
+              </div>
+
+              <div class="bowl-reco-list">
+                @for (bowl of highlightedBowls(); track trackByBowl($index, bowl)) {
+                  <article
+                    class="bowl-card"
+                    aria-label="Bowl đề xuất"
+                    role="button"
+                    tabindex="0"
+                    (click)="selectRecommendedBowl(bowl)"
+                    (keydown.enter)="selectRecommendedBowl(bowl)"
+                    (keydown.space)="selectRecommendedBowl(bowl)"
+                  >
+                    <img [src]="bowl.image || ''" [alt]="bowl.name" loading="lazy" (error)="onBowlImageError($index)">
+                    <div class="bowl-card-body">
+                      <div class="bowl-topline">
+                        <p class="bowl-badge">{{ bowl.category }}</p>
+                        <strong>{{ bowl.price | number:'1.0-0' }}đ</strong>
+                      </div>
+                      <h5>{{ bowl.name }}</h5>
+                      <div class="bowl-stats">
+                        <span class="kcal">{{ bowl.calories }} kcal</span>
+                        <span>{{ bowl.protein }}P</span>
+                        <span>{{ bowl.carbs }}C</span>
+                        <span>{{ bowl.fat }}F</span>
+                      </div>
+                    </div>
+                  </article>
+                }
+              </div>
+            </section>
+          }
+
+          @if (isConsultationFormOpen()) {
+            <section class="consult-form" aria-label="Tư vấn cho riêng bạn" (keydown.enter)="onConsultationEnter($event)">
+              <div class="consult-form-head">
+                <h4>Tư vấn cho riêng bạn</h4>
+                <p>Điền thông tin để AI lên kế hoạch bowl và dinh dưỡng phù hợp cho bạn.</p>
+              </div>
+
+              <div class="consult-grid">
+                <label class="field required" [class.invalid]="isRequiredFieldInvalid('gender')">
+                  <span>Giới tính *</span>
+                  <select
+                    [ngModel]="consultationForm().gender"
+                    (ngModelChange)="updateConsultationField('gender', $event)"
+                  >
+                    <option value="">Chọn giới tính</option>
+                    <option value="nam">Nam</option>
+                    <option value="nu">Nu</option>
+                  </select>
+                  @if (isRequiredFieldInvalid('gender')) {
+                    <small>Bắt buộc chọn giới tính.</small>
+                  }
+                </label>
+
+                <label class="field required" [class.invalid]="isRequiredFieldInvalid('weightKg')">
+                  <span>Cân nặng (kg) *</span>
+                  <input
+                    type="number"
+                    min="20"
+                    max="300"
+                    [ngModel]="consultationForm().weightKg"
+                    (ngModelChange)="updateConsultationField('weightKg', $event)"
+                    placeholder="VD: 70"
+                  >
+                  @if (isRequiredFieldInvalid('weightKg')) {
+                    <small>Bắt buộc nhập cân nặng.</small>
+                  }
+                </label>
+
+                <label class="field required" [class.invalid]="isRequiredFieldInvalid('heightCm')">
+                  <span>Chiều cao (cm) *</span>
+                  <input
+                    type="number"
+                    min="100"
+                    max="250"
+                    [ngModel]="consultationForm().heightCm"
+                    (ngModelChange)="updateConsultationField('heightCm', $event)"
+                    placeholder="VD: 172"
+                  >
+                  @if (isRequiredFieldInvalid('heightCm')) {
+                    <small>Bắt buộc nhập chiều cao.</small>
+                  }
+                </label>
+
+                <label class="field required" [class.invalid]="isRequiredFieldInvalid('goal')">
+                  <span>Mục tiêu *</span>
+                  <select
+                    [ngModel]="consultationForm().goal"
+                    (ngModelChange)="updateConsultationField('goal', $event)"
+                  >
+                    <option value="">Chọn mục tiêu</option>
+                    <option value="giam can">Giảm cân</option>
+                    <option value="giu dang">Giữ dáng</option>
+                    <option value="tang co">Tăng cơ</option>
+                  </select>
+                  @if (isRequiredFieldInvalid('goal')) {
+                    <small>Bắt buộc chọn mục tiêu.</small>
+                  }
+                </label>
+
+                <label class="field optional optional-state">
+                  <span>Tuổi</span>
+                  <input
+                    type="number"
+                    min="12"
+                    max="90"
+                    [ngModel]="consultationForm().age"
+                    (ngModelChange)="updateConsultationField('age', $event)"
+                    placeholder="Không bắt buộc"
+                  >
+                  <small>Tùy chọn: bỏ trống vẫn được (hệ thống sẽ giả định mặc định).</small>
+                </label>
+
+                <label class="field optional optional-state">
+                  <span>Tần suất tập luyện</span>
+                  <select
+                    [ngModel]="consultationForm().activity"
+                    (ngModelChange)="updateConsultationField('activity', $event)"
+                  >
+                    <option value="">Không bắt buộc</option>
+                    <option value="it van dong">Ít vận động</option>
+                    <option value="tap 1-2 buoi/tuan">Tap 1-2 buoi/tuan</option>
+                    <option value="tap 3-5 buoi/tuan">Tap 3-5 buoi/tuan</option>
+                    <option value="tap 6-7 buoi/tuan">Tap 6-7 buoi/tuan</option>
+                  </select>
+                  <small>Tùy chọn: giúp AI tính TDEE chính xác hơn.</small>
+                </label>
+
+                <label class="field optional optional-state full-row">
+                  <span>Sở thích món (bò, gà, cá, vegan...)</span>
+                  <input
+                    type="text"
+                    [ngModel]="consultationForm().preference"
+                    (ngModelChange)="updateConsultationField('preference', $event)"
+                    placeholder="Không bắt buộc"
+                  >
+                  <small>Tùy chọn: nếu bỏ trống, AI sẽ tự đề xuất trung tính.</small>
+                </label>
+              </div>
+
+              <div class="consult-actions">
+                <button type="button" class="btn-secondary" (click)="cancelConsultationForm()" [disabled]="isSending()">Hủy</button>
+                <button type="button" class="btn-primary" (click)="submitConsultationForm()" [disabled]="isSending()">
+                  @if (isSending()) {
+                    Đang gửi...
+                  } @else {
+                    Gửi tư vấn
+                  }
+                </button>
+              </div>
+            </section>
+          }
+        </div>
+
+        <div class="chat-suggestions">
+          @for (s of suggestions(); track s) {
+            <button type="button" (click)="useSuggestion(s)">{{ s }}</button>
+          }
+        </div>
+
+        <div class="chat-input">
+          <input
+            #chatInputRef
+            [ngModel]="inputText()"
+            (ngModelChange)="inputText.set($event)"
+            (keydown)="onEnter($event)"
+            [disabled]="isSending()"
+            maxlength="500"
+            [placeholder]="isConsultationFormOpen() ? 'Form đang mở: bấm Gửi để nộp tư vấn...' : 'Nhập câu hỏi...'"
+          >
+          <button type="button" (click)="send()" [disabled]="!canSend()">
+            @if (isConsultationFormOpen()) {
+              Gửi tư vấn
+            } @else {
+              Gửi
+            }
+          </button>
+        </div>
+      </section>
+    }
+  </div>
+}

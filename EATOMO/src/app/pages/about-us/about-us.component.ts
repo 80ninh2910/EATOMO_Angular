@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, AfterViewInit, ElementRef, ChangeDetectionStrategy, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
@@ -13,6 +13,7 @@ import { FooterComponent } from '../../shared/footer/footer.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AboutUsComponent implements AfterViewInit {
+  private platformId = inject(PLATFORM_ID);
   constructor(private elementRef: ElementRef) { }
   stats = [
     { number: '100%', label: 'Fresh Ingredients' },
@@ -54,6 +55,7 @@ export class AboutUsComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.initCounterAnimation();
   }
 

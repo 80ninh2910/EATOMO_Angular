@@ -58,14 +58,18 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
+    const normalizedUsername = (username || '').trim();
 
-    if (!username || !password) {
+    if (!normalizedUsername || !password) {
       return res.status(400).json({ success: false, message: 'Username and password are required' });
     }
 
     // Find user (select password explicitly)
     const user = await User.findOne({
-      $or: [{ username }, { email: username }]
+      $or: [
+        { username: normalizedUsername },
+        { email: normalizedUsername.toLowerCase() }
+      ]
     }).select('+password');
 
     if (!user) {

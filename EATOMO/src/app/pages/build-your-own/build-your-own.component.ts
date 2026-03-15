@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { CartService } from '../../services/cart.service';
@@ -106,7 +106,32 @@ export class BuildYourOwnComponent {
     { name: 'Olive oil and herb', calories: 70, protein: 0, carbs: 17, fat: 0, image: '/assets/healthy/images/build-your-own/Olive-oil-herb-300x300.png' }
   ];
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private route: ActivatedRoute
+  ) {
+    this.route.queryParamMap.subscribe((params) => {
+      const proteinName = params.get('protein');
+      const carbsName = params.get('carbs');
+      const sideName = params.get('side');
+      const sauceName = params.get('sauce');
+      const source = params.get('source');
+
+      if (!proteinName || !carbsName || !sideName || !sauceName) return;
+
+      const protein = this.findIngredient(this.proteins, proteinName);
+      const carbs = this.findIngredient(this.carbsOptions, carbsName);
+      const side = this.findIngredient(this.sides, sideName);
+      const sauce = this.findIngredient(this.sauces, sauceName);
+
+      if (!protein || !carbs || !side || !sauce) return;
+
+      this.selectedItems.set({ protein, carbs, side, sauce });
+      if (source === 'chatbot') {
+        this.showToast('Da nap san cong thuc Build Your Own theo goi y AI!', 'success');
+      }
+    });
+  }
 
   toast = signal<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
@@ -176,5 +201,14 @@ export class BuildYourOwnComponent {
     this.cartService.addToCart(cartItem);
     this.showToast('Custom bowl added to cart!', 'success');
     this.clearSelections();
+  }
+
+  private findIngredient(list: Ingredient[], name: string): Ingredient | null {
+    const target = this.normalizeName(name);
+    return list.find((item) => this.normalizeName(item.name) === target) || null;
+  }
+
+  private normalizeName(value: string): string {
+    return String(value || '').trim().toLowerCase();
   }
 }
