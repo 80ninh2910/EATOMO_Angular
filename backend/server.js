@@ -23,11 +23,16 @@ const allowedOrigins = new Set([
   'http://127.0.0.1:4000'
 ]);
 
+function isLocalDevOrigin(origin) {
+  if (!origin) return true;
+  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(String(origin));
+}
+
 // ───────── Middleware ─────────
 app.use(cors({
   origin(origin, callback) {
     // Allow non-browser tools (no Origin) and known local dev origins.
-    if (!origin || allowedOrigins.has(origin)) {
+    if (!origin || allowedOrigins.has(origin) || isLocalDevOrigin(origin)) {
       callback(null, true);
       return;
     }
