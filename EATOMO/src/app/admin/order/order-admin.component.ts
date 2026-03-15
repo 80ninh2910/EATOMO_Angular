@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { OrderService } from '../../services/order.service';
+import { AdminAiChatService } from '../../services/admin-ai-chat.service';
 import { Order, OrderStatus } from '../../models/order.model';
 
 type FulfillmentStatus = 'pending' | 'waiting' | 'shipping' | 'done';
@@ -36,6 +37,9 @@ interface OrderMeta {
 })
 export class OrderAdminComponent implements OnInit {
   private orderService = inject(OrderService);
+  private adminAiChatService = inject(AdminAiChatService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
   ordersMap: Record<string, OrderMeta> = {};
@@ -50,6 +54,8 @@ export class OrderAdminComponent implements OnInit {
   dateFrom = '';
   dateTo = '';
   selectedIds = new Set<string>();
+  highRiskOrderIds = new Set<string>();
+  aiRiskFilterActive = false;
   searchTerm = '';
   appliedSearchTerm = '';
 
@@ -70,7 +76,34 @@ export class OrderAdminComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      const risk = params.get('risk');
+      this.aiRiskFilterActive = risk === 'high';
+      if (this.aiRiskFilterActive) {
+        this.loadHighRiskOrders();
+      } else {
+        this.highRiskOrderIds.clear();
+      }
+      this.cdr.markForCheck();
+    });
     this.loadOrders();
+  }
+
+  private loadHighRiskOrders(): void {
+    this.adminAiChatService.getHighRiskOrders(0.6, 0.45, 150).subscribe({
+      next: (res) => {
+        this.highRiskOrderIds = new Set((res.orders || []).map((o) => o.orderId));
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.highRiskOrderIds.clear();
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  clearAiRiskFilter(): void {
+    this.router.navigate(['/admin']);
   }
 
   loadOrders(): void {
@@ -167,6 +200,7 @@ export class OrderAdminComponent implements OnInit {
   shouldShowOrder(orderId: string): boolean {
     const meta = this.ordersMap[orderId];
     if (!meta) return false;
+    if (this.aiRiskFilterActive && !this.highRiskOrderIds.has(orderId)) return false;
     if (this.activeTab === 'pending' && meta.fulfillmentStatus !== 'pending' && meta.fulfillmentStatus !== 'waiting') return false;
     if (this.activeTab === 'shipping' && meta.fulfillmentStatus !== 'shipping') return false;
     if (this.activeTab === 'delivered' && meta.fulfillmentStatus !== 'done') return false;

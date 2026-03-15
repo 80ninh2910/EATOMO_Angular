@@ -1,0 +1,1525 @@
+[
+  {
+    "orderNumber": "ORD-20260312-001",
+    "userId": "69b66f179390b3e4eaa4710a",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "B4",
+        "bowlName": "B4",
+        "unitPrice": 199900,
+        "quantity": 2,
+        "subtotal": 399800,
+        "category": "balanced"
+      },
+      {
+        "bowlId": "L3",
+        "bowlName": "L3",
+        "unitPrice": 169900,
+        "quantity": 1,
+        "subtotal": 169900,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 569700,
+    "tax": 45576,
+    "shippingFee": 0,
+    "discountAmount": 56970,
+    "totalAmount": 558306,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "WELCOME10",
+    "userSegment": "vip",
+    "createdAt": "2026-02-13T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-002",
+    "userId": "69b66f179390b3e4eaa4710d",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "H1",
+        "bowlName": "H1",
+        "unitPrice": 229900,
+        "quantity": 1,
+        "subtotal": 229900,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 229900,
+    "tax": 18392,
+    "shippingFee": 25000,
+    "discountAmount": 0,
+    "totalAmount": 273292,
+    "paymentMethod": "cash",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-02-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-003",
+    "userId": "69b66f179390b3e4eaa47110",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "B10",
+        "bowlName": "B10",
+        "unitPrice": 219900,
+        "quantity": 1,
+        "subtotal": 219900,
+        "category": "balanced"
+      },
+      {
+        "bowlId": "V2",
+        "bowlName": "V2",
+        "unitPrice": 149900,
+        "quantity": 2,
+        "subtotal": 299800,
+        "category": "vegetarian"
+      }
+    ],
+    "subtotal": 519700,
+    "tax": 41576,
+    "shippingFee": 0,
+    "discountAmount": 51970,
+    "totalAmount": 509306,
+    "paymentMethod": "card",
+    "paymentStatus": "paid",
+    "voucherCode": "EATOMO50K",
+    "userSegment": "regular",
+    "createdAt": "2026-02-16T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-004",
+    "userId": "69b66f179390b3e4eaa47113",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "L4",
+        "bowlName": "L4",
+        "unitPrice": 139900,
+        "quantity": 3,
+        "subtotal": 419700,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 419700,
+    "tax": 33576,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 453276,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-02-17T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-005",
+    "userId": "69b66f179390b3e4eaa47116",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "H5",
+        "bowlName": "H5",
+        "unitPrice": 269900,
+        "quantity": 2,
+        "subtotal": 539800,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "B6",
+        "bowlName": "B6",
+        "unitPrice": 189900,
+        "quantity": 1,
+        "subtotal": 189900,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 729700,
+    "tax": 58376,
+    "shippingFee": 0,
+    "discountAmount": 72970,
+    "totalAmount": 715106,
+    "paymentMethod": "bank_transfer",
+    "paymentStatus": "paid",
+    "voucherCode": "VIP100K",
+    "userSegment": "regular",
+    "createdAt": "2026-02-18T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-006",
+    "userId": "69b66f179390b3e4eaa47119",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "V3",
+        "bowlName": "V3",
+        "unitPrice": 139900,
+        "quantity": 2,
+        "subtotal": 279800,
+        "category": "vegetarian"
+      },
+      {
+        "bowlId": "V5",
+        "bowlName": "V5",
+        "unitPrice": 149900,
+        "quantity": 1,
+        "subtotal": 149900,
+        "category": "vegetarian"
+      }
+    ],
+    "subtotal": 429700,
+    "tax": 34376,
+    "shippingFee": 0,
+    "discountAmount": 42970,
+    "totalAmount": 421106,
+    "paymentMethod": "cash",
+    "paymentStatus": "paid",
+    "voucherCode": "VEGGIE25",
+    "userSegment": "regular",
+    "createdAt": "2026-02-19T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-007",
+    "userId": "69b66f179390b3e4eaa4711c",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "B3",
+        "bowlName": "B3",
+        "unitPrice": 164900,
+        "quantity": 1,
+        "subtotal": 164900,
+        "category": "balanced"
+      },
+      {
+        "bowlId": "H3",
+        "bowlName": "H3",
+        "unitPrice": 219900,
+        "quantity": 1,
+        "subtotal": 219900,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 384800,
+    "tax": 30784,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 415584,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-02-20T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-008",
+    "userId": "69b66f179390b3e4eaa4710a",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "H7",
+        "bowlName": "H7",
+        "unitPrice": 239900,
+        "quantity": 2,
+        "subtotal": 479800,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 479800,
+    "tax": 38384,
+    "shippingFee": 0,
+    "discountAmount": 47980,
+    "totalAmount": 470204,
+    "paymentMethod": "card",
+    "paymentStatus": "paid",
+    "voucherCode": "HEALTHY20",
+    "userSegment": "vip",
+    "createdAt": "2026-02-21T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-009",
+    "userId": "69b66f179390b3e4eaa4710d",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "B1",
+        "bowlName": "B1",
+        "unitPrice": 189900,
+        "quantity": 2,
+        "subtotal": 379800,
+        "category": "balanced"
+      },
+      {
+        "bowlId": "L6",
+        "bowlName": "L6",
+        "unitPrice": 144900,
+        "quantity": 1,
+        "subtotal": 144900,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 524700,
+    "tax": 41976,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 566676,
+    "paymentMethod": "cash",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-02-22T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-010",
+    "userId": "69b66f179390b3e4eaa4711f",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "B12",
+        "bowlName": "B12",
+        "unitPrice": 209900,
+        "quantity": 2,
+        "subtotal": 419800,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 419800,
+    "tax": 33584,
+    "shippingFee": 0,
+    "discountAmount": 41980,
+    "totalAmount": 411404,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "FIRSTORDER30",
+    "userSegment": "regular",
+    "createdAt": "2026-02-23T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-011",
+    "userId": "69b66f179390b3e4eaa47122",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "L2",
+        "bowlName": "L2",
+        "unitPrice": 154900,
+        "quantity": 1,
+        "subtotal": 154900,
+        "category": "low-cal"
+      },
+      {
+        "bowlId": "H10",
+        "bowlName": "H10",
+        "unitPrice": 259900,
+        "quantity": 1,
+        "subtotal": 259900,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 414800,
+    "tax": 33184,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 447984,
+    "paymentMethod": "card",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-02-24T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-012",
+    "userId": "69b66f179390b3e4eaa47125",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "V4",
+        "bowlName": "V4",
+        "unitPrice": 139900,
+        "quantity": 3,
+        "subtotal": 419700,
+        "category": "vegetarian"
+      },
+      {
+        "bowlId": "V1",
+        "bowlName": "V1",
+        "unitPrice": 129900,
+        "quantity": 1,
+        "subtotal": 129900,
+        "category": "vegetarian"
+      }
+    ],
+    "subtotal": 549600,
+    "tax": 43968,
+    "shippingFee": 0,
+    "discountAmount": 54960,
+    "totalAmount": 538608,
+    "paymentMethod": "cash",
+    "paymentStatus": "paid",
+    "voucherCode": "VEGGIE25",
+    "userSegment": "regular",
+    "createdAt": "2026-02-25T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-013",
+    "userId": "69b66f179390b3e4eaa47128",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "H8",
+        "bowlName": "H8",
+        "unitPrice": 259900,
+        "quantity": 1,
+        "subtotal": 259900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "H2",
+        "bowlName": "H2",
+        "unitPrice": 239900,
+        "quantity": 1,
+        "subtotal": 239900,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 499800,
+    "tax": 39984,
+    "shippingFee": 0,
+    "discountAmount": 49980,
+    "totalAmount": 489804,
+    "paymentMethod": "bank_transfer",
+    "paymentStatus": "paid",
+    "voucherCode": "PROTEIN10",
+    "userSegment": "regular",
+    "createdAt": "2026-02-26T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-014",
+    "userId": "69b66f179390b3e4eaa4712b",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "B9",
+        "bowlName": "B9",
+        "unitPrice": 199900,
+        "quantity": 2,
+        "subtotal": 399800,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 399800,
+    "tax": 31984,
+    "shippingFee": 0,
+    "discountAmount": 39980,
+    "totalAmount": 391804,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "EATOMO50K",
+    "userSegment": "regular",
+    "createdAt": "2026-02-27T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-015",
+    "userId": "69b66f189390b3e4eaa4712e",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "L8",
+        "bowlName": "L8",
+        "unitPrice": 179900,
+        "quantity": 2,
+        "subtotal": 359800,
+        "category": "low-cal"
+      },
+      {
+        "bowlId": "B5",
+        "bowlName": "B5",
+        "unitPrice": 189900,
+        "quantity": 1,
+        "subtotal": 189900,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 549700,
+    "tax": 43976,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 593676,
+    "paymentMethod": "cash",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-02-28T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-016",
+    "userId": "69b66f189390b3e4eaa47131",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "H6",
+        "bowlName": "H6",
+        "unitPrice": 249900,
+        "quantity": 2,
+        "subtotal": 499800,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 499800,
+    "tax": 39984,
+    "shippingFee": 0,
+    "discountAmount": 49980,
+    "totalAmount": 489804,
+    "paymentMethod": "card",
+    "paymentStatus": "paid",
+    "voucherCode": "VIP100K",
+    "userSegment": "regular",
+    "createdAt": "2026-03-01T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-017",
+    "userId": "69b66f189390b3e4eaa47134",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "B4",
+        "bowlName": "B4",
+        "unitPrice": 199900,
+        "quantity": 1,
+        "subtotal": 199900,
+        "category": "balanced"
+      },
+      {
+        "bowlId": "L5",
+        "bowlName": "L5",
+        "unitPrice": 159900,
+        "quantity": 2,
+        "subtotal": 319800,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 519700,
+    "tax": 41576,
+    "shippingFee": 0,
+    "discountAmount": 51970,
+    "totalAmount": 509306,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "HEALTHY20",
+    "userSegment": "regular",
+    "createdAt": "2026-03-02T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-018",
+    "userId": "69b66f179390b3e4eaa4711f",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "B15",
+        "bowlName": "B15",
+        "unitPrice": 199900,
+        "quantity": 2,
+        "subtotal": 399800,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 399800,
+    "tax": 31984,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 431784,
+    "paymentMethod": "cash",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-03T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-019",
+    "userId": "69b66f179390b3e4eaa47113",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "H4",
+        "bowlName": "H4",
+        "unitPrice": 249900,
+        "quantity": 1,
+        "subtotal": 249900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "B7",
+        "bowlName": "B7",
+        "unitPrice": 199900,
+        "quantity": 1,
+        "subtotal": 199900,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 449800,
+    "tax": 35984,
+    "shippingFee": 0,
+    "discountAmount": 44980,
+    "totalAmount": 440804,
+    "paymentMethod": "card",
+    "paymentStatus": "paid",
+    "voucherCode": "EATOMO50K",
+    "userSegment": "regular",
+    "createdAt": "2026-03-04T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-020",
+    "userId": "69b66f179390b3e4eaa4710a",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "H9",
+        "bowlName": "H9",
+        "unitPrice": 249900,
+        "quantity": 1,
+        "subtotal": 249900,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 249900,
+    "tax": 19992,
+    "shippingFee": 25000,
+    "discountAmount": 0,
+    "totalAmount": 294892,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "vip",
+    "createdAt": "2026-03-05T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-021",
+    "userId": "69b66f179390b3e4eaa47125",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "B11",
+        "bowlName": "B11",
+        "unitPrice": 189900,
+        "quantity": 2,
+        "subtotal": 379800,
+        "category": "balanced"
+      },
+      {
+        "bowlId": "L1",
+        "bowlName": "L1",
+        "unitPrice": 149900,
+        "quantity": 1,
+        "subtotal": 149900,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 529700,
+    "tax": 42376,
+    "shippingFee": 0,
+    "discountAmount": 52970,
+    "totalAmount": 519106,
+    "paymentMethod": "cash",
+    "paymentStatus": "paid",
+    "voucherCode": "FREESHIP",
+    "userSegment": "regular",
+    "createdAt": "2026-03-06T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-022",
+    "userId": "69b66f179390b3e4eaa47122",
+    "status": "completed",
+    "items": [
+      {
+        "bowlId": "V2",
+        "bowlName": "V2",
+        "unitPrice": 149900,
+        "quantity": 2,
+        "subtotal": 299800,
+        "category": "vegetarian"
+      },
+      {
+        "bowlId": "V5",
+        "bowlName": "V5",
+        "unitPrice": 149900,
+        "quantity": 1,
+        "subtotal": 149900,
+        "category": "vegetarian"
+      }
+    ],
+    "subtotal": 449700,
+    "tax": 35976,
+    "shippingFee": 0,
+    "discountAmount": 44970,
+    "totalAmount": 440706,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "VEGGIE25",
+    "userSegment": "regular",
+    "createdAt": "2026-03-07T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-023",
+    "userId": "69b66f179390b3e4eaa47110",
+    "status": "delivering",
+    "items": [
+      {
+        "bowlId": "H8",
+        "bowlName": "H8",
+        "unitPrice": 259900,
+        "quantity": 1,
+        "subtotal": 259900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "B9",
+        "bowlName": "B9",
+        "unitPrice": 199900,
+        "quantity": 1,
+        "subtotal": 199900,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 459800,
+    "tax": 36784,
+    "shippingFee": 0,
+    "discountAmount": 45980,
+    "totalAmount": 450604,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "PROTEIN10",
+    "userSegment": "regular",
+    "createdAt": "2026-03-14T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-024",
+    "userId": "69b66f179390b3e4eaa47113",
+    "status": "delivering",
+    "items": [
+      {
+        "bowlId": "L2",
+        "bowlName": "L2",
+        "unitPrice": 154900,
+        "quantity": 2,
+        "subtotal": 309800,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 309800,
+    "tax": 24784,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 334584,
+    "paymentMethod": "cash",
+    "paymentStatus": "unpaid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-14T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-025",
+    "userId": "69b66f179390b3e4eaa47128",
+    "status": "delivering",
+    "items": [
+      {
+        "bowlId": "B4",
+        "bowlName": "B4",
+        "unitPrice": 199900,
+        "quantity": 2,
+        "subtotal": 399800,
+        "category": "balanced"
+      },
+      {
+        "bowlId": "H1",
+        "bowlName": "H1",
+        "unitPrice": 229900,
+        "quantity": 1,
+        "subtotal": 229900,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 629700,
+    "tax": 50376,
+    "shippingFee": 0,
+    "discountAmount": 62970,
+    "totalAmount": 617106,
+    "paymentMethod": "card",
+    "paymentStatus": "paid",
+    "voucherCode": "EATOMO50K",
+    "userSegment": "regular",
+    "createdAt": "2026-03-14T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-026",
+    "userId": "69b66f179390b3e4eaa4712b",
+    "status": "delivering",
+    "items": [
+      {
+        "bowlId": "V3",
+        "bowlName": "V3",
+        "unitPrice": 139900,
+        "quantity": 2,
+        "subtotal": 279800,
+        "category": "vegetarian"
+      }
+    ],
+    "subtotal": 279800,
+    "tax": 22384,
+    "shippingFee": 25000,
+    "discountAmount": 27980,
+    "totalAmount": 299204,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "VEGGIE25",
+    "userSegment": "regular",
+    "createdAt": "2026-03-14T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-027",
+    "userId": "69b66f189390b3e4eaa4712e",
+    "status": "delivering",
+    "items": [
+      {
+        "bowlId": "H5",
+        "bowlName": "H5",
+        "unitPrice": 269900,
+        "quantity": 1,
+        "subtotal": 269900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "L9",
+        "bowlName": "L9",
+        "unitPrice": 159900,
+        "quantity": 1,
+        "subtotal": 159900,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 429800,
+    "tax": 34384,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 464184,
+    "paymentMethod": "bank_transfer",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-14T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-028",
+    "userId": "69b66f189390b3e4eaa47131",
+    "status": "delivering",
+    "items": [
+      {
+        "bowlId": "B13",
+        "bowlName": "B13",
+        "unitPrice": 209900,
+        "quantity": 2,
+        "subtotal": 419800,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 419800,
+    "tax": 33584,
+    "shippingFee": 0,
+    "discountAmount": 41980,
+    "totalAmount": 411404,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "HEALTHY20",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-029",
+    "userId": "69b66f179390b3e4eaa4710d",
+    "status": "delivering",
+    "items": [
+      {
+        "bowlId": "H3",
+        "bowlName": "H3",
+        "unitPrice": 219900,
+        "quantity": 1,
+        "subtotal": 219900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "B6",
+        "bowlName": "B6",
+        "unitPrice": 189900,
+        "quantity": 1,
+        "subtotal": 189900,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 409800,
+    "tax": 32784,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 442584,
+    "paymentMethod": "cash",
+    "paymentStatus": "unpaid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-030",
+    "userId": "69b66f189390b3e4eaa47134",
+    "status": "delivering",
+    "items": [
+      {
+        "bowlId": "B10",
+        "bowlName": "B10",
+        "unitPrice": 219900,
+        "quantity": 2,
+        "subtotal": 439800,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 439800,
+    "tax": 35184,
+    "shippingFee": 0,
+    "discountAmount": 43980,
+    "totalAmount": 431004,
+    "paymentMethod": "card",
+    "paymentStatus": "paid",
+    "voucherCode": "EATOMO50K",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-031",
+    "userId": "69b66f179390b3e4eaa47116",
+    "status": "preparing",
+    "items": [
+      {
+        "bowlId": "B12",
+        "bowlName": "B12",
+        "unitPrice": 209900,
+        "quantity": 1,
+        "subtotal": 209900,
+        "category": "balanced"
+      },
+      {
+        "bowlId": "H10",
+        "bowlName": "H10",
+        "unitPrice": 259900,
+        "quantity": 1,
+        "subtotal": 259900,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 469800,
+    "tax": 37584,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 507384,
+    "paymentMethod": "card",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-032",
+    "userId": "69b66f179390b3e4eaa4711c",
+    "status": "preparing",
+    "items": [
+      {
+        "bowlId": "V4",
+        "bowlName": "V4",
+        "unitPrice": 139900,
+        "quantity": 3,
+        "subtotal": 419700,
+        "category": "vegetarian"
+      },
+      {
+        "bowlId": "V1",
+        "bowlName": "V1",
+        "unitPrice": 129900,
+        "quantity": 1,
+        "subtotal": 129900,
+        "category": "vegetarian"
+      }
+    ],
+    "subtotal": 549600,
+    "tax": 43968,
+    "shippingFee": 0,
+    "discountAmount": 54960,
+    "totalAmount": 538608,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "VEGGIE25",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-033",
+    "userId": "69b66f179390b3e4eaa4711f",
+    "status": "preparing",
+    "items": [
+      {
+        "bowlId": "H2",
+        "bowlName": "H2",
+        "unitPrice": 239900,
+        "quantity": 1,
+        "subtotal": 239900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "B1",
+        "bowlName": "B1",
+        "unitPrice": 189900,
+        "quantity": 2,
+        "subtotal": 379800,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 619700,
+    "tax": 49576,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 669276,
+    "paymentMethod": "cash",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-034",
+    "userId": "69b66f179390b3e4eaa47125",
+    "status": "confirmed",
+    "items": [
+      {
+        "bowlId": "H6",
+        "bowlName": "H6",
+        "unitPrice": 249900,
+        "quantity": 1,
+        "subtotal": 249900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "L7",
+        "bowlName": "L7",
+        "unitPrice": 164900,
+        "quantity": 2,
+        "subtotal": 329800,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 579700,
+    "tax": 46376,
+    "shippingFee": 0,
+    "discountAmount": 57970,
+    "totalAmount": 568106,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "PROTEIN10",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-035",
+    "userId": "69b66f179390b3e4eaa47128",
+    "status": "preparing",
+    "items": [
+      {
+        "bowlId": "B8",
+        "bowlName": "B8",
+        "unitPrice": 179900,
+        "quantity": 2,
+        "subtotal": 359800,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 359800,
+    "tax": 28784,
+    "shippingFee": 0,
+    "discountAmount": 35980,
+    "totalAmount": 352604,
+    "paymentMethod": "card",
+    "paymentStatus": "paid",
+    "voucherCode": "FREESHIP",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-036",
+    "userId": "69b66f179390b3e4eaa4710a",
+    "status": "preparing",
+    "items": [
+      {
+        "bowlId": "H4",
+        "bowlName": "H4",
+        "unitPrice": 249900,
+        "quantity": 2,
+        "subtotal": 499800,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 499800,
+    "tax": 39984,
+    "shippingFee": 0,
+    "discountAmount": 49980,
+    "totalAmount": 489804,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "FLASH25",
+    "userSegment": "vip",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-037",
+    "userId": "69b66f179390b3e4eaa4712b",
+    "status": "preparing",
+    "items": [
+      {
+        "bowlId": "L5",
+        "bowlName": "L5",
+        "unitPrice": 159900,
+        "quantity": 2,
+        "subtotal": 319800,
+        "category": "low-cal"
+      },
+      {
+        "bowlId": "B3",
+        "bowlName": "B3",
+        "unitPrice": 164900,
+        "quantity": 1,
+        "subtotal": 164900,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 484700,
+    "tax": 38776,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 523476,
+    "paymentMethod": "cash",
+    "paymentStatus": "unpaid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-038",
+    "userId": "69b66f189390b3e4eaa4712e",
+    "status": "preparing",
+    "items": [
+      {
+        "bowlId": "B14",
+        "bowlName": "B14",
+        "unitPrice": 179900,
+        "quantity": 3,
+        "subtotal": 539700,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 539700,
+    "tax": 43176,
+    "shippingFee": 0,
+    "discountAmount": 53970,
+    "totalAmount": 528906,
+    "paymentMethod": "bank_transfer",
+    "paymentStatus": "paid",
+    "voucherCode": "EATOMO50K",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-039",
+    "userId": "69b66f179390b3e4eaa47119",
+    "status": "confirmed",
+    "items": [
+      {
+        "bowlId": "B7",
+        "bowlName": "B7",
+        "unitPrice": 199900,
+        "quantity": 2,
+        "subtotal": 399800,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 399800,
+    "tax": 31984,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 431784,
+    "paymentMethod": "momo",
+    "paymentStatus": "paid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-040",
+    "userId": "69b66f179390b3e4eaa4710a",
+    "status": "delivering",
+    "items": [
+      {
+        "bowlId": "L7",
+        "bowlName": "L7",
+        "unitPrice": 164900,
+        "quantity": 1,
+        "subtotal": 164900,
+        "category": "low-cal"
+      },
+      {
+        "bowlId": "B11",
+        "bowlName": "B11",
+        "unitPrice": 189900,
+        "quantity": 1,
+        "subtotal": 189900,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 354800,
+    "tax": 28384,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 383184,
+    "paymentMethod": "cash",
+    "paymentStatus": "unpaid",
+    "voucherCode": "",
+    "userSegment": "vip",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-041",
+    "userId": "69b66f189390b3e4eaa47131",
+    "status": "confirmed",
+    "items": [
+      {
+        "bowlId": "H9",
+        "bowlName": "H9",
+        "unitPrice": 249900,
+        "quantity": 1,
+        "subtotal": 249900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "B2",
+        "bowlName": "B2",
+        "unitPrice": 174900,
+        "quantity": 1,
+        "subtotal": 174900,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 424800,
+    "tax": 33984,
+    "shippingFee": 0,
+    "discountAmount": 42480,
+    "totalAmount": 416304,
+    "paymentMethod": "card",
+    "paymentStatus": "paid",
+    "voucherCode": "HEALTHY20",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-042",
+    "userId": "69b66f189390b3e4eaa47134",
+    "status": "confirmed",
+    "items": [
+      {
+        "bowlId": "V2",
+        "bowlName": "V2",
+        "unitPrice": 149900,
+        "quantity": 2,
+        "subtotal": 299800,
+        "category": "vegetarian"
+      },
+      {
+        "bowlId": "V4",
+        "bowlName": "V4",
+        "unitPrice": 139900,
+        "quantity": 1,
+        "subtotal": 139900,
+        "category": "vegetarian"
+      }
+    ],
+    "subtotal": 439700,
+    "tax": 35176,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 474876,
+    "paymentMethod": "momo",
+    "paymentStatus": "unpaid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-043",
+    "userId": "69b66f179390b3e4eaa47122",
+    "status": "confirmed",
+    "items": [
+      {
+        "bowlId": "B5",
+        "bowlName": "B5",
+        "unitPrice": 189900,
+        "quantity": 2,
+        "subtotal": 379800,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 379800,
+    "tax": 30384,
+    "shippingFee": 0,
+    "discountAmount": 37980,
+    "totalAmount": 372204,
+    "paymentMethod": "cash",
+    "paymentStatus": "paid",
+    "voucherCode": "FREESHIP",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-044",
+    "userId": "69b66f179390b3e4eaa4710d",
+    "status": "confirmed",
+    "items": [
+      {
+        "bowlId": "H7",
+        "bowlName": "H7",
+        "unitPrice": 239900,
+        "quantity": 1,
+        "subtotal": 239900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "L10",
+        "bowlName": "L10",
+        "unitPrice": 169900,
+        "quantity": 1,
+        "subtotal": 169900,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 409800,
+    "tax": 32784,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 442584,
+    "paymentMethod": "momo",
+    "paymentStatus": "unpaid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-045",
+    "userId": "69b66f179390b3e4eaa4710d",
+    "status": "pending",
+    "items": [
+      {
+        "bowlId": "H4",
+        "bowlName": "H4",
+        "unitPrice": 249900,
+        "quantity": 1,
+        "subtotal": 249900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "L9",
+        "bowlName": "L9",
+        "unitPrice": 159900,
+        "quantity": 2,
+        "subtotal": 319800,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 569700,
+    "tax": 45576,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 615276,
+    "paymentMethod": "momo",
+    "paymentStatus": "unpaid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-046",
+    "userId": "69b66f179390b3e4eaa47110",
+    "status": "pending",
+    "items": [
+      {
+        "bowlId": "B5",
+        "bowlName": "B5",
+        "unitPrice": 189900,
+        "quantity": 2,
+        "subtotal": 379800,
+        "category": "balanced"
+      },
+      {
+        "bowlId": "V2",
+        "bowlName": "V2",
+        "unitPrice": 149900,
+        "quantity": 1,
+        "subtotal": 149900,
+        "category": "vegetarian"
+      }
+    ],
+    "subtotal": 529700,
+    "tax": 42376,
+    "shippingFee": 0,
+    "discountAmount": 52970,
+    "totalAmount": 519106,
+    "paymentMethod": "card",
+    "paymentStatus": "unpaid",
+    "voucherCode": "FIRSTORDER30",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-047",
+    "userId": "69b66f179390b3e4eaa4711f",
+    "status": "pending",
+    "items": [
+      {
+        "bowlId": "B15",
+        "bowlName": "B15",
+        "unitPrice": 199900,
+        "quantity": 2,
+        "subtotal": 399800,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 399800,
+    "tax": 31984,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 431784,
+    "paymentMethod": "bank_transfer",
+    "paymentStatus": "unpaid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-048",
+    "userId": "69b66f179390b3e4eaa4712b",
+    "status": "pending",
+    "items": [
+      {
+        "bowlId": "H10",
+        "bowlName": "H10",
+        "unitPrice": 259900,
+        "quantity": 1,
+        "subtotal": 259900,
+        "category": "high-protein"
+      },
+      {
+        "bowlId": "L3",
+        "bowlName": "L3",
+        "unitPrice": 169900,
+        "quantity": 1,
+        "subtotal": 169900,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 429800,
+    "tax": 34384,
+    "shippingFee": 0,
+    "discountAmount": 42980,
+    "totalAmount": 421204,
+    "paymentMethod": "momo",
+    "paymentStatus": "unpaid",
+    "voucherCode": "FLASH25",
+    "userSegment": "regular",
+    "createdAt": "2026-03-15T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-049",
+    "userId": "69b66f179390b3e4eaa47116",
+    "status": "cancelled",
+    "items": [
+      {
+        "bowlId": "H2",
+        "bowlName": "H2",
+        "unitPrice": 239900,
+        "quantity": 1,
+        "subtotal": 239900,
+        "category": "high-protein"
+      }
+    ],
+    "subtotal": 239900,
+    "tax": 19192,
+    "shippingFee": 25000,
+    "discountAmount": 0,
+    "totalAmount": 284092,
+    "paymentMethod": "cash",
+    "paymentStatus": "unpaid",
+    "voucherCode": "",
+    "userSegment": "regular",
+    "createdAt": "2026-03-12T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-20260312-050",
+    "userId": "69b66f179390b3e4eaa4710a",
+    "status": "cancelled",
+    "items": [
+      {
+        "bowlId": "L10",
+        "bowlName": "L10",
+        "unitPrice": 169900,
+        "quantity": 2,
+        "subtotal": 339800,
+        "category": "low-cal"
+      },
+      {
+        "bowlId": "B2",
+        "bowlName": "B2",
+        "unitPrice": 174900,
+        "quantity": 1,
+        "subtotal": 174900,
+        "category": "balanced"
+      }
+    ],
+    "subtotal": 514700,
+    "tax": 41176,
+    "shippingFee": 0,
+    "discountAmount": 0,
+    "totalAmount": 555876,
+    "paymentMethod": "momo",
+    "paymentStatus": "refunded",
+    "voucherCode": "",
+    "userSegment": "vip",
+    "createdAt": "2026-03-10T08:34:32.247Z"
+  },
+  {
+    "orderNumber": "ORD-MMRI8JYC",
+    "userId": "69b66f179390b3e4eaa4710a",
+    "status": "confirmed",
+    "items": [
+      {
+        "bowlId": "L10",
+        "bowlName": "L10",
+        "unitPrice": 169900,
+        "quantity": 1,
+        "subtotal": 169900,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 169900,
+    "tax": 13592,
+    "shippingFee": 30000,
+    "discountAmount": 0,
+    "totalAmount": 213492,
+    "paymentMethod": "cash",
+    "paymentStatus": "unpaid",
+    "voucherCode": "",
+    "userSegment": "vip",
+    "createdAt": "2026-03-15T08:40:40.467Z"
+  }
+]

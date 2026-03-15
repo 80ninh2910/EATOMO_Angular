@@ -131,6 +131,63 @@
       </section>
 
     </div>
+
+    <section class="panel">
+      <div class="section-header">
+        <h2 class="section-title">Model Monitoring (AI)</h2>
+        <small *ngIf="monitoring">Cap nhat: {{ monitoring.generatedAt | date:'short' }}</small>
+      </div>
+
+      <div class="state-msg" *ngIf="isLoadingMonitoring">Dang tai monitoring...</div>
+
+      <ng-container *ngIf="!isLoadingMonitoring && monitoring as m">
+        <div class="monitor-grid">
+          <div class="kpi-card">
+            <p class="kpi-label">Cancel drift score</p>
+            <p class="kpi-value">{{ m.drift.cancel.score | number:'1.2-2' }}</p>
+          </div>
+          <div class="kpi-card">
+            <p class="kpi-label">Delay drift score</p>
+            <p class="kpi-value">{{ m.drift.delay.score | number:'1.2-2' }}</p>
+          </div>
+          <div class="kpi-card">
+            <p class="kpi-label">Nguong cancel</p>
+            <p class="kpi-value">{{ m.modelInfo.cancel.threshold | number:'1.2-2' }}</p>
+          </div>
+          <div class="kpi-card">
+            <p class="kpi-label">Nguong delay</p>
+            <p class="kpi-value">{{ m.modelInfo.delay.threshold | number:'1.2-2' }}</p>
+          </div>
+        </div>
+
+        <table class="data-table" *ngIf="m.weeklyMetrics.length > 0">
+          <thead>
+            <tr>
+              <th>Tuan</th>
+              <th>Cancel Precision</th>
+              <th>Cancel Recall</th>
+              <th>Cancel F1</th>
+              <th>Delay Precision</th>
+              <th>Delay Recall</th>
+              <th>Delay F1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let w of m.weeklyMetrics; trackBy: trackByWeek">
+              <td>{{ w.week }}</td>
+              <td>{{ w.cancel.precision | number:'1.2-2' }}</td>
+              <td>{{ w.cancel.recall | number:'1.2-2' }}</td>
+              <td>{{ w.cancel.f1 | number:'1.2-2' }}</td>
+              <td>{{ w.delay.precision | number:'1.2-2' }}</td>
+              <td>{{ w.delay.recall | number:'1.2-2' }}</td>
+              <td>{{ w.delay.f1 | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+
+      <div class="state-msg" *ngIf="!isLoadingMonitoring && !monitoring">Khong co du lieu monitoring.</div>
+    </section>
   </main>
 </div>
 

@@ -1,0 +1,250 @@
+<div class="admin-ai-root" *ngIf="isVisible()">
+  <button class="admin-ai-toggle" type="button" (click)="toggle()" [class.open]="isOpen()">
+    <span class="toggle-label">AI Admin Copilot</span>
+  </button>
+
+  <section class="admin-ai-panel" *ngIf="isOpen()">
+    <header class="admin-ai-header">
+      <div class="header-title-wrap">
+        <p class="header-kicker">EATOMO Assistant</p>
+        <h3>Tro ly van hanh thong minh</h3>
+        <p class="header-subtitle">Hoi nhanh KPI, don tre, don huy va nhan goi y hanh dong ngay trong chat.</p>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="pro-btn" (click)="clearHistory()">Xoa lich su</button>
+        <button type="button" class="pro-btn" (click)="exportHistory()">Xuat JSON</button>
+        <button type="button" class="close-btn" (click)="toggle()">Dong</button>
+      </div>
+    </header>
+
+    <section class="assistant-tools">
+      <div class="order-id-row">
+        <label for="admin-ai-order-combobox">Ma don can phan tich</label>
+        <div class="order-combo-row">
+          <select
+            id="admin-ai-order-combobox"
+            [ngModel]="orderId()"
+            (ngModelChange)="onOrderSelect($event)"
+          >
+            <option value="">Chon ma don hien tai...</option>
+            <option *ngFor="let h of hints()" [value]="h.orderId">
+              {{ h.orderNumber }} - {{ h.status }}
+            </option>
+          </select>
+
+          <button
+            type="button"
+            class="analyze-order-btn"
+            [disabled]="!canAnalyzeOrder()"
+            (click)="analyzeSelectedOrder()"
+          >
+            {{ isSending() ? 'Dang phan tich...' : 'Phan tich ma don' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="hint-wrap" *ngIf="hints().length > 0">
+        <span class="hint-label">Don gan day</span>
+        <button
+          type="button"
+          class="hint-order"
+          *ngFor="let h of hints()"
+          (click)="useOrderHint(h.orderId)"
+        >
+          {{ h.orderNumber }}
+        </button>
+      </div>
+    </section>
+
+    <div class="quick-actions" *ngIf="quickActions().length > 0">
+      <button type="button" class="quick-btn" *ngFor="let a of quickActions()" (click)="runQuickAction(a)">
+        {{ a.label }}
+      </button>
+    </div>
+
+    <div class="smart-prompts" *ngIf="smartPrompts().length > 0">
+      <span class="smart-label">Goi y cau hoi nhanh</span>
+      <button type="button" class="smart-btn" *ngFor="let p of smartPrompts()" (click)="runSmartPrompt(p)">
+        {{ p }}
+      </button>
+    </div>
+
+    <div class="admin-ai-messages" #messagesBox>
+      <article class="msg" *ngFor="let m of messages(); trackBy: trackByMessage" [class.user]="m.role === 'user'">
+        <div class="role">{{ m.role === 'user' ? 'Ban' : 'AI' }}</div>
+        <div class="content">{{ m.content }}</div>
+
+        <section class="chat-report" *ngIf="m.report as r">
+          <header class="chat-report-header">
+            <strong>Dashboard nhanh ({{ r.period }})</strong>
+            <span>{{ r.generatedAt | date: 'dd/MM HH:mm' }}</span>
+          </header>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-label">Doanh thu</div>
+              <div class="kpi-value">{{ r.kpis.totalRevenue | number }} VND</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Loi nhuan uoc tinh</div>
+              <div class="kpi-value">{{ r.kpis.grossProfitEstimate | number }} VND</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Don tre</div>
+              <div class="kpi-value">{{ r.kpis.delayedOrders }} ({{ r.kpis.delayedRate | number: '1.1-1' }}%)</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Ti le huy</div>
+              <div class="kpi-value">{{ r.kpis.cancelRate | number: '1.1-1' }}%</div>
+            </div>
+          </div>
+
+          <div class="report-split">
+            <div>
+              <p class="report-subtitle">Trang thai don ({{ r.period }})</p>
+              <div class="mini-row" *ngFor="let s of r.orderStatus | slice:0:4">
+                <span>{{ s.status }}</span>
+                <strong>{{ s.count }}</strong>
+              </div>
+            </div>
+            <div>
+              <p class="report-subtitle">Doanh thu {{ r.revenueSeries.length }} ngay</p>
+              <div class="mini-row" *ngFor="let d of r.revenueSeries | slice:-3">
+                <span>{{ d.label | date:'dd/MM' }}</span>
+                <strong>{{ d.revenue | number }}</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="chat-products" *ngIf="m.productSales as ps">
+          <header class="chat-products-header">
+            <strong>{{ getProductDashboardTitle(m) }}</strong>
+            <span>{{ ps.generatedAt | date: 'dd/MM HH:mm' }}</span>
+          </header>
+
+          <div class="products-grid">
+            <article class="product-card" *ngFor="let item of getProductItemsForMessage(m)">
+              <div class="product-thumb-wrap">
+                <img
+                  class="product-thumb"
+                  [src]="resolveCardImage(item.image)"
+                  [alt]="item.bowlName"
+                  loading="lazy"
+                />
+              </div>
+              <div class="product-info">
+                <p class="product-name">{{ item.bowlName }}</p>
+                <p class="product-stat">So luong ban: <strong>{{ item.totalQuantity }}</strong></p>
+                <p class="product-stat">Doanh thu: <strong>{{ item.totalRevenue | number }} VND</strong></p>
+              </div>
+            </article>
+          </div>
+
+          <div class="marketing-strategies" *ngIf="getMarketingStrategiesForMessage(m).length">
+            <p class="report-subtitle">Chien luoc marketing de xuat</p>
+            <ul>
+              <li *ngFor="let strategy of getMarketingStrategiesForMessage(m)">{{ strategy }}</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="chat-order-analysis" *ngIf="m.orderAnalysis as oa">
+          <header class="chat-order-analysis-header">
+            <strong>Phan tich ma don: {{ oa.order.orderNumber || oa.order.orderId }}</strong>
+            <span>{{ oa.generatedAt | date: 'dd/MM HH:mm' }}</span>
+          </header>
+
+          <div class="order-kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-label">Do uu tien</div>
+              <div class="kpi-value">{{ getPriorityBandLabel(oa) }}</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Cancel risk</div>
+              <div class="kpi-value">{{ oa.risk.cancel.probability | number: '1.1-1' }}%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Delay risk</div>
+              <div class="kpi-value">{{ oa.risk.delay.probability | number: '1.1-1' }}%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">SLA</div>
+              <div class="kpi-value">{{ getSlaStatusLabel(oa) }}</div>
+            </div>
+          </div>
+
+          <div class="report-split">
+            <div>
+              <p class="report-subtitle">Thong tin don</p>
+              <div class="mini-row"><span>Trang thai</span><strong>{{ oa.order.status }}</strong></div>
+              <div class="mini-row"><span>Tong tien</span><strong>{{ oa.order.totalAmount | number }} VND</strong></div>
+              <div class="mini-row"><span>Tuoi don</span><strong>{{ oa.order.ageHours | number: '1.1-1' }} gio</strong></div>
+              <div class="mini-row"><span>Payment</span><strong>{{ oa.order.paymentMethod }} / {{ oa.order.paymentStatus }}</strong></div>
+            </div>
+            <div>
+              <p class="report-subtitle">Chi so van hanh</p>
+              <div class="mini-row"><span>ETA tre uoc tinh</span><strong>{{ oa.sla.estimatedDelayMinutes }} phut</strong></div>
+              <div class="mini-row"><span>Escalate trong</span><strong>{{ oa.sla.escalationInMinutes }} phut</strong></div>
+              <div class="mini-row"><span>User segment</span><strong>{{ oa.featureSnapshot.userSegment }}</strong></div>
+              <div class="mini-row"><span>User orders 90d</span><strong>{{ oa.featureSnapshot.userOrders90d }}</strong></div>
+            </div>
+          </div>
+
+          <div class="order-bullets">
+            <p class="report-subtitle">Ly do rui ro</p>
+            <ul>
+              <li *ngFor="let reason of oa.riskReasons">{{ reason }}</li>
+            </ul>
+          </div>
+
+          <div class="order-bullets">
+            <p class="report-subtitle">Ke hoach xu ly de xuat</p>
+            <ul>
+              <li *ngFor="let step of oa.actionPlan">{{ step }}</li>
+            </ul>
+          </div>
+
+          <div class="order-top-items" *ngIf="oa.order.topItems.length > 0">
+            <p class="report-subtitle">Top mon trong don</p>
+            <div class="mini-row" *ngFor="let item of oa.order.topItems">
+              <span>{{ item.bowlName }} x{{ item.quantity }}</span>
+              <strong>{{ item.subtotal | number }} VND</strong>
+            </div>
+          </div>
+        </section>
+
+        <div class="msg-meta">
+          <span>{{ m.timestamp | date: 'HH:mm' }}</span>
+          <div class="msg-actions" *ngIf="m.role === 'assistant'">
+            <button type="button" class="msg-btn" (click)="copyMessage(m)">
+              {{ isCopied(m.id) ? 'Da copy' : 'Copy' }}
+            </button>
+            <button type="button" class="msg-btn" [class.active]="m.feedback === 'up'" [disabled]="isFeedbackBusy(m.id)" (click)="sendFeedback(m, 'up')">
+              Huu ich
+            </button>
+            <button type="button" class="msg-btn" [class.active]="m.feedback === 'down'" [disabled]="isFeedbackBusy(m.id)" (click)="sendFeedback(m, 'down')">
+              Chua dung
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <footer class="admin-ai-footer">
+      <div class="input-wrap">
+      <textarea
+        rows="1"
+        [ngModel]="inputText()"
+        (ngModelChange)="inputText.set($event)"
+        (keydown.enter)="$event.preventDefault(); send()"
+        placeholder="Hoi tro ly AI admin..."
+      ></textarea>
+      <span class="input-hint">Enter de gui nhanh</span>
+      </div>
+      <button type="button" [disabled]="!canSend()" (click)="send()">
+        {{ isSending() ? 'Dang phan tich...' : 'Gui' }}
+      </button>
+    </footer>
+  </section>
+</div>

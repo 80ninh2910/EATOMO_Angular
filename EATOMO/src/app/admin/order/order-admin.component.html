@@ -20,6 +20,11 @@
         <h2>Order list</h2>
       </div>
 
+      <div class="ai-filter-banner" *ngIf="aiRiskFilterActive">
+        Dang loc danh sach theo don rui ro cao tu AI.
+        <button type="button" class="btn ghost" (click)="clearAiRiskFilter()">Bo loc</button>
+      </div>
+
       <div class="tabs">
         <button class="tab" type="button" [class.active]="activeTab === 'all'" (click)="filterTab('all')">All orders</button>
         <button class="tab" type="button" [class.active]="activeTab === 'pending'" (click)="filterTab('pending')">Processing</button>

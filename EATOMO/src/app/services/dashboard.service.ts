@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DashboardStats, RevenueDataPoint, TopProduct, RecentOrder } from '../models/dashboard.model';
+import { DashboardStats, RevenueDataPoint, TopProduct, RecentOrder, ModelMonitoring } from '../models/dashboard.model';
 
 const API_URL = 'http://localhost:3000/api';
 
@@ -41,5 +41,9 @@ export class DashboardService {
   getRecentOrders(limit: number = 10): Observable<RecentOrder[]> {
     const params = new HttpParams().set('limit', limit.toString());
     return this.http.get<RecentOrder[]>(`${API_URL}/admin/dashboard/recent-orders`, { params });
+  }
+
+  getModelMonitoring(): Observable<{ success: boolean } & ModelMonitoring> {
+    return this.http.get<{ success: boolean } & ModelMonitoring>(`${API_URL}/admin/ai-chat/monitoring`);
   }
 }

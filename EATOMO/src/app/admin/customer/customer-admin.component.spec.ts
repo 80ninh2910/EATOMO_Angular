@@ -1,10 +1,12 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { CustomerAdminComponent } from './customer-admin.component';
 
 describe('CustomerAdminComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomerAdminComponent]
+      imports: [CustomerAdminComponent],
+      providers: [provideRouter([])]
     }).compileComponents();
   });
 

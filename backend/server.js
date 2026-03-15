@@ -11,6 +11,7 @@ const orderRoutes = require('./routes/order.routes');
 const adminRoutes = require('./routes/admin.routes');
 const promotionRoutes = require('./routes/promotion.routes');
 const chatRoutes = require('./routes/chat.routes');
+const adminAiChatRoutes = require('./routes/admin-ai-chat.routes');
 
 const app = express();
 const PREFERRED_PORT = Number(process.env.PORT) || 3000;
@@ -55,6 +56,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/promotions', promotionRoutes);
 app.use('/api/vouchers', promotionRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/admin/ai-chat', adminAiChatRoutes);
 
 // ───────── Error handler ─────────
 app.use((err, req, res, next) => {
