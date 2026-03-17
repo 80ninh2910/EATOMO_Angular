@@ -10,3 +10,8 @@ EATOMO/tsconfig.server.json
 EATOMO/tsconfig.json
 EATOMO/tsconfig.json
 .DS_Store
+
+# Secrets / environment files
+**/.env
+**/.env.*
+!**/.env.example

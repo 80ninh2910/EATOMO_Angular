@@ -1,0 +1,55 @@
+{
+  "generatedAt": "2026-03-15T12:46:39.319Z",
+  "syntheticSize": 3000,
+  "realOrders": 51,
+  "syntheticOrders": 3000,
+  "totalRows": 3051,
+  "distributions": {
+    "realStatus": {
+      "completed": 22,
+      "delivering": 9,
+      "preparing": 7,
+      "confirmed": 7,
+      "pending": 4,
+      "cancelled": 2
+    },
+    "syntheticStatus": {
+      "completed": 1242,
+      "delivering": 550,
+      "preparing": 419,
+      "pending": 263,
+      "confirmed": 410,
+      "cancelled": 116
+    },
+    "mergedStatus": {
+      "completed": 1264,
+      "delivering": 559,
+      "preparing": 426,
+      "confirmed": 417,
+      "pending": 267,
+      "cancelled": 118
+    },
+    "paymentMethod": {
+      "momo": 1212,
+      "cash": 839,
+      "card": 710,
+      "bank_transfer": 290
+    },
+    "userSegment": {
+      "vip": 690,
+      "regular": 2361
+    }
+  },
+  "labels": {
+    "cancelRate": 0.0387,
+    "delayRiskRate": 0.5346,
+    "unpaidRate": 0.4497
+  },
+  "outputFiles": {
+    "rawOrders": "D:\\EATOMO_Angular\\backend\\admin-ai-chatbot\\data\\raw\\real_orders.json",
+    "syntheticOrders": "D:\\EATOMO_Angular\\backend\\admin-ai-chatbot\\data\\synthetic\\synthetic_orders.json",
+    "processedJsonl": "D:\\EATOMO_Angular\\backend\\admin-ai-chatbot\\data\\processed\\orders_training_dataset.jsonl",
+    "processedCsv": "D:\\EATOMO_Angular\\backend\\admin-ai-chatbot\\data\\processed\\orders_training_dataset.csv",
+    "report": "D:\\EATOMO_Angular\\backend\\admin-ai-chatbot\\data\\exports\\dataset_report.json"
+  }
+}

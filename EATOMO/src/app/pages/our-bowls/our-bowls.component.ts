@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { BowlService } from '../../services/bowl.service';
@@ -22,6 +22,7 @@ export class OurBowlsComponent implements OnInit {
   isLoading = signal(true);
   loadError = signal('');
   toast = signal<{ message: string; type: 'success' | 'error' } | null>(null);
+  focusedBowlId = signal('');
 
   filters = [
     { value: 'all', label: 'All' },
@@ -44,14 +45,35 @@ export class OurBowlsComponent implements OnInit {
   constructor(
     private bowlService: BowlService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      const category = params.get('category');
+      const bowlId = params.get('bowlId');
+
+      if (category) {
+        const isValid = this.filters.some((f) => f.value === category);
+        this.activeFilter.set(isValid ? category : 'all');
+      }
+
+      if (bowlId) {
+        this.focusedBowlId.set(bowlId);
+        this.focusBowlCardWhenReady(bowlId);
+      }
+    });
+
     this.bowlService.getBowls().subscribe({
       next: (bowls) => {
         this.allBowls.set(bowls);
         this.isLoading.set(false);
+
+        const targetId = this.focusedBowlId();
+        if (targetId) {
+          this.focusBowlCardWhenReady(targetId);
+        }
       },
       error: (err) => {
         this.loadError.set('Failed to load bowls. Please try again.');
@@ -113,6 +135,23 @@ export class OurBowlsComponent implements OnInit {
     this.isLoading.set(true);
     this.loadError.set('');
     this.ngOnInit();
+  }
+
+  isFocusedBowl(bowlId: string): boolean {
+    return this.focusedBowlId() === bowlId;
+  }
+
+  private focusBowlCardWhenReady(bowlId: string): void {
+    if (typeof document === 'undefined') return;
+
+    setTimeout(() => {
+      const target = document.getElementById(`bowl-${bowlId}`);
+      if (!target) return;
+
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target.classList.add('chatbot-target-pulse');
+      setTimeout(() => target.classList.remove('chatbot-target-pulse'), 1800);
+    }, 120);
   }
 
   // Delegate to CartService signals

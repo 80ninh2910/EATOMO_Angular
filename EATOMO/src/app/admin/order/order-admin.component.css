@@ -125,6 +125,22 @@ img {
   margin-bottom: 8px;
 }
 
+.ai-filter-banner {
+  margin: 0 auto 14px;
+  max-width: 1200px;
+  background: #fff4d6;
+  color: #7a4e00;
+  border: 1px solid #f1cf8a;
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .page-title h2 {
   font-size: 26px;
   margin: 0;

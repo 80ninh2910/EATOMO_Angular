@@ -30,3 +30,37 @@ export interface RecentOrder {
   status: string;
   createdAt: Date;
 }
+
+export interface BinaryWeeklyMetric {
+  samples: number;
+  precision: number;
+  recall: number;
+  f1: number;
+}
+
+export interface WeeklyModelMetric {
+  week: string;
+  cancel: BinaryWeeklyMetric;
+  delay: BinaryWeeklyMetric;
+}
+
+export interface DriftMetric {
+  score: number;
+  topShiftedFeatures: Array<{
+    feature: string;
+    zShift: number;
+  }>;
+}
+
+export interface ModelMonitoring {
+  generatedAt: string;
+  modelInfo: {
+    cancel: { threshold: number; validation: unknown };
+    delay: { threshold: number; validation: unknown };
+  };
+  drift: {
+    cancel: DriftMetric;
+    delay: DriftMetric;
+  };
+  weeklyMetrics: WeeklyModelMetric[];
+}

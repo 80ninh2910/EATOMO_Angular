@@ -10,13 +10,35 @@ const bowlRoutes = require('./routes/bowl.routes');
 const orderRoutes = require('./routes/order.routes');
 const adminRoutes = require('./routes/admin.routes');
 const promotionRoutes = require('./routes/promotion.routes');
+const chatRoutes = require('./routes/chat.routes');
+const adminAiChatRoutes = require('./routes/admin-ai-chat.routes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PREFERRED_PORT = Number(process.env.PORT) || 3000;
+
+const allowedOrigins = new Set([
+  'http://localhost:4200',
+  'http://localhost:4000',
+  'http://127.0.0.1:4200',
+  'http://127.0.0.1:4000'
+]);
+
+function isLocalDevOrigin(origin) {
+  if (!origin) return true;
+  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(String(origin));
+}
 
 // ───────── Middleware ─────────
 app.use(cors({
-  origin: ['http://localhost:4200', 'http://localhost:4000'],
+  origin(origin, callback) {
+    // Allow non-browser tools (no Origin) and known local dev origins.
+    if (!origin || allowedOrigins.has(origin) || isLocalDevOrigin(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS blocked origin: ${origin}`));
+  },
   credentials: true
 }));
 app.use(express.json());
@@ -38,6 +60,8 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/promotions', promotionRoutes);
 app.use('/api/vouchers', promotionRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/admin/ai-chat', adminAiChatRoutes);
 
 // ───────── Error handler ─────────
 app.use((err, req, res, next) => {
@@ -64,11 +88,32 @@ async function start() {
     process.exit(1);
   }
 
-  app.listen(PORT, () => {
-    console.log(`\n🚀 EATOMO Backend running on http://localhost:${PORT}`);
-    console.log(`   API base: http://localhost:${PORT}/api`);
-    console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
-  });
+  const maxRetries = 10;
+
+  const listenWithFallback = (port, retriesLeft) => {
+    const server = app.listen(port, () => {
+      console.log(`\n🚀 EATOMO Backend running on http://localhost:${port}`);
+      console.log(`   API base: http://localhost:${port}/api`);
+      console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
+
+      if (port !== PREFERRED_PORT) {
+        console.log(`ℹ️ Preferred port ${PREFERRED_PORT} was busy, switched to ${port}.\n`);
+      }
+    });
+
+    server.on('error', (error) => {
+      if (error.code === 'EADDRINUSE' && retriesLeft > 0) {
+        console.warn(`⚠️ Port ${port} is in use, retrying on ${port + 1}...`);
+        listenWithFallback(port + 1, retriesLeft - 1);
+        return;
+      }
+
+      console.error('❌ Failed to start server:', error.message);
+      process.exit(1);
+    });
+  };
+
+  listenWithFallback(PREFERRED_PORT, maxRetries);
 }
 
 start();

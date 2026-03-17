@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
+import { ChatbotWidgetComponent } from '../chatbot/chatbot-widget.component';
 
 @Component({
   selector: 'app-header',
@@ -16,6 +17,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
   isScrolled = false;
   isHomePage = false;
+  readonly chatbotWidgetComponent = ChatbotWidgetComponent;
 
   authService = inject(AuthService);
   cartService = inject(CartService);

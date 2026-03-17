@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject }
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { DashboardService } from '../../services/dashboard.service';
-import { DashboardStats, RevenueDataPoint, TopProduct, RecentOrder } from '../../models/dashboard.model';
+import { DashboardStats, RevenueDataPoint, TopProduct, RecentOrder, ModelMonitoring, WeeklyModelMetric } from '../../models/dashboard.model';
 
 @Component({
   selector: 'app-report-admin',
@@ -20,12 +20,14 @@ export class ReportAdminComponent implements OnInit {
   revenueChart: RevenueDataPoint[] = [];
   topProducts: TopProduct[] = [];
   recentOrders: RecentOrder[] = [];
+  monitoring: ModelMonitoring | null = null;
 
   period: 'daily' | 'weekly' | 'monthly' = 'weekly';
   isLoadingStats = false;
   isLoadingChart = false;
   isLoadingProducts = false;
   isLoadingOrders = false;
+  isLoadingMonitoring = false;
   error: string | null = null;
 
   ngOnInit(): void {
@@ -37,6 +39,7 @@ export class ReportAdminComponent implements OnInit {
     this.loadChart();
     this.loadTopProducts();
     this.loadRecentOrders();
+    this.loadMonitoring();
   }
 
   loadStats(): void {
@@ -103,6 +106,27 @@ export class ReportAdminComponent implements OnInit {
     });
   }
 
+  loadMonitoring(): void {
+    this.isLoadingMonitoring = true;
+    this.dashboardService.getModelMonitoring().subscribe({
+      next: data => {
+        this.monitoring = {
+          generatedAt: data.generatedAt,
+          modelInfo: data.modelInfo,
+          drift: data.drift,
+          weeklyMetrics: data.weeklyMetrics || []
+        };
+        this.isLoadingMonitoring = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.monitoring = null;
+        this.isLoadingMonitoring = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
   onPeriodChange(p: 'daily' | 'weekly' | 'monthly'): void {
     this.period = p;
     this.loadChart();
@@ -134,4 +158,5 @@ export class ReportAdminComponent implements OnInit {
   trackByLabel(_i: number, d: RevenueDataPoint) { return d.label; }
   trackByBowl(_i: number, p: TopProduct) { return p.bowlId; }
   trackByOrder(_i: number, o: RecentOrder) { return o.id; }
+  trackByWeek(_i: number, w: WeeklyModelMetric) { return w.week; }
 }
