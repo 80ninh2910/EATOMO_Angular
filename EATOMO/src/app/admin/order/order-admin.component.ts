@@ -190,7 +190,11 @@ export class OrderAdminComponent implements OnInit {
   }
 
   private formatCurrency(amount: number): string {
-    return amount.toLocaleString('vi-VN') + ' Ä‘';
+    const formatted = new Intl.NumberFormat('vi-VN', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+    return `${formatted} \u20AB`;
   }
 
   getNowLabel(): string {

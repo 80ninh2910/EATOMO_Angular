@@ -19,11 +19,16 @@ export class DashboardService {
   }
 
   /**
-   * Lấy dữ liệu biểu đồ doanh thu theo kỳ
-   * @param period 'daily' | 'weekly' | 'monthly'
+   * Lấy dữ liệu biểu đồ doanh thu theo kỳ + mốc thời gian
    */
-  getRevenueChart(period: 'daily' | 'weekly' | 'monthly' = 'weekly'): Observable<RevenueDataPoint[]> {
-    const params = new HttpParams().set('period', period);
+  getRevenueChart(
+    period: 'daily' | 'weekly' | 'monthly' = 'weekly',
+    time?: { year?: number; month?: number; day?: number }
+  ): Observable<RevenueDataPoint[]> {
+    let params = new HttpParams().set('period', period);
+    if (time?.year) params = params.set('year', String(time.year));
+    if (time?.month) params = params.set('month', String(time.month));
+    if (time?.day) params = params.set('day', String(time.day));
     return this.http.get<RevenueDataPoint[]>(`${API_URL}/admin/dashboard/revenue`, { params });
   }
 

@@ -55,20 +55,37 @@
     <section class="panel">
       <div class="section-header">
         <h2 class="section-title">Revenue Chart</h2>
-        <div class="period-tabs">
-          <button class="period-btn" [class.active]="period === 'daily'" (click)="onPeriodChange('daily')">Daily</button>
-          <button class="period-btn" [class.active]="period === 'weekly'" (click)="onPeriodChange('weekly')">Weekly</button>
-          <button class="period-btn" [class.active]="period === 'monthly'" (click)="onPeriodChange('monthly')">Monthly</button>
+        <div class="chart-controls">
+          <div class="period-group">
+            <button class="period-btn" [class.active]="period === 'daily'" (click)="onPeriodChange('daily')">Daily</button>
+            <button class="period-btn" [class.active]="period === 'weekly'" (click)="onPeriodChange('weekly')">Weekly</button>
+            <button class="period-btn" [class.active]="period === 'monthly'" (click)="onPeriodChange('monthly')">Monthly</button>
+          </div>
+          <button class="date-range-btn" type="button" (click)="showDateFilters = !showDateFilters">
+            {{ dateRangeLabel }} &#128197;
+          </button>
+          <div class="time-filters" *ngIf="showDateFilters">
+            <select [(ngModel)]="selectedDay" (ngModelChange)="onTimeFilterChange()" aria-label="Select day">
+              <option *ngFor="let d of dayOptions" [value]="d">D{{ d }}</option>
+            </select>
+            <select [(ngModel)]="selectedMonth" (ngModelChange)="onTimeFilterChange()" aria-label="Select month">
+              <option *ngFor="let m of monthOptions" [value]="m.value">{{ m.label }}</option>
+            </select>
+            <select [(ngModel)]="selectedYear" (ngModelChange)="onTimeFilterChange()" aria-label="Select year">
+              <option *ngFor="let y of yearOptions" [value]="y">{{ y }}</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="state-msg" *ngIf="isLoadingChart">Loading chart...</div>
       <div class="chart-area" *ngIf="!isLoadingChart && revenueChart.length > 0">
-        <div class="bar-group" *ngFor="let d of revenueChart; trackBy: trackByLabel">
-          <div class="bar-wrap" title="{{ d.revenue | number:'1.0-0' }} đ">
-            <div class="bar" [style.height.%]="barHeight(d.revenue)"></div>
+        <div class="bars-row">
+          <div class="bar-group" *ngFor="let d of revenueChart; let i = index; trackBy: trackByLabel">
+            <div class="bar-wrap" [title]="(d.revenue | number:'1.0-0') + ' đ · ' + d.orders + ' orders'">
+              <div class="bar" [class.bar-peak]="i === peakBarIndex" [style.height.%]="barHeight(d.revenue)"></div>
+            </div>
+            <p class="bar-label">{{ d.label }}</p>
           </div>
-          <p class="bar-label">{{ d.label }}</p>
-          <p class="bar-orders">{{ d.orders }} orders</p>
         </div>
       </div>
       <div class="state-msg" *ngIf="!isLoadingChart && revenueChart.length === 0">No chart data available.</div>

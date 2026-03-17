@@ -52,33 +52,71 @@ exports.getDashboardStats = async (req, res) => {
 };
 
 /**
- * GET /api/admin/dashboard/revenue?period=week|month|year
+ * GET /api/admin/dashboard/revenue?period=daily|weekly|monthly&year=YYYY&month=MM&day=DD
+ *
+ * daily   -> 24 bars theo giờ của một ngày cụ thể
+ * weekly  -> 7 bars theo ngày, kết thúc tại ngày đã chọn
+ * monthly -> bars theo từng ngày trong tháng đã chọn
  */
 exports.getRevenueChart = async (req, res) => {
   try {
-    const period = req.query.period || 'week';
-    const now = new Date();
-    let startDate, dateFormat;
+    const period = (req.query.period || 'weekly').toLowerCase();
 
-    if (period === 'week') {
-      startDate = new Date(now - 7 * 24 * 60 * 60 * 1000);
-      dateFormat = { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } };
-    } else if (period === 'month') {
-      startDate = new Date(now - 30 * 24 * 60 * 60 * 1000);
-      dateFormat = { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } };
+    const now = new Date();
+    const selectedYear = Number(req.query.year) || now.getFullYear();
+    const selectedMonth = Number(req.query.month) || (now.getMonth() + 1); // 1..12
+    const selectedDay = Number(req.query.day) || now.getDate();
+
+    const safeMonth = Math.min(12, Math.max(1, selectedMonth));
+    const daysInSelectedMonth = new Date(selectedYear, safeMonth, 0).getDate();
+    const safeDay = Math.min(daysInSelectedMonth, Math.max(1, selectedDay));
+
+    let startDate;
+    let endDate;
+    let labelFormat;
+    let labels = [];
+
+    if (period === 'daily') {
+      startDate = new Date(selectedYear, safeMonth - 1, safeDay, 0, 0, 0, 0);
+      endDate = new Date(selectedYear, safeMonth - 1, safeDay, 23, 59, 59, 999);
+      labelFormat = { $dateToString: { format: '%H:00', date: '$createdAt' } };
+      labels = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+    } else if (period === 'monthly') {
+      const monthDays = new Date(selectedYear, safeMonth, 0).getDate();
+      startDate = new Date(selectedYear, safeMonth - 1, 1, 0, 0, 0, 0);
+      endDate = new Date(selectedYear, safeMonth - 1, monthDays, 23, 59, 59, 999);
+      labelFormat = { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } };
+      labels = Array.from({ length: monthDays }, (_, i) => `${selectedYear}-${String(safeMonth).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`);
     } else {
-      startDate = new Date(now - 365 * 24 * 60 * 60 * 1000);
-      dateFormat = { $dateToString: { format: '%Y-%m', date: '$createdAt' } };
+      // weekly rolling 7 days ending selected date
+      endDate = new Date(selectedYear, safeMonth - 1, safeDay, 23, 59, 59, 999);
+      startDate = new Date(endDate);
+      startDate.setDate(endDate.getDate() - 6);
+      startDate.setHours(0, 0, 0, 0);
+
+      labelFormat = { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } };
+      labels = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date(startDate);
+        d.setDate(startDate.getDate() + i);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      });
     }
 
     const rows = await Order.aggregate([
-      { $match: { status: { $ne: 'cancelled' }, createdAt: { $gte: startDate } } },
-      { $group: { _id: dateFormat, revenue: { $sum: '$totalAmount' }, orders: { $sum: 1 } } },
+      { $match: { status: { $ne: 'cancelled' }, createdAt: { $gte: startDate, $lte: endDate } } },
+      { $group: { _id: labelFormat, revenue: { $sum: '$totalAmount' }, orders: { $sum: 1 } } },
       { $sort: { _id: 1 } },
       { $project: { _id: 0, label: '$_id', revenue: 1, orders: 1 } }
     ]);
 
-    res.json(rows);
+    const map = {};
+    rows.forEach(r => {
+      map[r.label] = { label: r.label, revenue: r.revenue || 0, orders: r.orders || 0 };
+    });
+
+    const zeroFilled = labels.map(label => map[label] || { label, revenue: 0, orders: 0 });
+
+    res.json(zeroFilled);
   } catch (error) {
     console.error('Revenue chart error:', error);
     res.status(500).json({ success: false, message: 'Failed to get revenue data', error: error.message });
