@@ -456,6 +456,31 @@
 .voucher-msg.success { color: #22c55e; }
 .voucher-msg.error { color: #ef4444; }
 
+.view-vouchers-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1.5px dashed rgba(102, 126, 234, 0.45);
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  letter-spacing: .2px;
+}
+
+.view-vouchers-btn:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+}
+
 .discount-amount {
   color: #22c55e;
   font-weight: 600;
