@@ -1,0 +1,165 @@
+<app-header></app-header>
+
+<div class="vouchers-container">
+  <div class="container">
+
+    <!-- ===== HERO ===== -->
+    <div class="vouchers-hero">
+      <div class="hero-badge">
+        <i class="fas fa-tag"></i> Ưu đãi đặc biệt
+      </div>
+      <h1>Voucher &amp; <span class="highlight">Khuyến Mãi</span></h1>
+      <p>Tiết kiệm hơn với những mã giảm giá hấp dẫn từ EATOMO.<br>Nhập mã khi thanh toán để được giảm giá ngay!</p>
+
+      <!-- Search -->
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          placeholder="Tìm voucher theo tên hoặc mã..."
+          [value]="searchText()"
+          (input)="searchText.set($any($event.target).value)"
+        />
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="filter-tabs">
+        @for (f of filters; track f.value) {
+          <button
+            class="filter-tab"
+            [class.active]="activeFilter() === f.value"
+            (click)="setFilter(f.value)"
+          >{{ f.label }}</button>
+        }
+      </div>
+    </div>
+
+    <!-- ===== SECTION HEADER ===== -->
+    <div class="section-header">
+      <h2 class="section-title">Voucher Đang Có Hiệu Lực</h2>
+      @if (!isLoading() && !loadError()) {
+        <span class="voucher-count">{{ filteredVouchers().length }} voucher</span>
+      }
+    </div>
+
+    <!-- ===== LOADING STATE ===== -->
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Đang tải voucher...</p>
+      </div>
+    }
+
+    <!-- ===== ERROR STATE ===== -->
+    @else if (loadError()) {
+      <div class="error-state">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>{{ loadError() }}</p>
+        <button class="btn-retry" (click)="loadVouchers()">
+          <i class="fas fa-redo"></i> Thử lại
+        </button>
+      </div>
+    }
+
+    <!-- ===== VOUCHER GRID ===== -->
+    @else if (filteredVouchers().length > 0) {
+      <div class="voucher-grid">
+        @for (v of filteredVouchers(); track v.id) {
+          <div class="voucher-card" [class]="themeClass(v)">
+
+            <!-- Left panel -->
+            <div class="voucher-left">
+              <div class="leaf leaf-tl"></div>
+              <div class="leaf leaf-bl"></div>
+              <div class="brand-logo">
+                <img src="assets/healthy/images/index/brand-logo.png" alt="EATOMO Logo" />
+              </div>
+            </div>
+
+            <!-- Right panel -->
+            <div class="voucher-right">
+              <div class="leaf leaf-tr"></div>
+              <div class="leaf leaf-br"></div>
+
+              <!-- Tag badge -->
+              <span class="voucher-tag" [class]="tagClass(v)">{{ targetLabel(v) }}</span>
+
+              <!-- Top info -->
+              <div class="voucher-top">
+                <p class="promo-label">{{ v.code }}</p>
+                <p class="promo-discount">{{ discountLabel(v) }}</p>
+                <p class="promo-validity">{{ validityLabel(v) }}</p>
+              </div>
+
+              <div class="voucher-divider">
+                <span class="notch left-notch"></span>
+                <span class="notch right-notch"></span>
+              </div>
+
+              <!-- Bottom: conditions + button -->
+              <div class="voucher-bottom">
+                <ul class="conditions">
+                  @for (c of conditionLines(v); track c) {
+                    <li>{{ c }}</li>
+                  }
+                </ul>
+                <button class="btn-use" (click)="copyCode(v.code)">
+                  @if (copiedCode() === v.code) {
+                    <i class="fas fa-check"></i> ĐÃ CHÉP
+                  } @else {
+                    DÙNG <i class="fas fa-chevron-right"></i>
+                  }
+                </button>
+              </div>
+
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ===== EMPTY STATE ===== -->
+    @else {
+      <div class="empty-state">
+        <i class="fas fa-ticket-alt"></i>
+        <p>Hiện chưa có voucher nào phù hợp.</p>
+      </div>
+    }
+
+    <!-- ===== HOW TO USE ===== -->
+    @if (!isLoading() && !loadError()) {
+      <section class="how-to-use">
+        <h2 class="section-title center">Cách Sử Dụng Voucher</h2>
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">01</div>
+            <div class="step-icon"><i class="fas fa-copy"></i></div>
+            <h3>Sao chép mã</h3>
+            <p>Nhấn nút <strong>DÙNG</strong> để sao chép mã voucher.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">02</div>
+            <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+            <h3>Đặt hàng</h3>
+            <p>Chọn món yêu thích và thêm vào giỏ hàng.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">03</div>
+            <div class="step-icon"><i class="fas fa-tag"></i></div>
+            <h3>Nhập mã</h3>
+            <p>Dán mã vào ô <strong>Voucher Code</strong> trong trang Cart.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">04</div>
+            <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+            <h3>Hưởng ưu đãi</h3>
+            <p>Giảm giá được áp dụng ngay. Thưởng thức!</p>
+          </div>
+        </div>
+      </section>
+    }
+
+  </div>
+</div>
+
+<app-footer></app-footer>

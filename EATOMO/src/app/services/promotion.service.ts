@@ -19,10 +19,17 @@ export class PromotionService {
   // ───────── Admin CRUD ─────────
 
   /**
-   * Lấy tất cả promotions
+   * Lấy tất cả promotions (Admin)
    */
   getPromotions(): Observable<Promotion[]> {
     return this.http.get<Promotion[]>(`${API_URL}/promotions`);
+  }
+
+  /**
+   * Lấy voucher đang active — Public, không cần auth
+   */
+  getActiveVouchers(): Observable<Promotion[]> {
+    return this.http.get<Promotion[]>(`${API_URL}/vouchers/active`);
   }
 
   /**

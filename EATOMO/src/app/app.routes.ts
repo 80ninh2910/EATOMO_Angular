@@ -8,6 +8,7 @@ import { FaqsComponent } from './pages/faqs/faqs.component';
 import { OurBowlsComponent } from './pages/our-bowls/our-bowls.component';
 import { BuildYourOwnComponent } from './pages/build-your-own/build-your-own.component';
 import { OrdersComponent } from './pages/orders/orders.component';
+import { VouchersComponent } from './pages/vouchers/vouchers.component';
 import { OrderAdminComponent } from './admin/order/order-admin.component';
 import { ProductAdminComponent } from './admin/product/product-admin.component';
 import { CustomerAdminComponent } from './admin/customer/customer-admin.component';
@@ -29,6 +30,7 @@ export const routes: Routes = [
 
   // ───── User routes (cần đăng nhập) ─────
   { path: 'orders', component: OrdersComponent, canActivate: [authGuard] },
+  { path: 'vouchers', component: VouchersComponent },
 
   // ───── Admin routes (cần admin role) ─────
   {
