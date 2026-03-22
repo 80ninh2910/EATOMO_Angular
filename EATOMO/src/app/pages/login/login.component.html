@@ -9,6 +9,11 @@
     @if (mode() === 'user') {
       <h2>Login</h2>
 
+      @if (userSuccess()) {
+        <div class="alert alert-success">
+          {{ userSuccess() }}
+        </div>
+      }
       @if (userError()) {
         <div class="alert alert-error">
           {{ userError() }}
@@ -18,15 +23,31 @@
       <form [formGroup]="userForm" (ngSubmit)="onUserLogin()">
         <div class="form-group">
           <label>Username</label>
-          <input formControlName="username" placeholder="Enter your username">
+          <input formControlName="username" placeholder="Enter your username"
+          [class.error]="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+          
+          @if (userForm.get('username')?.invalid && userForm.get('username')?.touched) {
+            <span class="validation-text">
+              @if (userForm.get('username')?.errors?.['required']) { Username is required }
+              @if (userForm.get('username')?.errors?.['minlength']) { Username must be at least 3 characters }
+            </span>
+          }
         </div>
 
         <div class="form-group">
           <label>Password</label>
-          <input type="password" formControlName="password" placeholder="Enter your password">
+          <input type="password" formControlName="password" placeholder="Enter your password"
+          [class.error]="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+
+          @if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
+            <span class="validation-text">
+              @if (userForm.get('password')?.errors?.['required']) { Password is required }
+              @if (userForm.get('password')?.errors?.['minlength']) { Password must be at least 6 characters }
+            </span>
+          }
         </div>
 
-        <button type="submit" [disabled]="userForm.invalid || userLoading()">
+        <button type="submit" [disabled]="userLoading()">
           {{ userLoading() ? 'Logging in...' : 'Login' }}
         </button>
       </form>
@@ -39,6 +60,11 @@
     @if (mode() === 'admin') {
       <h2>Admin Login</h2>
 
+      @if (adminSuccess()) {
+        <div class="alert alert-success">
+          {{ adminSuccess() }}
+        </div>
+      }
       @if (adminError()) {
         <div class="alert alert-error">
           {{ adminError() }}
@@ -48,15 +74,31 @@
       <form [formGroup]="adminForm" (ngSubmit)="onAdminLogin()">
         <div class="form-group">
           <label>Admin Username</label>
-          <input formControlName="username" placeholder="Enter admin username">
+          <input formControlName="username" placeholder="Enter admin username"
+          [class.error]="adminForm.get('username')?.invalid && adminForm.get('username')?.touched">
+
+          @if (adminForm.get('username')?.invalid && adminForm.get('username')?.touched) {
+            <span class="validation-text">
+              @if (adminForm.get('username')?.errors?.['required']) { Username is required }
+              @if (adminForm.get('username')?.errors?.['minlength']) { Username must be at least 3 characters }
+            </span>
+          }
         </div>
 
         <div class="form-group">
           <label>Password</label>
-          <input type="password" formControlName="password" placeholder="Enter admin password">
+          <input type="password" formControlName="password" placeholder="Enter admin password"
+          [class.error]="adminForm.get('password')?.invalid && adminForm.get('password')?.touched">
+
+          @if (adminForm.get('password')?.invalid && adminForm.get('password')?.touched) {
+            <span class="validation-text">
+              @if (adminForm.get('password')?.errors?.['required']) { Password is required }
+              @if (adminForm.get('password')?.errors?.['minlength']) { Password must be at least 6 characters }
+            </span>
+          }
         </div>
 
-        <button type="submit" [disabled]="adminForm.invalid || adminLoading()">
+        <button type="submit" [disabled]="adminLoading()">
           {{ adminLoading() ? 'Logging in...' : 'Login' }}
         </button>
       </form>

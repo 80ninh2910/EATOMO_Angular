@@ -115,7 +115,16 @@ body {
 }
 
 .form-group input.error {
-  border-color: #f44336;
+  border-color: #e74c3c; /* Tui đổi lại mã màu đỏ xíu cho giống hình của bà */
+  outline: none;
+}
+
+/* THÊM KHÚC NÀY ĐỂ HIỆN CHỮ ĐỎ BÊN DƯỚI INPUT */
+.validation-text {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 8px;
+  display: block;
 }
 
 /* ================= Alerts ================= */
@@ -130,6 +139,12 @@ body {
   background: #ffebee;
   color: #c62828;
   border: 1px solid #ef5350;
+}
+/* THÊM KHÚC NÀY NÈ: Màu xanh lá dịu mắt hợp với tone EATOMO */
+.alert-success {
+  background: #e6f4e7;
+  color: #2f6a48;
+  border: 1px solid #43a047;
 }
 
 /* ================= Buttons ================= */
