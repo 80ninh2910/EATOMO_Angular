@@ -72,7 +72,10 @@ export class AdminAiChatbotComponent {
     this.restoreSession();
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
-      .subscribe(() => this.refreshVisibility());
+      .subscribe(() => {
+        this.isOpen.set(false);
+        this.refreshVisibility();
+      });
   }
 
   private refreshVisibility(): void {

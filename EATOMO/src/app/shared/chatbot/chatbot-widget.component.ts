@@ -44,7 +44,7 @@ export class ChatbotWidgetComponent {
   ];
   private pendingConsultationRedirect = false;
 
-  isOpen = signal(true);
+  isOpen = signal(false);
   showToggleImage = signal(true);
   isSending = signal(false);
   isConsultationFormOpen = signal(false);
@@ -91,6 +91,7 @@ export class ChatbotWidgetComponent {
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe(() => {
         this.hideWidget.set(this.router.url.startsWith('/admin'));
+        this.isOpen.set(false);
       });
   }
 
