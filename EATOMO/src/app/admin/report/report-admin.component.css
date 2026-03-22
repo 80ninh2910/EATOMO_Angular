@@ -88,6 +88,7 @@
 
 .layout {
   flex: 1;
+  min-width: 0; /* THÊM DÒNG NÀY: Ép layout không phình to quá màn hình */
   padding: 28px 32px 40px;
   padding-left: 272px;
 }
@@ -281,7 +282,22 @@
 /* Chart */
 .chart-area {
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding-bottom: 12px;
+}
+/* THÊM ĐOẠN NÀY ĐỂ LÀM THANH CUỘN ĐẸP VÀ TINH TẾ HƠN (TUỲ CHỌN) */
+.chart-area::-webkit-scrollbar {
+  height: 8px;
+}
+.chart-area::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+.chart-area::-webkit-scrollbar-thumb {
+  background: #cce4ce;
+  border-radius: 4px;
+}
+.chart-area::-webkit-scrollbar-thumb:hover {
+  background: #43a047;
 }
 
 .bars-row {
@@ -290,6 +306,8 @@
   gap: 10px;
   height: 200px;
   padding: 8px 4px 0;
+  min-width: 100%;    /* THÊM DÒNG NÀY: Giữ cho Weekly tràn đều chiều rộng */
+  width: max-content; /* THÊM DÒNG NÀY: Cho phép chiều rộng tự tăng lên chứa các cột Daily/Monthly */
 }
 
 .bar-group {
