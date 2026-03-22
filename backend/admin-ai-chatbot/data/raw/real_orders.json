@@ -995,7 +995,7 @@
   {
     "orderNumber": "ORD-20260312-034",
     "userId": "69b66f179390b3e4eaa47125",
-    "status": "confirmed",
+    "status": "delivering",
     "items": [
       {
         "bowlId": "H6",
@@ -1521,5 +1521,30 @@
     "voucherCode": "",
     "userSegment": "vip",
     "createdAt": "2026-03-15T08:40:40.467Z"
+  },
+  {
+    "orderNumber": "ORD-MMYIY4QE",
+    "userId": "69b66f179390b3e4eaa47106",
+    "status": "pending",
+    "items": [
+      {
+        "bowlId": "L9",
+        "bowlName": "L9",
+        "unitPrice": 159900,
+        "quantity": 1,
+        "subtotal": 159900,
+        "category": "low-cal"
+      }
+    ],
+    "subtotal": 159900,
+    "tax": 12792,
+    "shippingFee": 30000,
+    "discountAmount": 47970,
+    "totalAmount": 154722,
+    "paymentMethod": "cash",
+    "paymentStatus": "unpaid",
+    "voucherCode": "FIRSTORDER30",
+    "userSegment": "new",
+    "createdAt": "2026-03-20T06:34:57.026Z"
   }
 ]

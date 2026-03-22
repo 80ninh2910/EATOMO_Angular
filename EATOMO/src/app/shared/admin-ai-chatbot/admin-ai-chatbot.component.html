@@ -117,6 +117,59 @@
           </div>
         </section>
 
+        <section class="chat-monitoring" *ngIf="m.monitoring as mon">
+          <header class="chat-monitoring-header">
+            <strong>Model Accuracy Dashboard</strong>
+            <span>{{ mon.generatedAt | date: 'dd/MM HH:mm' }}</span>
+          </header>
+
+          <div class="monitoring-grid">
+            <article class="monitoring-card" *ngIf="getModelAlert(mon, 'cancel') as cancelAlert">
+              <div class="monitoring-card-head">
+                <p class="monitoring-title">Cancel Risk Model</p>
+                <span class="monitoring-pill" [ngClass]="getMetricColorClass(cancelAlert.overall.color)">
+                  {{ cancelAlert.overall.level }}
+                </span>
+              </div>
+
+              <div class="monitoring-metrics">
+                <div class="metric-line">
+                  <span>Accuracy</span>
+                  <strong>{{ getAnimatedMetricPercent(m, 'cancel', 'accuracy', cancelAlert.accuracy.value) }}</strong>
+                  <em [ngClass]="getMetricColorClass(cancelAlert.accuracy.color)">Nguong {{ toPercent(cancelAlert.accuracy.threshold) }}</em>
+                </div>
+                <div class="metric-line">
+                  <span>Recall</span>
+                  <strong>{{ getAnimatedMetricPercent(m, 'cancel', 'recall', cancelAlert.recall.value) }}</strong>
+                  <em [ngClass]="getMetricColorClass(cancelAlert.recall.color)">Nguong {{ toPercent(cancelAlert.recall.threshold) }}</em>
+                </div>
+              </div>
+            </article>
+
+            <article class="monitoring-card" *ngIf="getModelAlert(mon, 'delay') as delayAlert">
+              <div class="monitoring-card-head">
+                <p class="monitoring-title">Delay Risk Model</p>
+                <span class="monitoring-pill" [ngClass]="getMetricColorClass(delayAlert.overall.color)">
+                  {{ delayAlert.overall.level }}
+                </span>
+              </div>
+
+              <div class="monitoring-metrics">
+                <div class="metric-line">
+                  <span>Accuracy</span>
+                  <strong>{{ getAnimatedMetricPercent(m, 'delay', 'accuracy', delayAlert.accuracy.value) }}</strong>
+                  <em [ngClass]="getMetricColorClass(delayAlert.accuracy.color)">Nguong {{ toPercent(delayAlert.accuracy.threshold) }}</em>
+                </div>
+                <div class="metric-line">
+                  <span>Recall</span>
+                  <strong>{{ getAnimatedMetricPercent(m, 'delay', 'recall', delayAlert.recall.value) }}</strong>
+                  <em [ngClass]="getMetricColorClass(delayAlert.recall.color)">Nguong {{ toPercent(delayAlert.recall.threshold) }}</em>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
         <section class="chat-products" *ngIf="m.productSales as ps">
           <header class="chat-products-header">
             <strong>{{ getProductDashboardTitle(m) }}</strong>

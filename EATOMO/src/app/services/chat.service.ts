@@ -3,8 +3,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ChatAskResponse, ChatMessage } from '../models/chat.model';
+import { API_BASE } from './api-base';
 
-const API_BASES = ['http://localhost:3000/api', 'http://localhost:3001/api'];
+const API_BASES = [API_BASE, 'http://localhost:3001/api'];
 
 @Injectable({
   providedIn: 'root'

@@ -1,49 +1,56 @@
 {
-  "generatedAt": "2026-03-15T12:46:39.319Z",
-  "syntheticSize": 3000,
-  "realOrders": 51,
-  "syntheticOrders": 3000,
-  "totalRows": 3051,
+  "generatedAt": "2026-03-21T06:27:26.393Z",
+  "syntheticSize": 5000,
+  "syntheticCancelTargetRatio": 0.5,
+  "realOrders": 52,
+  "syntheticOrders": 5000,
+  "totalRows": 5052,
   "distributions": {
     "realStatus": {
       "completed": 22,
-      "delivering": 9,
+      "delivering": 10,
       "preparing": 7,
-      "confirmed": 7,
-      "pending": 4,
+      "confirmed": 6,
+      "pending": 5,
       "cancelled": 2
     },
     "syntheticStatus": {
-      "completed": 1242,
-      "delivering": 550,
-      "preparing": 419,
-      "pending": 263,
-      "confirmed": 410,
-      "cancelled": 116
+      "completed": 1077,
+      "cancelled": 2500,
+      "preparing": 361,
+      "confirmed": 292,
+      "pending": 245,
+      "delivering": 525
     },
     "mergedStatus": {
-      "completed": 1264,
-      "delivering": 559,
-      "preparing": 426,
-      "confirmed": 417,
-      "pending": 267,
-      "cancelled": 118
+      "completed": 1099,
+      "delivering": 535,
+      "preparing": 368,
+      "confirmed": 298,
+      "pending": 250,
+      "cancelled": 2502
+    },
+    "syntheticBinaryCancel": {
+      "cancelled": 2500,
+      "not_cancelled": 2500,
+      "cancelRate": 0.5
     },
     "paymentMethod": {
-      "momo": 1212,
-      "cash": 839,
-      "card": 710,
-      "bank_transfer": 290
+      "momo": 1983,
+      "cash": 1496,
+      "card": 1079,
+      "bank_transfer": 494
     },
     "userSegment": {
-      "vip": 690,
-      "regular": 2361
+      "vip": 1164,
+      "regular": 3887,
+      "new": 1
     }
   },
   "labels": {
-    "cancelRate": 0.0387,
-    "delayRiskRate": 0.5346,
-    "unpaidRate": 0.4497
+    "cancelRate": 0.4952,
+    "delayRiskRate": 0.2722,
+    "unpaidRate": 0.5232
   },
   "outputFiles": {
     "rawOrders": "D:\\EATOMO_Angular\\backend\\admin-ai-chatbot\\data\\raw\\real_orders.json",

@@ -9,6 +9,7 @@ router.use(authMiddleware, adminMiddleware);
 
 router.get('/health', controller.health);
 router.get('/hints', controller.profileHints);
+router.get('/metrics', controller.metrics);
 router.get('/high-risk-orders', controller.highRiskOrders);
 router.get('/monitoring', controller.monitoring);
 router.post('/ask', controller.ask);

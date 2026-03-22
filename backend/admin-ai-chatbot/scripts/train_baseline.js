@@ -351,8 +351,8 @@ function main() {
 
   console.log(`[train] done (target=${targetKey})`);
   console.log(`[train] samples total=${rows.length} train=${train.length} val=${val.length}`);
-  console.log(`[train] threshold_business=${bestBusiness.threshold} utility=${bestBusiness.utility} precision=${bestBusiness.precision} recall=${bestBusiness.recall}`);
-  console.log(`[train] threshold_f1=${bestF1.threshold} f1=${bestF1.f1}`);
+  console.log(`[train] threshold_business=${bestBusiness.threshold} utility=${bestBusiness.utility} accuracy=${bestBusiness.accuracy} precision=${bestBusiness.precision} recall=${bestBusiness.recall}`);
+  console.log(`[train] threshold_f1=${bestF1.threshold} f1=${bestF1.f1} accuracy=${bestF1.accuracy} recall=${bestF1.recall}`);
   console.log(`[train] model saved: ${targetConfig.modelPath}`);
 }
 

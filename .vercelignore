@@ -1,0 +1,11 @@
+.git
+node_modules
+backend/node_modules
+EATOMO/node_modules
+EATOMO/dist
+backend/admin-ai-chatbot/data
+backend/admin-ai-chatbot/docs
+backend/seed
+EATOMO/src/assets/healthy/videos/1015.mp4
+EATOMO/src/assets/healthy/videos/bandicam 2025-10-20 15-10-41-439.mp4
+*.log

@@ -25,6 +25,17 @@
         <button type="button" class="btn ghost" (click)="clearAiRiskFilter()">Bo loc</button>
       </div>
 
+      <div class="cancel-detection-banner" *ngIf="!isLoading">
+        <span *ngIf="isDetectingCancelRisk">AI is scanning active orders for cancel risk...</span>
+        <span *ngIf="!isDetectingCancelRisk && getDetectedCancelOrderIds().length > 0">
+          AI detected {{ getDetectedCancelOrderIds().length }} order(s) with high cancel risk.
+        </span>
+        <span *ngIf="!isDetectingCancelRisk && getDetectedCancelOrderIds().length === 0 && !cancelDetectionError">
+          No high cancel-risk order detected right now.
+        </span>
+        <span *ngIf="cancelDetectionError" class="warn-text">{{ cancelDetectionError }}</span>
+      </div>
+
       <div class="tabs">
         <button class="tab" type="button" [class.active]="activeTab === 'all'" (click)="filterTab('all')">All orders</button>
         <button class="tab" type="button" [class.active]="activeTab === 'pending'" (click)="filterTab('pending')">Processing</button>
@@ -124,7 +135,12 @@
                     {{ isOpen(orderId) ? '▾' : '▸' }}
                   </button>
                 </td>
-                <td *ngIf="columnVisibility.id"><a [href]="'#' + orderId">#{{ orderId.slice(-5) }}</a></td>
+                <td *ngIf="columnVisibility.id">
+                  <a [href]="'#' + orderId">#{{ orderId.slice(-5) }}</a>
+                  <span class="ai-cancel-chip" *ngIf="hasAiCancelWarning(orderId)" [class.high]="getAiCancelLevel(orderId) === 'high'" [class.medium]="getAiCancelLevel(orderId) === 'medium'">
+                    AI cancel {{ getAiCancelProbability(orderId) }}%
+                  </span>
+                </td>
                 <td *ngIf="columnVisibility.createdAt">{{ ordersMap[orderId].createdAt }}</td>
                 <td *ngIf="columnVisibility.customer">{{ ordersMap[orderId].customer }}</td>
                 <td *ngIf="columnVisibility.payment">
@@ -168,6 +184,12 @@
                 <td [attr.colspan]="getDetailsColspan()">
                   <div class="shipping-wrap">
                     <div>
+                      <div class="ai-cancel-warning" *ngIf="hasAiCancelWarning(orderId)">
+                        <strong>AI warning:</strong> This order is predicted as cancellation-prone.
+                        <span>
+                          Risk {{ getAiCancelProbability(orderId) }}% (threshold {{ getAiCancelThreshold(orderId) }}%)
+                        </span>
+                      </div>
                       <!-- Order items from backend -->
                       <div class="order-item" *ngFor="let item of getOrderItems(orderId)">
                         <div class="avatar"><img src="/assets/healthy/images/index/bowl-b1.jpg" [alt]="item.bowlName" /></div>

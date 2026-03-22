@@ -29,18 +29,8 @@ export interface AdminAiAskResponse {
   } | null;
   smartPrompts?: string[];
   report?: AdminAiChatReport;
-  monitoring?: {
-    generatedAt: string;
-    drift: {
-      cancel: { score: number; topShiftedFeatures: Array<{ feature: string; zShift: number }> };
-      delay: { score: number; topShiftedFeatures: Array<{ feature: string; zShift: number }> };
-    };
-    latestWeekly?: {
-      week: string;
-      cancel: { samples: number; precision: number; recall: number; f1: number };
-      delay: { samples: number; precision: number; recall: number; f1: number };
-    } | null;
-  };
+  monitoring?: AdminAiMonitoringPayload;
+  metricAlerts?: AdminAiMetricAlertMap;
   highRiskOrders?: Array<{
     orderId: string;
     orderNumber: string;
@@ -68,10 +58,101 @@ export interface AdminAiChatMessage {
   timestamp: string;
   feedback?: 'up' | 'down';
   report?: AdminAiChatReport;
+  monitoring?: AdminAiMonitoringPayload;
   dashboardView?: string;
   productSales?: AdminAiProductSalesPayload;
   marketingStrategies?: string[];
   orderAnalysis?: AdminAiOrderAnalysisPayload;
+}
+
+export interface AdminAiMetricCore {
+  value: number | null;
+  threshold: number;
+  color: 'red' | 'amber' | 'green' | 'gray';
+  level: 'ALERT' | 'WATCH' | 'OK' | 'NO_DATA';
+}
+
+export interface AdminAiMetricAlert {
+  model: 'cancel' | 'delay' | string;
+  overall: {
+    color: 'red' | 'amber' | 'green' | 'gray';
+    level: 'ALERT' | 'WATCH' | 'OK' | 'NO_DATA';
+  };
+  accuracy: AdminAiMetricCore;
+  recall: AdminAiMetricCore;
+}
+
+export interface AdminAiMetricAlertMap {
+  cancel: AdminAiMetricAlert;
+  delay: AdminAiMetricAlert;
+}
+
+export interface AdminAiThresholdConfig {
+  accuracy: number;
+  recall: number;
+}
+
+export interface AdminAiOfflineValidationSnapshot {
+  business?: {
+    threshold: number;
+    accuracy: number;
+    precision: number;
+    recall: number;
+    f1: number;
+    utility?: number | null;
+  } | null;
+  f1Optimal?: {
+    threshold: number;
+    accuracy: number;
+    precision: number;
+    recall: number;
+    f1: number;
+  } | null;
+  threshold: number;
+}
+
+export interface AdminAiMonitoringPayload {
+  generatedAt: string;
+  metricThresholds?: AdminAiThresholdConfig;
+  metricAlerts?: AdminAiMetricAlertMap;
+  offlineValidation?: {
+    cancel: AdminAiOfflineValidationSnapshot;
+    delay: AdminAiOfflineValidationSnapshot;
+  };
+  drift?: {
+    cancel: { score: number; topShiftedFeatures: Array<{ feature: string; zShift: number }> };
+    delay: { score: number; topShiftedFeatures: Array<{ feature: string; zShift: number }> };
+  };
+  latestWeekly?: {
+    week: string;
+    cancel: { samples: number; accuracy?: number; precision: number; recall: number; f1: number };
+    delay: { samples: number; accuracy?: number; precision: number; recall: number; f1: number };
+  } | null;
+}
+
+export interface AdminAiMetricsResponse {
+  success: boolean;
+  generatedAt: string;
+  metricThresholds: AdminAiThresholdConfig;
+  metricAlerts: AdminAiMetricAlertMap;
+  metrics: {
+    cancel: { accuracy: number | null; recall: number | null; threshold: number };
+    delay: { accuracy: number | null; recall: number | null; threshold: number };
+  };
+  offlineValidation: {
+    cancel: AdminAiOfflineValidationSnapshot;
+    delay: AdminAiOfflineValidationSnapshot;
+  };
+}
+
+export interface AdminAiOrderPredictionResponse {
+  success: boolean;
+  orderId: string;
+  orderNumber?: string;
+  prediction: {
+    cancelRisk: AdminAiPrediction;
+    delayRisk: AdminAiPrediction;
+  };
 }
 
 export interface AdminAiOrderTopItem {
@@ -238,9 +319,15 @@ export interface AdminModelMonitoringResponse {
     cancel: { score: number; topShiftedFeatures: Array<{ feature: string; zShift: number }> };
     delay: { score: number; topShiftedFeatures: Array<{ feature: string; zShift: number }> };
   };
+  metricThresholds?: AdminAiThresholdConfig;
+  metricAlerts?: AdminAiMetricAlertMap;
+  offlineValidation?: {
+    cancel: AdminAiOfflineValidationSnapshot;
+    delay: AdminAiOfflineValidationSnapshot;
+  };
   weeklyMetrics: Array<{
     week: string;
-    cancel: { samples: number; precision: number; recall: number; f1: number };
-    delay: { samples: number; precision: number; recall: number; f1: number };
+    cancel: { samples: number; accuracy?: number; precision: number; recall: number; f1: number };
+    delay: { samples: number; accuracy?: number; precision: number; recall: number; f1: number };
   }>;
 }

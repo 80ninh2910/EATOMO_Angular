@@ -11,7 +11,10 @@ import {
   AdminAiChatReport,
   AdminAiProductSalesItem,
   AdminAiProductSalesPayload,
-  AdminAiOrderAnalysisPayload
+  AdminAiOrderAnalysisPayload,
+  AdminAiMonitoringPayload,
+  AdminAiMetricsResponse,
+  AdminAiMetricAlert
 } from '../../models/admin-ai-chat.model';
 
 @Component({
@@ -27,10 +30,12 @@ export class AdminAiChatbotComponent {
   private readonly MAX_QUICK_ACTIONS = 2;
   private readonly MAX_MESSAGES = 60;
   private readonly MAX_SMART_PROMPTS = 4;
+  private readonly METRIC_COUNT_UP_DURATION_MS = 820;
   private readonly STORAGE_KEY = 'admin_ai_chat_session_v2';
   private readonly fallbackBowlImage = '/assets/healthy/images/index/bowl-b2.jpg';
   private readonly CORE_SMART_PROMPTS = [
     'Cho toi bao cao dashboard 30 ngay.',
+    'Accuracy model bao nhieu?',
     'Thong ke don tre va don huy ngay bay gio.',
     'Phan tich ma don nay chi tiet cho toi.',
     'Thong ke top 5 mon duoc ban chay nhat.',
@@ -51,6 +56,7 @@ export class AdminAiChatbotComponent {
   smartPrompts = signal<string[]>(this.CORE_SMART_PROMPTS.slice(0, this.MAX_SMART_PROMPTS));
   copiedMessageId = signal<string | null>(null);
   feedbackBusyIds = signal<Record<string, boolean>>({});
+  metricAnimatedValues = signal<Record<string, number>>({});
   lastQuestionAsked = signal('');
   @ViewChild('messagesBox') private messagesBoxRef?: ElementRef<HTMLDivElement>;
 
@@ -128,31 +134,41 @@ export class AdminAiChatbotComponent {
 
     const orderId = this.orderId().trim();
     const shouldAttachOrderId = this.shouldAttachOrderId(question, orderId);
+
+    if (this.isQuickMetricsQuestion(question) && !shouldAttachOrderId) {
+      this.handleQuickMetricsQuestion(question);
+      return;
+    }
+
     this.chatService.ask({ question, orderId: shouldAttachOrderId ? orderId : undefined }).subscribe({
       next: (res) => {
         const extra = res.prediction
           ? `\nRui ro huy: ${(res.prediction.cancelRisk.probability * 100).toFixed(1)}% | Rui ro tre SLA: ${(res.prediction.delayRisk.probability * 100).toFixed(1)}%`
           : '';
 
+        const assistantMsg: AdminAiChatMessage = {
+          id: this.newMessageId(),
+          role: 'assistant',
+          content: `${res.answer}${extra}`,
+          timestamp: new Date().toISOString(),
+          report: res.report as AdminAiChatReport | undefined,
+          monitoring: res.monitoring as AdminAiMonitoringPayload | undefined,
+          dashboardView: res.dashboardView,
+          productSales: res.productSales as AdminAiProductSalesPayload | undefined,
+          marketingStrategies: Array.isArray(res.marketingStrategies) ? res.marketingStrategies.slice(0, 4) : undefined,
+          orderAnalysis: res.orderAnalysis as AdminAiOrderAnalysisPayload | undefined
+        };
+
         this.messages.set([
           ...this.withMessageLimit(this.messages()),
-          {
-            id: this.newMessageId(),
-            role: 'assistant',
-            content: `${res.answer}${extra}`,
-            timestamp: new Date().toISOString(),
-            report: res.report as AdminAiChatReport | undefined,
-            dashboardView: res.dashboardView,
-            productSales: res.productSales as AdminAiProductSalesPayload | undefined,
-            marketingStrategies: Array.isArray(res.marketingStrategies) ? res.marketingStrategies.slice(0, 4) : undefined,
-            orderAnalysis: res.orderAnalysis as AdminAiOrderAnalysisPayload | undefined
-          }
+          assistantMsg
         ]);
         this.messages.set(this.withMessageLimit(this.messages()));
+        this.startMetricCountUpForMessage(assistantMsg);
         setTimeout(() => this.scrollToBottom(), 0);
 
         this.inputText.set('');
-        this.quickActions.set((res.quickActions || []).slice(0, this.MAX_QUICK_ACTIONS));
+        this.quickActions.set(this.sanitizeQuickActions(res.quickActions || []));
         this.smartPrompts.set(this.mergeSmartPrompts(res.smartPrompts || []));
         this.saveSession();
         this.isSending.set(false);
@@ -200,6 +216,86 @@ export class AdminAiChatbotComponent {
 
     // Only attach orderId when the admin explicitly asks for order-level analysis.
     return /(orderid|order id|ma don|ord[-_ ]?\d|danh gia rui ro|kiem tra rui ro|rui ro don|don nay|phan tich ma don|phan tich don|chi tiet don)/.test(q);
+  }
+
+  private isQuickMetricsQuestion(question: string): boolean {
+    const q = this.normalizeQuestion(question);
+    return /(accuracy|recall|precision|f1|mo hinh|model).*(bao nhieu|the nao|hien tai|ra sao)|bao nhieu.*(accuracy|recall|precision|f1)/.test(q);
+  }
+
+  private handleQuickMetricsQuestion(question: string): void {
+    this.chatService.getMetrics().subscribe({
+      next: (res) => {
+        const monitoring = this.toMonitoringPayloadFromMetrics(res);
+        const text = this.buildMetricsSummaryText(res);
+
+        const assistantMsg: AdminAiChatMessage = {
+          id: this.newMessageId(),
+          role: 'assistant',
+          content: text,
+          timestamp: new Date().toISOString(),
+          monitoring
+        };
+
+        this.messages.set([
+          ...this.withMessageLimit(this.messages()),
+          assistantMsg
+        ]);
+        this.messages.set(this.withMessageLimit(this.messages()));
+        this.startMetricCountUpForMessage(assistantMsg);
+        setTimeout(() => this.scrollToBottom(), 0);
+
+        this.inputText.set('');
+        this.quickActions.set([]);
+        this.smartPrompts.set(this.mergeSmartPrompts([
+          'Cho toi weekly accuracy/precision/recall 4 tuan gan nhat.',
+          'Drift feature nao dang lech manh nhat?',
+          'De xuat nguong canh bao moi cho don tre SLA.'
+        ]));
+        this.saveSession();
+        this.isSending.set(false);
+      },
+      error: (err) => {
+        const msg = err?.error?.message || 'Khong the tai nhanh metric model.';
+        this.messages.set([
+          ...this.withMessageLimit(this.messages()),
+          {
+            id: this.newMessageId(),
+            role: 'assistant',
+            content: `Loi: ${msg}`,
+            timestamp: new Date().toISOString()
+          }
+        ]);
+        this.messages.set(this.withMessageLimit(this.messages()));
+        setTimeout(() => this.scrollToBottom(), 0);
+        this.saveSession();
+        this.isSending.set(false);
+      }
+    });
+  }
+
+  private toMonitoringPayloadFromMetrics(res: AdminAiMetricsResponse): AdminAiMonitoringPayload {
+    return {
+      generatedAt: res.generatedAt,
+      metricThresholds: res.metricThresholds,
+      metricAlerts: res.metricAlerts,
+      offlineValidation: res.offlineValidation,
+      latestWeekly: null
+    };
+  }
+
+  private buildMetricsSummaryText(res: AdminAiMetricsResponse): string {
+    const cancelAcc = this.toPercent(res.metrics?.cancel?.accuracy);
+    const cancelRecall = this.toPercent(res.metrics?.cancel?.recall);
+    const delayAcc = this.toPercent(res.metrics?.delay?.accuracy);
+    const delayRecall = this.toPercent(res.metrics?.delay?.recall);
+
+    return [
+      'Dashboard metric model hien tai da san sang.',
+      `Cancel model: accuracy ${cancelAcc}, recall ${cancelRecall}.`,
+      `Delay model: accuracy ${delayAcc}, recall ${delayRecall}.`,
+      'Xem card ben duoi de theo doi canh bao mau theo nguong.'
+    ].join('\n');
   }
 
   private normalizeQuestion(text: string): string {
@@ -418,6 +514,101 @@ export class AdminAiChatbotComponent {
     return 'Khong xac dinh';
   }
 
+  getMetricColorClass(color?: string): string {
+    if (color === 'red') return 'metric-red';
+    if (color === 'amber') return 'metric-amber';
+    if (color === 'green') return 'metric-green';
+    return 'metric-gray';
+  }
+
+  toPercent(value?: number | null): string {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return 'N/A';
+    return `${(n * 100).toFixed(1)}%`;
+  }
+
+  getAnimatedMetricPercent(
+    message: AdminAiChatMessage,
+    modelKey: 'cancel' | 'delay',
+    metricKey: 'accuracy' | 'recall',
+    fallback?: number | null
+  ): string {
+    const target = Number(fallback);
+    if (!Number.isFinite(target)) return 'N/A';
+
+    const key = this.metricAnimationKey(message.id, modelKey, metricKey);
+    if (!key) return this.toPercent(target);
+
+    const current = this.metricAnimatedValues()[key];
+    if (!Number.isFinite(current)) return this.toPercent(target);
+    return `${current.toFixed(1)}%`;
+  }
+
+  getModelAlert(monitoring: AdminAiMonitoringPayload | undefined, modelKey: 'cancel' | 'delay'): AdminAiMetricAlert | null {
+    const alert = monitoring?.metricAlerts?.[modelKey];
+    return alert || null;
+  }
+
+  private metricAnimationKey(
+    messageId: string | undefined,
+    modelKey: 'cancel' | 'delay',
+    metricKey: 'accuracy' | 'recall'
+  ): string | null {
+    if (!messageId) return null;
+    return `${messageId}:${modelKey}:${metricKey}`;
+  }
+
+  private startMetricCountUpForMessage(message: AdminAiChatMessage): void {
+    const monitoring = message.monitoring;
+    if (!message.id || !monitoring?.metricAlerts) return;
+
+    const targets: Array<{ key: string; pct: number }> = [];
+    const addTarget = (
+      modelKey: 'cancel' | 'delay',
+      metricKey: 'accuracy' | 'recall',
+      value: number | null | undefined
+    ) => {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return;
+      const key = this.metricAnimationKey(message.id, modelKey, metricKey);
+      if (!key) return;
+      targets.push({ key, pct: n * 100 });
+    };
+
+    addTarget('cancel', 'accuracy', monitoring.metricAlerts.cancel?.accuracy?.value);
+    addTarget('cancel', 'recall', monitoring.metricAlerts.cancel?.recall?.value);
+    addTarget('delay', 'accuracy', monitoring.metricAlerts.delay?.accuracy?.value);
+    addTarget('delay', 'recall', monitoring.metricAlerts.delay?.recall?.value);
+
+    if (targets.length === 0) return;
+
+    const start = performance.now();
+    const duration = this.METRIC_COUNT_UP_DURATION_MS;
+
+    const initial = { ...this.metricAnimatedValues() };
+    for (const t of targets) {
+      initial[t.key] = 0;
+    }
+    this.metricAnimatedValues.set(initial);
+
+    const animate = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      const next = { ...this.metricAnimatedValues() };
+      for (const t of targets) {
+        next[t.key] = t.pct * eased;
+      }
+      this.metricAnimatedValues.set(next);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }
+
   private loadHints(): void {
     this.chatService.getHints().subscribe({
       next: (res) => {
@@ -473,7 +664,7 @@ export class AdminAiChatbotComponent {
         this.messages.set(this.withMessageLimit(normalized));
       }
       if (typeof data.orderId === 'string') this.orderId.set(data.orderId);
-      if (Array.isArray(data.quickActions)) this.quickActions.set(data.quickActions.slice(0, this.MAX_QUICK_ACTIONS));
+      if (Array.isArray(data.quickActions)) this.quickActions.set(this.sanitizeQuickActions(data.quickActions));
       if (Array.isArray(data.smartPrompts) && data.smartPrompts.length > 0) {
         this.smartPrompts.set(this.mergeSmartPrompts(data.smartPrompts));
       } else {
@@ -491,5 +682,20 @@ export class AdminAiChatbotComponent {
 
     const unique = Array.from(new Set(merged));
     return unique.slice(0, this.MAX_SMART_PROMPTS);
+  }
+
+  private sanitizeQuickActions(actions: AdminAiQuickAction[]): AdminAiQuickAction[] {
+    return (actions || [])
+      .filter((action) => {
+        const label = String(action?.label || '').toLowerCase();
+        const route = String(action?.route || '').toLowerCase();
+        const riskQuery = String(action?.queryParams?.['risk'] || '').toLowerCase();
+
+        const isRiskFilterAction = label.includes('loc don rui ro cao')
+          || (route === '/admin' && riskQuery === 'high');
+
+        return !isRiskFilterAction;
+      })
+      .slice(0, this.MAX_QUICK_ACTIONS);
   }
 }

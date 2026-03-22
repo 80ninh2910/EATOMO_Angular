@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "framework": null,
+  "installCommand": "npm install && npm --prefix EATOMO ci",
+  "buildCommand": "npm --prefix EATOMO run build",
+  "outputDirectory": "EATOMO/dist/EATOMO/browser",
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 30,
+      "includeFiles": "backend/admin-ai-chatbot/models/*.json"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

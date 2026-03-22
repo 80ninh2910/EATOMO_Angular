@@ -6,6 +6,7 @@
   "main": "src/api/server.js",
   "scripts": {
     "dataset:build": "node scripts/build_dataset.js --synthetic=5000",
+    "dataset:balanced": "node scripts/build_dataset.js --synthetic=5000 --cancel-ratio=0.5",
     "dataset:small": "node scripts/build_dataset.js --synthetic=1000",
     "train:baseline": "node scripts/train_baseline.js --target=cancel",
     "train:cancel": "node scripts/train_baseline.js --target=cancel",

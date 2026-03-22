@@ -25,6 +25,14 @@ function parseSyntheticSize() {
   return Math.floor(n);
 }
 
+function parseCancelRatio() {
+  const arg = process.argv.find((a) => a.startsWith('--cancel-ratio='));
+  if (!arg) return 0.5;
+  const ratio = Number(arg.split('=')[1]);
+  if (!Number.isFinite(ratio)) return 0.5;
+  return Math.min(0.9, Math.max(0.1, ratio));
+}
+
 function ensureDir(filePath) {
   const dir = path.dirname(filePath);
   fs.mkdirSync(dir, { recursive: true });
@@ -185,6 +193,35 @@ function getStatusWeightsByContext(segment, daysAgo, baseStatusWeights) {
   return base;
 }
 
+function pickNonCancelledStatus(statusWeights) {
+  const filtered = { ...statusWeights };
+  delete filtered.cancelled;
+  return weightedPick(filtered) || 'completed';
+}
+
+function buildCancelDecision(params) {
+  const {
+    segment,
+    daysAgo,
+    baseStatusWeights,
+    cancelRemaining,
+    slotsRemaining
+  } = params;
+
+  if (cancelRemaining <= 0) return false;
+  if (cancelRemaining >= slotsRemaining) return true;
+
+  const weights = getStatusWeightsByContext(segment, daysAgo, baseStatusWeights);
+  const cancelledWeight = Number(weights.cancelled || 0);
+  const totalWeight = Object.values(weights).reduce((s, w) => s + Number(w || 0), 0);
+  const contextCancelProb = totalWeight > 0 ? cancelledWeight / totalWeight : 0.5;
+  const balanceProb = cancelRemaining / slotsRemaining;
+
+  // Combine global balancing objective with contextual cancellation propensity.
+  const mixedProb = (0.68 * balanceProb) + (0.32 * contextCancelProb);
+  return Math.random() < mixedProb;
+}
+
 function getPaymentWeightsBySegment(segment, basePaymentWeights) {
   const base = { ...basePaymentWeights };
   if (segment === 'new') {
@@ -232,6 +269,7 @@ function computeDiscount(voucher, subtotal) {
 function generateSyntheticOrders(params) {
   const {
     n,
+    cancelRatio,
     realOrders,
     users,
     bowls,
@@ -271,6 +309,8 @@ function generateSyntheticOrders(params) {
   }
 
   const result = [];
+  const targetCancelled = Math.round(n * cancelRatio);
+  let cancelledCount = 0;
 
   for (let i = 0; i < n; i += 1) {
     const daysAgo = Math.floor(Math.pow(Math.random(), 1.8) * 365);
@@ -279,9 +319,27 @@ function generateSyntheticOrders(params) {
     const userId = weightedPick(userWeights) || randomChoice(userIds);
     const segment = userSegments[userId] || 'regular';
 
-    const status = weightedPick(getStatusWeightsByContext(segment, daysAgo, statusWeights)) || 'completed';
     const paymentMethod = weightedPick(getPaymentWeightsBySegment(segment, paymentMethodWeights)) || 'cash';
     const itemCount = Number(weightedPick(getItemCountWeightsBySegment(segment, itemCountWeights)) || 2);
+
+    const slotsRemaining = n - i;
+    const cancelRemaining = targetCancelled - cancelledCount;
+    const shouldCancel = buildCancelDecision({
+      segment,
+      daysAgo,
+      baseStatusWeights: statusWeights,
+      cancelRemaining,
+      slotsRemaining
+    });
+
+    const contextualStatusWeights = getStatusWeightsByContext(segment, daysAgo, statusWeights);
+    const status = shouldCancel
+      ? 'cancelled'
+      : pickNonCancelledStatus(contextualStatusWeights);
+
+    if (status === 'cancelled') {
+      cancelledCount += 1;
+    }
 
     const usedIds = new Set();
     const items = [];
@@ -449,6 +507,7 @@ function toTrainingRow(order, userStats) {
 
 async function main() {
   const syntheticSize = parseSyntheticSize();
+  const cancelRatio = parseCancelRatio();
   const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/eatomo_db';
 
   await mongoose.connect(uri);
@@ -499,6 +558,7 @@ async function main() {
 
   const syntheticOrders = generateSyntheticOrders({
     n: syntheticSize,
+    cancelRatio,
     realOrders: orders,
     users,
     bowls,
@@ -557,11 +617,15 @@ async function main() {
   const realStatus = countBy(normalizedRealOrders, (o) => o.status);
   const syntheticStatus = countBy(syntheticOrders, (o) => o.status);
   const mergedStatus = countBy(allOrders, (o) => o.status);
+  const syntheticCancelled = syntheticOrders.reduce((s, o) => s + (o.status === 'cancelled' ? 1 : 0), 0);
+  const syntheticNotCancelled = syntheticOrders.length - syntheticCancelled;
+  const syntheticCancelRate = syntheticOrders.length > 0 ? syntheticCancelled / syntheticOrders.length : 0;
   const labelCancelRate = trainingRows.reduce((s, r) => s + r.label_cancelled, 0) / trainingRows.length;
 
   const report = {
     generatedAt: new Date().toISOString(),
     syntheticSize,
+    syntheticCancelTargetRatio: cancelRatio,
     realOrders: normalizedRealOrders.length,
     syntheticOrders: syntheticOrders.length,
     totalRows: trainingRows.length,
@@ -569,6 +633,11 @@ async function main() {
       realStatus,
       syntheticStatus,
       mergedStatus,
+      syntheticBinaryCancel: {
+        cancelled: syntheticCancelled,
+        not_cancelled: syntheticNotCancelled,
+        cancelRate: Number(syntheticCancelRate.toFixed(4))
+      },
       paymentMethod: countBy(allOrders, (o) => o.paymentMethod || 'unknown'),
       userSegment: countBy(trainingRows, (r) => r.user_segment || 'unknown')
     },

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Bowl, CreateBowlRequest, UpdateBowlRequest } from '../models/bowl.model';
+import { API_BASE } from './api-base';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BowlService {
-  private readonly API = 'http://localhost:3000/api';
+  private readonly API = API_BASE;
 
   constructor(private http: HttpClient) {}
 

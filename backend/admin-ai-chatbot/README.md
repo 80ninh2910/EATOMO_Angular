@@ -30,6 +30,10 @@ Tu thu muc backend/admin-ai-chatbot:
 
    npm run dataset:build
 
+  Hoac tao dataset can bang 50/50 don huy va khong huy:
+
+  npm run dataset:balanced
+
 2. Train model
 
   npm run train:all
@@ -58,6 +62,7 @@ Tu thu muc backend/admin-ai-chatbot:
   - label_cancelled
   - label_delay_risk
   - label_payment_unpaid
+- Co the dieu chinh ti le huy don synthetic bang flag --cancel-ratio (mac dinh 0.5).
 
 ## API hien co
 

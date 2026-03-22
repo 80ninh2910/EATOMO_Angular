@@ -141,6 +141,22 @@ img {
   font-weight: 600;
 }
 
+.cancel-detection-banner {
+  margin: 0 auto 16px;
+  max-width: 1200px;
+  background: #fff3f1;
+  color: #8b1f14;
+  border: 1px solid #f4b6b0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cancel-detection-banner .warn-text {
+  color: #b3261e;
+}
+
 .page-title h2 {
   font-size: 26px;
   margin: 0;
@@ -394,6 +410,46 @@ tbody td {
 .status-select.fulfillment {
   background: #f1e7d5;
   color: #6a5a4a;
+}
+
+.ai-cancel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #ffe4df;
+  color: #a1261b;
+  border: 1px solid #f4b6b0;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ai-cancel-chip.medium {
+  background: #fff1d8;
+  color: #8a5a09;
+  border-color: #f4d39c;
+}
+
+.ai-cancel-chip.high {
+  background: #ffd6d2;
+  color: #8b1f14;
+  border-color: #f19e97;
+}
+
+.ai-cancel-warning {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #f2a8a0;
+  background: #fff1ef;
+  color: #7d1f17;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
 }
 
 .updated-cell {

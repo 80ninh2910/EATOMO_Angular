@@ -1,6 +1,9 @@
 {
   "name": "eatomo-backend",
   "version": "1.0.0",
+  "engines": {
+    "node": "20.x"
+  },
   "description": "EATOMO Backend - Express.js + MySQL",
   "main": "server.js",
   "scripts": {

@@ -10,6 +10,11 @@ const runtime = require(path.join(__dirname, '..', 'admin-ai-chatbot', 'src', 't
 let cancelModel = null;
 let delayModel = null;
 
+const DEFAULT_METRIC_THRESHOLDS = {
+  accuracy: 0.6,
+  recall: 0.7
+};
+
 const DEFAULT_BOWL_IMAGE = '/assets/healthy/images/index/bowl-b2.jpg';
 
 function resolveBowlImage(image) {
@@ -155,6 +160,7 @@ function evaluateBinary(yTrue, yPred) {
   const precision = tp + fp > 0 ? tp / (tp + fp) : 0;
   const recall = tp + fn > 0 ? tp / (tp + fn) : 0;
   const f1 = precision + recall > 0 ? (2 * precision * recall) / (precision + recall) : 0;
+  const accuracy = yTrue.length > 0 ? (tp + tn) / yTrue.length : 0;
 
   return {
     samples: yTrue.length,
@@ -162,9 +168,90 @@ function evaluateBinary(yTrue, yPred) {
     fp,
     tn,
     fn,
+    accuracy: Number(accuracy.toFixed(4)),
     precision: Number(precision.toFixed(4)),
     recall: Number(recall.toFixed(4)),
     f1: Number(f1.toFixed(4))
+  };
+}
+
+function parseMetricThresholds(input = {}) {
+  const accuracy = Number(input.accuracy);
+  const recall = Number(input.recall);
+
+  const safeAccuracy = Number.isFinite(accuracy)
+    ? Math.min(1, Math.max(0, accuracy))
+    : DEFAULT_METRIC_THRESHOLDS.accuracy;
+  const safeRecall = Number.isFinite(recall)
+    ? Math.min(1, Math.max(0, recall))
+    : DEFAULT_METRIC_THRESHOLDS.recall;
+
+  return {
+    accuracy: safeAccuracy,
+    recall: safeRecall
+  };
+}
+
+function scoreColor(value, threshold) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) {
+    return { color: 'gray', level: 'NO_DATA' };
+  }
+  if (n < threshold) {
+    return { color: 'red', level: 'ALERT' };
+  }
+  if (n < threshold + 0.05) {
+    return { color: 'amber', level: 'WATCH' };
+  }
+  return { color: 'green', level: 'OK' };
+}
+
+function buildMetricAlert(modelKey, metric, thresholds) {
+  const accuracy = Number(metric?.accuracy);
+  const recall = Number(metric?.recall);
+
+  const accuracyState = scoreColor(accuracy, thresholds.accuracy);
+  const recallState = scoreColor(recall, thresholds.recall);
+
+  let overallColor = 'green';
+  let overallLevel = 'OK';
+  if (accuracyState.color === 'red' || recallState.color === 'red') {
+    overallColor = 'red';
+    overallLevel = 'ALERT';
+  } else if (accuracyState.color === 'amber' || recallState.color === 'amber') {
+    overallColor = 'amber';
+    overallLevel = 'WATCH';
+  }
+
+  return {
+    model: modelKey,
+    overall: {
+      color: overallColor,
+      level: overallLevel
+    },
+    accuracy: {
+      value: Number.isFinite(accuracy) ? Number(accuracy.toFixed(4)) : null,
+      threshold: thresholds.accuracy,
+      color: accuracyState.color,
+      level: accuracyState.level
+    },
+    recall: {
+      value: Number.isFinite(recall) ? Number(recall.toFixed(4)) : null,
+      threshold: thresholds.recall,
+      color: recallState.color,
+      level: recallState.level
+    }
+  };
+}
+
+function buildOfflineValidationSnapshot(model) {
+  const business = model?.metrics?.business || null;
+  const f1Optimal = model?.metrics?.f1Optimal || null;
+
+  return {
+    business,
+    f1Optimal,
+    threshold: Number(model?.threshold ?? 0)
   };
 }
 
@@ -435,7 +522,7 @@ const INTENT_KEYWORD_PROFILES = {
     'tre sla', 'dieu phoi', 'tai xe', 'eta', 'uoc tinh', 'giao moi'
   ],
   monitoring: [
-    'monitoring', 'drift', 'precision', 'recall', 'f1', 'mo hinh'
+    'monitoring', 'drift', 'accuracy', 'precision', 'recall', 'f1', 'mo hinh'
   ],
   action_summary: [
     'hanh dong admin', 'nhat ky admin', 'audit admin', '24 gio qua'
@@ -724,6 +811,7 @@ function detectPromptIntent(question) {
 
   const monitoring = [
     /monitoring/,
+    /accuracy/,
     /drift/,
     /precision/,
     /recall/,
@@ -1290,33 +1378,48 @@ async function buildMonitoringSnapshot() {
       return 'N/A (model khong du doan positive trong tuan nay)';
     }
 
-    return `${(metric.precision * 100).toFixed(1)}%/${(metric.recall * 100).toFixed(1)}%/${(metric.f1 * 100).toFixed(1)}%`;
+    return `${(Number(metric.accuracy || 0) * 100).toFixed(1)}%/${(metric.precision * 100).toFixed(1)}%/${(metric.recall * 100).toFixed(1)}%/${(metric.f1 * 100).toFixed(1)}%`;
   };
 
   const metricCounts = (metric) => `TP=${metric.tp}, FP=${metric.fp}, FN=${metric.fn}, TN=${metric.tn}`;
 
+  const offlineValidation = {
+    cancel: buildOfflineValidationSnapshot(cancelModel),
+    delay: buildOfflineValidationSnapshot(delayModel)
+  };
+
+  const metricThresholds = parseMetricThresholds();
+  const metricAlerts = {
+    cancel: buildMetricAlert('cancel', offlineValidation.cancel.business, metricThresholds),
+    delay: buildMetricAlert('delay', offlineValidation.delay.business, metricThresholds)
+  };
+
   return {
     intent: 'admin_model_monitoring',
     answer: latest
-      ? `Monitoring model tuan ${latest.week}: Cancel P/R/F1 = ${metricSummary(latest.cancel)} (${metricCounts(latest.cancel)}), Delay P/R/F1 = ${metricSummary(latest.delay)} (${metricCounts(latest.delay)}). Drift cancel=${cancelDrift.score}, drift delay=${delayDrift.score}.`
+      ? `Monitoring model tuan ${latest.week}: Cancel A/P/R/F1 = ${metricSummary(latest.cancel)} (${metricCounts(latest.cancel)}), Delay A/P/R/F1 = ${metricSummary(latest.delay)} (${metricCounts(latest.delay)}). Drift cancel=${cancelDrift.score}, drift delay=${delayDrift.score}.`
       : 'Chua du du lieu de tinh monitoring model theo tuan.',
     recommendations: [
       'Neu drift > 1.0 trong nhieu tuan, nen retrain model.',
-      'Theo doi recall cho nhom don tre de tranh bo sot canh bao.',
+      'Theo doi dong thoi accuracy va recall de can bang chat luong canh bao.',
       'Kiem tra quality du lieu dau vao truoc khi cap nhat threshold.'
     ],
     quickActions: [
       { type: 'route', label: 'Mo Bao cao Admin', route: '/admin/report' }
     ],
     smartPrompts: [
-      'Cho toi weekly precision/recall 4 tuan gan nhat.',
+      'Cho toi weekly accuracy/precision/recall 4 tuan gan nhat.',
       'Drift feature nao dang lech manh nhat?',
       'De xuat nguong canh bao moi cho don tre SLA.'
     ],
+    metricAlerts,
     monitoring: {
       generatedAt: new Date().toISOString(),
       drift: { cancel: cancelDrift, delay: delayDrift },
-      latestWeekly: latest
+      latestWeekly: latest,
+      offlineValidation,
+      metricThresholds,
+      metricAlerts
     }
   };
 }
@@ -2243,6 +2346,16 @@ exports.monitoring = async (_req, res) => {
     const cancelDrift = calcDriftScore(cancelModel, featureRows);
     const delayDrift = calcDriftScore(delayModel, featureRows);
 
+    const metricThresholds = parseMetricThresholds();
+    const offlineValidation = {
+      cancel: buildOfflineValidationSnapshot(cancelModel),
+      delay: buildOfflineValidationSnapshot(delayModel)
+    };
+    const metricAlerts = {
+      cancel: buildMetricAlert('cancel', offlineValidation.cancel.business, metricThresholds),
+      delay: buildMetricAlert('delay', offlineValidation.delay.business, metricThresholds)
+    };
+
     return res.json({
       success: true,
       generatedAt: new Date().toISOString(),
@@ -2260,7 +2373,49 @@ exports.monitoring = async (_req, res) => {
         cancel: cancelDrift,
         delay: delayDrift
       },
+      metricThresholds,
+      metricAlerts,
+      offlineValidation,
       weeklyMetrics
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.metrics = async (req, res) => {
+  try {
+    ensureModelsLoaded();
+
+    const metricThresholds = parseMetricThresholds(req.query || {});
+    const offlineValidation = {
+      cancel: buildOfflineValidationSnapshot(cancelModel),
+      delay: buildOfflineValidationSnapshot(delayModel)
+    };
+
+    const metricAlerts = {
+      cancel: buildMetricAlert('cancel', offlineValidation.cancel.business, metricThresholds),
+      delay: buildMetricAlert('delay', offlineValidation.delay.business, metricThresholds)
+    };
+
+    return res.json({
+      success: true,
+      generatedAt: new Date().toISOString(),
+      metricThresholds,
+      metricAlerts,
+      metrics: {
+        cancel: {
+          accuracy: offlineValidation.cancel.business?.accuracy ?? null,
+          recall: offlineValidation.cancel.business?.recall ?? null,
+          threshold: offlineValidation.cancel.threshold
+        },
+        delay: {
+          accuracy: offlineValidation.delay.business?.accuracy ?? null,
+          recall: offlineValidation.delay.business?.recall ?? null,
+          threshold: offlineValidation.delay.threshold
+        }
+      },
+      offlineValidation
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });

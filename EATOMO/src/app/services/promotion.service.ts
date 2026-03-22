@@ -7,8 +7,9 @@ import {
   UpdatePromotionRequest,
   VoucherValidation
 } from '../models/promotion.model';
+import { API_BASE } from './api-base';
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = API_BASE;
 
 @Injectable({
   providedIn: 'root'

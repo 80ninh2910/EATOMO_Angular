@@ -27,6 +27,13 @@ interface OrderMeta {
   orderObj: Order;
 }
 
+interface CancelRiskSignal {
+  probability: number;
+  threshold: number;
+  label: number;
+  level: 'high' | 'medium' | 'low';
+}
+
 @Component({
   selector: 'app-order-admin',
   standalone: true,
@@ -55,6 +62,9 @@ export class OrderAdminComponent implements OnInit {
   dateTo = '';
   selectedIds = new Set<string>();
   highRiskOrderIds = new Set<string>();
+  cancelRiskByOrderId: Record<string, CancelRiskSignal> = {};
+  isDetectingCancelRisk = false;
+  cancelDetectionError = '';
   aiRiskFilterActive = false;
   searchTerm = '';
   appliedSearchTerm = '';
@@ -73,6 +83,7 @@ export class OrderAdminComponent implements OnInit {
   };
 
   private openOrders = new Set<string>();
+  private checkingCancelRiskOrders = new Set<string>();
 
 
   ngOnInit(): void {
@@ -117,6 +128,7 @@ export class OrderAdminComponent implements OnInit {
           const id = o.id ?? (o as any)._id ?? '';
           if (id) this.ordersMap[id] = this.buildMeta(o, id);
         });
+        this.refreshCancelRiskSignals(orders);
         this.isLoading = false;
         this.cdr.markForCheck();
       },
@@ -124,6 +136,90 @@ export class OrderAdminComponent implements OnInit {
         console.error('Load orders error:', err);
         this.error = 'KhĂ´ng thá»ƒ táº£i danh sĂ¡ch Ä‘Æ¡n hĂ ng.';
         this.isLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  private refreshCancelRiskSignals(orders: Order[]): void {
+    const activeOrderIds = new Set(
+      orders
+        .filter((o) => ['pending', 'confirmed', 'preparing', 'delivering'].includes(String(o.status)))
+        .map((o) => o.id ?? (o as any)._id ?? '')
+        .filter(Boolean)
+    );
+
+    if (activeOrderIds.size === 0) {
+      this.cancelRiskByOrderId = {};
+      this.cancelDetectionError = '';
+      return;
+    }
+
+    this.isDetectingCancelRisk = true;
+    this.cancelDetectionError = '';
+
+    this.adminAiChatService.getHighRiskOrders(0.6, 1, 400).subscribe({
+      next: (res) => {
+        const nextSignals: Record<string, CancelRiskSignal> = {};
+        (res.orders || []).forEach((item) => {
+          const orderId = String(item.orderId || '');
+          if (!orderId || !activeOrderIds.has(orderId)) return;
+          if (Number(item.cancelRisk?.label || 0) !== 1) return;
+
+          nextSignals[orderId] = {
+            probability: Number(item.cancelRisk.probability || 0),
+            threshold: Number(item.cancelRisk.threshold || 0),
+            label: Number(item.cancelRisk.label || 0),
+            level: this.getRiskLevel(item.cancelRisk.probability)
+          };
+        });
+
+        this.cancelRiskByOrderId = nextSignals;
+        this.isDetectingCancelRisk = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isDetectingCancelRisk = false;
+        this.cancelDetectionError = 'AI cancel detection is temporarily unavailable.';
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  private getRiskLevel(probability: number): 'high' | 'medium' | 'low' {
+    const p = Number(probability || 0);
+    if (p >= 0.75) return 'high';
+    if (p >= 0.6) return 'medium';
+    return 'low';
+  }
+
+  private isOrderEligibleForCancelDetection(orderId: string): boolean {
+    const status = this.ordersMap[orderId]?.backendStatus;
+    return status === 'pending' || status === 'confirmed' || status === 'preparing' || status === 'delivering';
+  }
+
+  private maybePrimeCancelRisk(orderId: string): void {
+    if (!this.isOrderEligibleForCancelDetection(orderId)) return;
+    if (this.cancelRiskByOrderId[orderId]) return;
+    if (this.checkingCancelRiskOrders.has(orderId)) return;
+
+    this.checkingCancelRiskOrders.add(orderId);
+    this.adminAiChatService.getOrderPrediction(orderId).subscribe({
+      next: (res) => {
+        const cancelRisk = res?.prediction?.cancelRisk;
+        if (cancelRisk && Number(cancelRisk.label || 0) === 1) {
+          this.cancelRiskByOrderId[orderId] = {
+            probability: Number(cancelRisk.probability || 0),
+            threshold: Number(cancelRisk.threshold || 0),
+            label: Number(cancelRisk.label || 0),
+            level: this.getRiskLevel(cancelRisk.probability)
+          };
+        }
+        this.checkingCancelRiskOrders.delete(orderId);
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.checkingCancelRiskOrders.delete(orderId);
         this.cdr.markForCheck();
       }
     });
@@ -250,6 +346,9 @@ export class OrderAdminComponent implements OnInit {
           meta.fulfillmentStatus = this.mapBackendStatus(status);
           meta.updatedAt = this.getNowLabel();
         }
+        if (status === 'cancelled' || status === 'completed') {
+          delete this.cancelRiskByOrderId[orderId];
+        }
         this.cdr.markForCheck();
       },
       error: () => alert('Cáº­p nháº­t Ä‘Æ¡n hĂ ng tháº¥t báº¡i.')
@@ -277,7 +376,13 @@ export class OrderAdminComponent implements OnInit {
   }
 
   toggleOrder(orderId: string): void {
-    this.openOrders.has(orderId) ? this.openOrders.delete(orderId) : this.openOrders.add(orderId);
+    if (this.openOrders.has(orderId)) {
+      this.openOrders.delete(orderId);
+      return;
+    }
+
+    this.openOrders.add(orderId);
+    this.maybePrimeCancelRisk(orderId);
   }
 
   isOpen(orderId: string): boolean { return this.openOrders.has(orderId); }
@@ -307,6 +412,28 @@ export class OrderAdminComponent implements OnInit {
   }
 
   getDetailsColspan(): number { return Object.values(this.columnVisibility).filter(Boolean).length; }
+
+  getDetectedCancelOrderIds(): string[] {
+    return Object.keys(this.cancelRiskByOrderId).filter((orderId) => this.ordersMap[orderId]);
+  }
+
+  hasAiCancelWarning(orderId: string): boolean {
+    return Number(this.cancelRiskByOrderId[orderId]?.label || 0) === 1;
+  }
+
+  getAiCancelProbability(orderId: string): number {
+    const value = Number(this.cancelRiskByOrderId[orderId]?.probability || 0);
+    return Number((value * 100).toFixed(1));
+  }
+
+  getAiCancelThreshold(orderId: string): number {
+    const value = Number(this.cancelRiskByOrderId[orderId]?.threshold || 0);
+    return Number((value * 100).toFixed(1));
+  }
+
+  getAiCancelLevel(orderId: string): 'high' | 'medium' | 'low' {
+    return this.cancelRiskByOrderId[orderId]?.level || 'low';
+  }
 
   getFulfillmentLabel(orderId: string): string {
     const s = this.ordersMap[orderId]?.fulfillmentStatus;
