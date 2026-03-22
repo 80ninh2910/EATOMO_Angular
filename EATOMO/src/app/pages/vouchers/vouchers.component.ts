@@ -1,9 +1,11 @@
 import { Component, OnInit, signal, computed, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
+import { CartService } from '../../services/cart.service';
+import { CheckoutVoucherService } from '../../services/checkout-voucher.service';
 import { PromotionService } from '../../services/promotion.service';
 import { Promotion } from '../../models/promotion.model';
 
@@ -18,6 +20,9 @@ import { Promotion } from '../../models/promotion.model';
 export class VouchersComponent implements OnInit {
 
   private promotionService = inject(PromotionService);
+  private cartService = inject(CartService);
+  private checkoutVoucherService = inject(CheckoutVoucherService);
+  private router = inject(Router);
 
   // State
   vouchers        = signal<Promotion[]>([]);
@@ -26,12 +31,15 @@ export class VouchersComponent implements OnInit {
   searchText      = signal('');
   activeFilter    = signal<'all' | 'percentage' | 'fixed' | 'new_customer' | 'vip'>('all');
   copiedCode      = signal<string | null>(null);
+  selectionNotice = signal<{ type: 'error' | 'info'; text: string } | null>(null);
+  currentOrderSubtotal = computed(() => this.cartService.totalPrice());
+  hasOrderContext = computed(() => this.currentOrderSubtotal() > 0);
 
   filters = [
-    { value: 'all'          as const, label: 'Tất cả' },
-    { value: 'percentage'   as const, label: 'Giảm %' },
-    { value: 'fixed'        as const, label: 'Giảm tiền' },
-    { value: 'new_customer' as const, label: 'Khách mới' },
+    { value: 'all'          as const, label: 'All' },
+    { value: 'percentage'   as const, label: '% Off' },
+    { value: 'fixed'        as const, label: 'Amount Off' },
+    { value: 'new_customer' as const, label: 'New Customer' },
     { value: 'vip'          as const, label: 'VIP' },
   ];
 
@@ -66,7 +74,7 @@ export class VouchersComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: () => {
-        this.loadError.set('Không thể tải danh sách voucher. Vui lòng thử lại.');
+        this.loadError.set('Unable to load vouchers. Please try again.');
         this.isLoading.set(false);
       }
     });
@@ -82,30 +90,96 @@ export class VouchersComponent implements OnInit {
     setTimeout(() => this.copiedCode.set(null), 2000);
   }
 
+  goBackToCheckout(): void {
+    this.router.navigate(['/orders']);
+  }
+
+  handleVoucherAction(v: Promotion): void {
+    this.selectionNotice.set(null);
+
+    if (!this.hasOrderContext()) {
+      if (this.canCopyVoucher(v)) {
+        this.copyCode(v.code);
+        return;
+      }
+
+      this.selectionNotice.set({
+        type: 'error',
+        text: `Voucher ${v.code} is currently ${this.voucherStatusLabel(v).toLowerCase()}.`
+      });
+      return;
+    }
+
+    if (this.canApplyToCurrentOrder(v)) {
+      this.checkoutVoucherService.setPendingVoucherCode(v.code);
+      this.router.navigate(['/orders']);
+      return;
+    }
+
+    this.selectionNotice.set({
+      type: 'error',
+      text: this.orderCompatibilityMessage(v)
+    });
+  }
+
+  actionLabel(v: Promotion): string {
+    if (this.hasOrderContext()) {
+      return this.canApplyToCurrentOrder(v) ? 'USE AND RETURN' : 'SEE WHY';
+    }
+
+    if (!canUseOnCatalog(v)) {
+      return 'UNAVAILABLE';
+    }
+
+    return this.copiedCode() === v.code ? 'COPIED' : 'USE';
+  }
+
+  isActionDisabled(v: Promotion): boolean {
+    return !this.hasOrderContext() && !this.canCopyVoucher(v);
+  }
+
+  orderCompatibilityLabel(v: Promotion): string {
+    if (!this.hasOrderContext()) return '';
+
+    if (this.canApplyToCurrentOrder(v)) {
+      const discount = this.estimatedDiscount(v);
+      return discount > 0
+        ? `Fits this order, estimated savings ${discount.toLocaleString('vi-VN')}₫`
+        : 'Fits this order';
+    }
+
+    return this.orderCompatibilityMessage(v);
+  }
+
+  orderCompatibilityClass(v: Promotion): string {
+    if (!this.hasOrderContext()) return '';
+    return this.canApplyToCurrentOrder(v) ? 'fit-ok' : 'fit-bad';
+  }
+
   // ─── Display helpers ───
 
   /** "GIẢM 15%" hoặc "GIẢM 50.000₫" */
   discountLabel(v: Promotion): string {
     if (v.discountType === 'percentage') {
-      return `GIẢM ${v.discountValue}%`;
+      return `${v.discountValue}% OFF`;
     }
-    return `GIẢM ${v.discountValue.toLocaleString('vi-VN')}₫`;
+    return `${v.discountValue.toLocaleString('vi-VN')}₫ OFF`;
   }
 
   /** Ngày hết hạn dạng "HẾT HẠN 31/12/2025" hoặc "KHÔNG GIỚI HẠN" */
   validityLabel(v: Promotion): string {
-    if (!v.validUntil) return 'KHÔNG GIỚI HẠN THỜI GIAN';
+    if (!v.validUntil) return 'NO EXPIRATION DATE';
     const d = new Date(v.validUntil);
-    return `HẾT HẠN ${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
+    return `EXPIRES ${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
   }
 
   voucherStatusLabel(v: Promotion): string {
     const status = this.getVoucherStatus(v);
-    if (status === 'active') return 'Đang áp dụng';
-    if (status === 'upcoming') return 'Chưa đến ngày áp dụng';
-    if (status === 'expired') return 'Đã hết hạn';
-    if (status === 'used_up') return 'Đã hết lượt';
-    return 'Đã tắt';
+    if (status === 'active') return 'Active';
+    if (status === 'upcoming') return 'Not Started Yet';
+    if (status === 'expired') return 'Expired';
+    if (status === 'used_up') return 'Fully Redeemed';
+    return 'Inactive';
   }
 
   voucherStatusClass(v: Promotion): string {
@@ -116,20 +190,24 @@ export class VouchersComponent implements OnInit {
     return this.getVoucherStatus(v) === 'active';
   }
 
+  canApplyToCurrentOrder(v: Promotion): boolean {
+    return this.hasOrderContext() && this.getVoucherStatus(v) === 'active' && this.currentOrderSubtotal() >= v.minOrderValue;
+  }
+
   /** Điều kiện tóm tắt từ DB fields */
   conditionLines(v: Promotion): string[] {
     const lines: string[] = [];
     if (v.minOrderValue > 0) {
-      lines.push(`Đơn tối thiểu ${v.minOrderValue.toLocaleString('vi-VN')}₫`);
+      lines.push(`Minimum order ${v.minOrderValue.toLocaleString('vi-VN')}₫`);
     }
     if (v.maxDiscountAmount) {
-      lines.push(`Giảm tối đa ${v.maxDiscountAmount.toLocaleString('vi-VN')}₫`);
+      lines.push(`Maximum discount ${v.maxDiscountAmount.toLocaleString('vi-VN')}₫`);
     }
     if (v.description) {
       lines.push(v.description);
     }
-    if (lines.length === 0) lines.push('Áp dụng toàn bộ thực đơn');
-    lines.push('Không cộng dồn với các ưu đãi khác');
+    if (lines.length === 0) lines.push('Applies to the full menu');
+    lines.push('Cannot be combined with other offers');
     return lines;
   }
 
@@ -143,15 +221,40 @@ export class VouchersComponent implements OnInit {
 
   /** Label badge */
   targetLabel(v: Promotion): string {
-    if (v.target === 'new_customer') return 'Khách mới';
+    if (v.target === 'new_customer') return 'New Customer';
     if (v.target === 'vip')          return 'VIP';
-    return 'Tất cả';
+    return 'All Customers';
   }
 
   tagClass(v: Promotion): string {
     if (v.target === 'new_customer') return 'tag-new_customer';
     if (v.target === 'vip')          return 'tag-vip';
     return 'tag-all';
+  }
+
+  private estimatedDiscount(v: Promotion): number {
+    return Math.round(this.promotionService.calculateDiscount({
+      valid: true,
+      discountType: v.discountType,
+      discountValue: v.discountValue,
+      maxDiscountAmount: v.maxDiscountAmount,
+      minOrderValue: v.minOrderValue,
+      message: ''
+    }, this.currentOrderSubtotal()));
+  }
+
+  private orderCompatibilityMessage(v: Promotion): string {
+    const status = this.getVoucherStatus(v);
+    if (status !== 'active') {
+      return `Voucher ${v.code} is currently ${this.voucherStatusLabel(v).toLowerCase()}. Please choose another voucher.`;
+    }
+
+    const remaining = Math.max(0, v.minOrderValue - this.currentOrderSubtotal());
+    if (remaining > 0) {
+      return `Your current order needs ${remaining.toLocaleString('vi-VN')}₫ more to use voucher ${v.code}.`;
+    }
+
+    return `Voucher ${v.code} does not fit the current order yet.`;
   }
 
   private getVoucherStatus(v: Promotion): 'active' | 'upcoming' | 'expired' | 'used_up' | 'inactive' {
@@ -164,4 +267,13 @@ export class VouchersComponent implements OnInit {
 
     return 'active';
   }
+}
+
+function canUseOnCatalog(v: Promotion): boolean {
+  const now = new Date();
+  if (!v.isActive) return false;
+  if (v.validFrom && new Date(v.validFrom) > now) return false;
+  if (v.validUntil && new Date(v.validUntil) < now) return false;
+  if (v.currentUses >= v.maxUses) return false;
+  return true;
 }

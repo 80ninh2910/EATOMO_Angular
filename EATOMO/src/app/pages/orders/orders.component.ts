@@ -7,6 +7,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { PromotionService } from '../../services/promotion.service';
+import { CheckoutVoucherService } from '../../services/checkout-voucher.service';
 import { Order, PaymentMethod } from '../../models/order.model';
 import { VoucherValidation } from '../../models/promotion.model';
 
@@ -45,10 +46,13 @@ export class OrdersComponent implements OnInit {
     public cartService: CartService,
     private orderService: OrderService,
     private promotionService: PromotionService,
+    private checkoutVoucherService: CheckoutVoucherService,
     private router: Router
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.applyPendingVoucherSelection();
+  }
 
   removeFromCart(itemId: string): void {
     this.cartService.removeFromCart(itemId);
@@ -124,6 +128,19 @@ export class OrdersComponent implements OnInit {
     if (this.voucherCode.trim() && this.voucherValidation()) {
       this.validateVoucher();
     }
+  }
+
+  private applyPendingVoucherSelection(): void {
+    const code = this.checkoutVoucherService.consumePendingVoucherCode();
+    if (!code || this.cartService.isEmpty()) {
+      return;
+    }
+
+    this.activeTab.set('cart');
+    this.checkoutError.set('');
+    this.checkoutSuccess.set('');
+    this.voucherCode = code;
+    this.validateVoucher();
   }
 
   /**
