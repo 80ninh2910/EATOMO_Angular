@@ -23,6 +23,13 @@ interface Review {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
+  private readonly bowlPrefixOrder: Record<string, number> = {
+    B: 0,
+    H: 1,
+    L: 2,
+    V: 3
+  };
+
   activeFilter = signal('all');
   reviews = signal<Review[]>([]);
   allBowls = signal<Bowl[]>([]);
@@ -58,7 +65,7 @@ export class HomeComponent implements OnInit {
   loadBowls(): void {
     this.bowlService.getBowls().subscribe({
       next: (bowls) => {
-        this.allBowls.set(bowls);
+        this.allBowls.set([...bowls].sort((a, b) => this.compareBowls(a, b)));
         this.isBowlsLoading.set(false);
       },
       error: () => this.isBowlsLoading.set(false)
@@ -76,5 +83,32 @@ export class HomeComponent implements OnInit {
 
   scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private compareBowls(a: Bowl, b: Bowl): number {
+    const parsedA = this.parseBowlCode(a.id || a.name);
+    const parsedB = this.parseBowlCode(b.id || b.name);
+
+    const prefixOrderA = this.bowlPrefixOrder[parsedA.prefix] ?? Number.MAX_SAFE_INTEGER;
+    const prefixOrderB = this.bowlPrefixOrder[parsedB.prefix] ?? Number.MAX_SAFE_INTEGER;
+
+    if (prefixOrderA !== prefixOrderB) {
+      return prefixOrderA - prefixOrderB;
+    }
+
+    if (parsedA.number !== parsedB.number) {
+      return parsedA.number - parsedB.number;
+    }
+
+    return (a.id || a.name).localeCompare(b.id || b.name);
+  }
+
+  private parseBowlCode(value: string): { prefix: string; number: number } {
+    const match = String(value || '').trim().toUpperCase().match(/^([A-Z]+)\s*(\d+)/);
+
+    return {
+      prefix: match?.[1] || '',
+      number: Number(match?.[2] || Number.MAX_SAFE_INTEGER)
+    };
   }
 }
