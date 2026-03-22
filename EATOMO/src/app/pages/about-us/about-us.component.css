@@ -344,8 +344,9 @@
 
 .values-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 30px;
+  align-items: stretch;
 }
 
 .value-card {
@@ -357,6 +358,15 @@
   position: relative;
   overflow: hidden;
   border: 2px solid transparent;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  box-sizing: border-box;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .value-card::before {
@@ -385,7 +395,7 @@
 
 .value-icon {
   font-size: 56px;
-  margin-bottom: 20px;
+  margin-bottom: auto;
   position: relative;
   z-index: 2;
   animation: pulse 3s infinite;
@@ -422,17 +432,11 @@
 }
 
 .card2 {
-  background: url('/assets/healthy/images/about/Made-with-love.png');
-  background-size: 125%;
-  background-position: center 40%;
-  background-repeat: no-repeat;
+  background: url('/assets/healthy/images/about/Made-with-love.png') center/cover no-repeat;
 }
 
 .card3 {
-  background: url('/assets/healthy/images/about/Serving.png');
-  background-size: 125%;
-  background-position: center 40%;
-  background-repeat: no-repeat;
+  background: url('/assets/healthy/images/about/Serving.png') center/cover no-repeat;
 }
 
 .card4 {
@@ -920,6 +924,7 @@
 
   .value-card {
     padding: 30px 20px;
+    height: 360px;
   }
 
   .feature-item {
@@ -962,6 +967,7 @@
 
   .value-card {
     padding: 25px 15px;
+    height: 320px;
   }
 
   .value-icon {
