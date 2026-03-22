@@ -445,3 +445,23 @@ exports.getCustomerById = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to get customer', error: error.message });
   }
 };
+/**
+ * DELETE /api/admin/customers/:id
+ */
+exports.deleteCustomer = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Customer not found' });
+    }
+
+    // Tuỳ chọn: Nếu muốn xoá luôn lịch sử mua hàng của khách này thì bỏ comment dòng dưới
+    // await Order.deleteMany({ userId: req.params.id });
+
+    res.json({ success: true, message: 'Customer deleted successfully' });
+  } catch (error) {
+    console.error('Delete customer error:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete customer', error: error.message });
+  }
+};

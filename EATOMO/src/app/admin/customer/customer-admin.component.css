@@ -150,6 +150,13 @@
   background: #f4e1dc;
   color: #c0392b;
 }
+.btn.delete:disabled {
+  background: #f4f1e5;
+  color: #a0a0a0;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
 
 .btn.icon {
   width: 42px;

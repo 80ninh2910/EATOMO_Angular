@@ -20,4 +20,9 @@ export class CustomerService {
   getCustomerById(id: string): Observable<CustomerDetail> {
     return this.http.get<CustomerDetail>(`${API_URL}/admin/customers/${id}`);
   }
+  // THÊM HÀM NÀY ĐỂ GỌI API XOÁ:
+  /** DELETE /api/admin/customers/:id */
+  deleteCustomer(id: string): Observable<any> {
+    return this.http.delete(`${API_URL}/admin/customers/${id}`);
+  }
 }

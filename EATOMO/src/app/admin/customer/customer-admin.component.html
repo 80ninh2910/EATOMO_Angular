@@ -36,10 +36,13 @@
 
         <div class="panel-toolbar">
           <div class="search">
-            <input type="text" placeholder="Search by name, phone, or email" />
+            <input type="text" placeholder="Search by name, phone, or email"
+            [(ngModel)]="searchTerm" 
+            (ngModelChange)="onSearch()" />
             <span class="search-icon">🔍</span>
           </div>
-          <button class="btn delete" type="button">Delete selected</button>
+          <button class="btn delete" type="button" 
+          [disabled]="selectedCustomerIds.size === 0" (click)="deleteSelected()">Delete selected ({{ selectedCustomerIds.size }})</button>
           <button class="btn icon" type="button" title="Columns">▦</button>
         </div>
 
@@ -49,7 +52,12 @@
           <table class="customer-table">
             <thead>
               <tr>
-                <th class="checkbox-col"><input type="checkbox" aria-label="Select all" /></th>
+                <th class="checkbox-col">
+                  <input type="checkbox" 
+                  aria-label="Select all" 
+                  [checked]="isAllSelected()" 
+                  (change)="toggleAllSelection($event)"/>
+                </th>
                 <th>Customer</th>
                 <th>Phone</th>
                 <th>Email</th>
@@ -63,8 +71,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let customer of customers" (click)="openDetail(customer)">
-                <td><input type="checkbox" (click)="$event.stopPropagation()" /></td>
+              <tr *ngFor="let customer of filteredCustomers" (click)="openDetail(customer)">
+                <td>
+                  <input type="checkbox" 
+                  [checked]="selectedCustomerIds.has(customer.id)" 
+                  (change)="toggleSelection(customer.id)"
+                  (click)="$event.stopPropagation()" />
+                </td>
                 <td class="customer-name">
                   <button class="customer-link" type="button" (click)="openDetail(customer)">{{ customer.name }}</button>
                 </td>

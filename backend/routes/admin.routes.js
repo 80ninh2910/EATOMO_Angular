@@ -25,5 +25,5 @@ router.delete('/bowls/:id', adminController.deleteBowl);
 // Customers
 router.get('/customers', adminController.getCustomers);
 router.get('/customers/:id', adminController.getCustomerById);
-
+router.delete('/customers/:id', adminController.deleteCustomer); // <-- THÊM DÒNG NÀY VÀO ĐÂY
 module.exports = router;
