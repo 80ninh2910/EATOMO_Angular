@@ -36,7 +36,7 @@
 
     <!-- ===== SECTION HEADER ===== -->
     <div class="section-header">
-      <h2 class="section-title">Voucher Đang Có Hiệu Lực</h2>
+      <h2 class="section-title">Tất Cả Voucher</h2>
       @if (!isLoading() && !loadError()) {
         <span class="voucher-count">{{ filteredVouchers().length }} voucher</span>
       }
@@ -89,6 +89,7 @@
                 <p class="promo-label">{{ v.code }}</p>
                 <p class="promo-discount">{{ discountLabel(v) }}</p>
                 <p class="promo-validity">{{ validityLabel(v) }}</p>
+                <p class="promo-status" [class]="voucherStatusClass(v)">{{ voucherStatusLabel(v) }}</p>
               </div>
 
               <div class="voucher-divider">
@@ -103,9 +104,11 @@
                     <li>{{ c }}</li>
                   }
                 </ul>
-                <button class="btn-use" (click)="copyCode(v.code)">
+                <button class="btn-use" [disabled]="!canCopyVoucher(v)" (click)="copyCode(v.code)">
                   @if (copiedCode() === v.code) {
                     <i class="fas fa-check"></i> ĐÃ CHÉP
+                  } @else if (!canCopyVoucher(v)) {
+                    KHÔNG KHẢ DỤNG
                   } @else {
                     DÙNG <i class="fas fa-chevron-right"></i>
                   }

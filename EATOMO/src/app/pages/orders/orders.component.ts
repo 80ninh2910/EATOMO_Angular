@@ -52,14 +52,12 @@ export class OrdersComponent implements OnInit {
 
   removeFromCart(itemId: string): void {
     this.cartService.removeFromCart(itemId);
+    this.refreshVoucherValidation();
   }
 
   updateQuantity(itemId: string, quantity: number): void {
     this.cartService.updateQuantity(itemId, quantity);
-    // Recalculate discount if voucher applied
-    if (this.voucherValidation()?.valid) {
-      this.recalculateDiscount();
-    }
+    this.refreshVoucherValidation();
   }
 
   get subtotal(): number {
@@ -85,7 +83,7 @@ export class OrdersComponent implements OnInit {
     if (!this.voucherCode.trim()) return;
 
     this.isValidatingVoucher.set(true);
-    this.promotionService.validateVoucher(this.voucherCode.trim()).subscribe({
+    this.promotionService.validateVoucher(this.voucherCode.trim(), this.subtotal).subscribe({
       next: (result) => {
         this.voucherValidation.set(result);
         this.isValidatingVoucher.set(false);
@@ -117,6 +115,17 @@ export class OrdersComponent implements OnInit {
     }
   }
 
+  private refreshVoucherValidation(): void {
+    if (this.cartService.isEmpty()) {
+      this.removeVoucher();
+      return;
+    }
+
+    if (this.voucherCode.trim() && this.voucherValidation()) {
+      this.validateVoucher();
+    }
+  }
+
   /**
    * Đặt hàng — gọi OrderService
    */
@@ -131,6 +140,11 @@ export class OrdersComponent implements OnInit {
 
     if (this.cartService.isEmpty()) {
       this.checkoutError.set('Your cart is empty!');
+      return;
+    }
+
+    if (this.voucherCode.trim() && !this.voucherValidation()?.valid) {
+      this.checkoutError.set('Please apply a valid voucher or remove the voucher code before checkout.');
       return;
     }
 

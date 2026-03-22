@@ -1,4 +1,18 @@
 const Voucher = require('../models/Voucher');
+const { normalizeVoucherCode, buildVoucherValidation } = require('../utils/voucher');
+
+/**
+ * GET /api/vouchers/all — Lấy toàn bộ voucher cho trang user
+ */
+exports.getPublicVouchers = async (req, res) => {
+  try {
+    const vouchers = await Voucher.find().sort({ isActive: -1, createdAt: -1 });
+    res.json(vouchers);
+  } catch (error) {
+    console.error('Get public vouchers error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get vouchers', error: error.message });
+  }
+};
 
 /**
  * GET /api/promotions — Lấy tất cả promotions (Admin)
@@ -129,39 +143,17 @@ exports.togglePromotion = async (req, res) => {
  */
 exports.validateVoucher = async (req, res) => {
   try {
-    const { code } = req.body;
+    const { code, amount } = req.body;
     if (!code) {
       return res.json({ valid: false, message: 'Voucher code is required' });
     }
 
-    const voucher = await Voucher.findOne({ code: code.toUpperCase(), isActive: true });
-
-    if (!voucher) {
-      return res.json({ valid: false, message: 'Invalid voucher code' });
-    }
-
-    // Check dates
-    const now = new Date();
-    if (voucher.validFrom && voucher.validFrom > now) {
-      return res.json({ valid: false, message: 'Voucher is not yet valid' });
-    }
-    if (voucher.validUntil && voucher.validUntil < now) {
-      return res.json({ valid: false, message: 'Voucher has expired' });
-    }
-
-    // Check usage
-    if (voucher.currentUses >= voucher.maxUses) {
-      return res.json({ valid: false, message: 'Voucher has been fully redeemed' });
-    }
-
-    res.json({
-      valid: true,
-      discountType: voucher.discountType,
-      discountValue: voucher.discountValue,
-      maxDiscountAmount: voucher.maxDiscountAmount,
-      minOrderValue: voucher.minOrderValue,
-      message: `Voucher applied! ${voucher.discountType === 'percentage' ? voucher.discountValue + '% off' : voucher.discountValue.toLocaleString() + '₫ off'}`
+    const voucher = await Voucher.findOne({
+      code: normalizeVoucherCode(code),
+      isActive: true
     });
+
+    res.json(buildVoucherValidation(voucher, amount));
   } catch (error) {
     console.error('Validate voucher error:', error);
     res.status(500).json({ valid: false, message: 'Failed to validate voucher' });

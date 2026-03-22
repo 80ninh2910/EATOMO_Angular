@@ -1,6 +1,11 @@
 const Bowl = require('../models/Bowl');
 const Order = require('../models/Order');
 const Voucher = require('../models/Voucher');
+const {
+  normalizeVoucherCode,
+  buildVoucherValidation,
+  calculateVoucherDiscount
+} = require('../utils/voucher');
 
 /**
  * POST /api/orders — Tạo đơn hàng mới
@@ -56,27 +61,24 @@ exports.createOrder = async (req, res) => {
 
     // Voucher discount
     let discountAmount = 0;
-    if (voucherCode) {
+    let appliedVoucher = null;
+    let appliedVoucherCode = '';
+
+    if (voucherCode && String(voucherCode).trim()) {
+      appliedVoucherCode = normalizeVoucherCode(voucherCode);
+
       const voucher = await Voucher.findOne({
-        code: voucherCode.toUpperCase(),
-        isActive: true,
-        validFrom: { $lte: new Date() },
-        $or: [{ validUntil: null }, { validUntil: { $gte: new Date() } }],
-        $expr: { $lt: ['$currentUses', '$maxUses'] }
+        code: appliedVoucherCode,
+        isActive: true
       });
 
-      if (voucher && subtotal >= voucher.minOrderValue) {
-        if (voucher.discountType === 'percentage') {
-          discountAmount = Math.round(subtotal * voucher.discountValue / 100);
-          if (voucher.maxDiscountAmount && discountAmount > voucher.maxDiscountAmount) {
-            discountAmount = voucher.maxDiscountAmount;
-          }
-        } else {
-          discountAmount = voucher.discountValue;
-        }
-        // Increment usage
-        await Voucher.findByIdAndUpdate(voucher._id, { $inc: { currentUses: 1 } });
+      const validation = buildVoucherValidation(voucher, subtotal);
+      if (!validation.valid) {
+        return res.status(400).json({ success: false, message: validation.message });
       }
+
+      appliedVoucher = voucher;
+      discountAmount = calculateVoucherDiscount(voucher, subtotal);
     }
 
     const totalAmount = subtotal + tax + shippingFee - discountAmount;
@@ -97,8 +99,12 @@ exports.createOrder = async (req, res) => {
       deliveryAddress,
       deliveryPhone,
       deliveryNotes: deliveryNotes || '',
-      voucherCode: voucherCode || ''
+      voucherCode: appliedVoucherCode
     });
+
+    if (appliedVoucher) {
+      await Voucher.findByIdAndUpdate(appliedVoucher._id, { $inc: { currentUses: 1 } });
+    }
 
     res.status(201).json({
       id: order._id,
@@ -106,6 +112,7 @@ exports.createOrder = async (req, res) => {
       status: order.status,
       items: order.items,
       subtotal, tax, shippingFee, discountAmount, totalAmount,
+      voucherCode: order.voucherCode,
       paymentMethod: order.paymentMethod,
       paymentStatus: order.paymentStatus,
       deliveryAddress, deliveryPhone, deliveryNotes,

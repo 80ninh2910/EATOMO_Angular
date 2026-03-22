@@ -60,7 +60,7 @@ export class VouchersComponent implements OnInit {
     this.isLoading.set(true);
     this.loadError.set('');
 
-    this.promotionService.getActiveVouchers().subscribe({
+    this.promotionService.getAllVouchers().subscribe({
       next: (data) => {
         this.vouchers.set(data);
         this.isLoading.set(false);
@@ -99,6 +99,23 @@ export class VouchersComponent implements OnInit {
     return `HẾT HẠN ${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
   }
 
+  voucherStatusLabel(v: Promotion): string {
+    const status = this.getVoucherStatus(v);
+    if (status === 'active') return 'Đang áp dụng';
+    if (status === 'upcoming') return 'Chưa đến ngày áp dụng';
+    if (status === 'expired') return 'Đã hết hạn';
+    if (status === 'used_up') return 'Đã hết lượt';
+    return 'Đã tắt';
+  }
+
+  voucherStatusClass(v: Promotion): string {
+    return `status-${this.getVoucherStatus(v)}`;
+  }
+
+  canCopyVoucher(v: Promotion): boolean {
+    return this.getVoucherStatus(v) === 'active';
+  }
+
   /** Điều kiện tóm tắt từ DB fields */
   conditionLines(v: Promotion): string[] {
     const lines: string[] = [];
@@ -135,5 +152,16 @@ export class VouchersComponent implements OnInit {
     if (v.target === 'new_customer') return 'tag-new_customer';
     if (v.target === 'vip')          return 'tag-vip';
     return 'tag-all';
+  }
+
+  private getVoucherStatus(v: Promotion): 'active' | 'upcoming' | 'expired' | 'used_up' | 'inactive' {
+    const now = new Date();
+
+    if (!v.isActive) return 'inactive';
+    if (v.validFrom && new Date(v.validFrom) > now) return 'upcoming';
+    if (v.validUntil && new Date(v.validUntil) < now) return 'expired';
+    if (v.currentUses >= v.maxUses) return 'used_up';
+
+    return 'active';
   }
 }

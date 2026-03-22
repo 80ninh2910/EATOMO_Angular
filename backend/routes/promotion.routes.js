@@ -4,7 +4,16 @@ const promotionController = require('../controllers/promotion.controller');
 const authMiddleware = require('../middleware/auth');
 const adminMiddleware = require('../middleware/admin');
 
-// Public: validate voucher (requires user auth)
+// Public: voucher catalog for user-facing pages
+router.get('/all', (req, res, next) => {
+  if (req.baseUrl.endsWith('/vouchers')) {
+    return promotionController.getPublicVouchers(req, res);
+  }
+
+  next();
+});
+
+// User: validate voucher (requires user auth)
 router.post('/validate', authMiddleware, promotionController.validateVoucher);
 
 // Admin routes

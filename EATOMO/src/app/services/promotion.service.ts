@@ -26,10 +26,10 @@ export class PromotionService {
   }
 
   /**
-   * Lấy voucher đang active — Public, không cần auth
+   * Lấy toàn bộ voucher cho trang user
    */
-  getActiveVouchers(): Observable<Promotion[]> {
-    return this.http.get<Promotion[]>(`${API_URL}/vouchers/active`);
+  getAllVouchers(): Observable<Promotion[]> {
+    return this.http.get<Promotion[]>(`${API_URL}/vouchers/all`);
   }
 
   /**
@@ -72,15 +72,23 @@ export class PromotionService {
   /**
    * Validate mã voucher — kiểm tra hợp lệ trước khi áp dụng
    */
-  validateVoucher(code: string): Observable<VoucherValidation> {
-    return this.http.post<VoucherValidation>(`${API_URL}/vouchers/validate`, { code });
+  validateVoucher(code: string, orderTotal?: number): Observable<VoucherValidation> {
+    return this.http.post<VoucherValidation>(`${API_URL}/vouchers/validate`, {
+      code,
+      amount: orderTotal
+    });
   }
 
   /**
    * Tính discount từ validation result
    */
   calculateDiscount(validation: VoucherValidation, orderTotal: number): number {
-    if (!validation.valid || !validation.discountType || !validation.discountValue) {
+    if (
+      !validation.valid ||
+      !validation.discountType ||
+      !validation.discountValue ||
+      (validation.minOrderValue !== undefined && orderTotal < validation.minOrderValue)
+    ) {
       return 0;
     }
 

@@ -320,6 +320,35 @@
   text-transform: uppercase;
 }
 
+.promo-status {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .4px;
+  width: fit-content;
+}
+
+.status-active {
+  background: rgba(45, 89, 54, .12);
+  color: var(--green);
+}
+
+.status-upcoming {
+  background: rgba(102, 126, 234, .14);
+  color: var(--purple-dark);
+}
+
+.status-expired,
+.status-inactive,
+.status-used_up {
+  background: rgba(0, 0, 0, .08);
+  color: #666;
+}
+
 /* Divider (ticket notch) */
 .voucher-divider {
   position: relative;
@@ -399,6 +428,14 @@
 .btn-use:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 14px rgba(0,0,0,.25);
+}
+
+.btn-use:disabled {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: .9;
 }
 
 /* ===== EMPTY STATE ===== */

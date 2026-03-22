@@ -53,5 +53,6 @@ export interface VoucherValidation {
   discountType?: DiscountType;
   discountValue?: number;
   maxDiscountAmount?: number;
+  minOrderValue?: number;
   message: string;
 }
