@@ -94,41 +94,6 @@
 <!-- Bowl Sections -->
 @if (!isLoading() && !loadError()) {
 
-  <!-- Low Calories Section -->
-  @if (showLowCal()) {
-    <section class="bowls-section">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Low calories</h2>
-          <p class="section-description">Ideal options with less than 350kcal for effective weight loss or control</p>
-        </div>
-        <div class="bowls-grid">
-          @for (bowl of lowCalBowls(); track bowl.id) {
-            <div class="bowl-card" [attr.id]="'bowl-' + bowl.id" [class.chatbot-target]="isFocusedBowl(bowl.id)" (click)="onBowlClick(bowl)">
-              <div class="bowl-image">
-                <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
-                <button class="download-recipe" (click)="downloadRecipe(bowl.id, $event)">Download recipe</button>
-              </div>
-              <div class="bowl-info">
-                <div class="bowl-calories"><span class="calories-badge">{{ bowl.calories }} CALORIES</span></div>
-                <h3 class="bowl-name">{{ bowl.name }}</h3>
-                <p class="bowl-description">{{ bowl.description }}</p>
-                <button class="add-to-bag-btn" (click)="addToBag(bowl, $event)">Add to Bag</button>
-                <div class="bowl-macros">
-                  <div class="macro"><span class="macro-value">{{ bowl.protein }}</span><span class="macro-label">PROTEIN</span></div>
-                  <div class="macro"><span class="macro-value">{{ bowl.carbs }}</span><span class="macro-label">CARBS</span></div>
-                  <div class="macro"><span class="macro-value">{{ bowl.fat }}</span><span class="macro-label">FAT</span></div>
-                </div>
-              </div>
-            </div>
-          } @empty {
-            <p class="empty-category">No bowls in this category yet.</p>
-          }
-        </div>
-      </div>
-    </section>
-  }
-
   <!-- Balanced Section -->
   @if (showBalanced()) {
     <section class="bowls-section">
@@ -174,6 +139,41 @@
         </div>
         <div class="bowls-grid">
           @for (bowl of highProteinBowls(); track bowl.id) {
+            <div class="bowl-card" [attr.id]="'bowl-' + bowl.id" [class.chatbot-target]="isFocusedBowl(bowl.id)" (click)="onBowlClick(bowl)">
+              <div class="bowl-image">
+                <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">
+                <button class="download-recipe" (click)="downloadRecipe(bowl.id, $event)">Download recipe</button>
+              </div>
+              <div class="bowl-info">
+                <div class="bowl-calories"><span class="calories-badge">{{ bowl.calories }} CALORIES</span></div>
+                <h3 class="bowl-name">{{ bowl.name }}</h3>
+                <p class="bowl-description">{{ bowl.description }}</p>
+                <button class="add-to-bag-btn" (click)="addToBag(bowl, $event)">Add to Bag</button>
+                <div class="bowl-macros">
+                  <div class="macro"><span class="macro-value">{{ bowl.protein }}</span><span class="macro-label">PROTEIN</span></div>
+                  <div class="macro"><span class="macro-value">{{ bowl.carbs }}</span><span class="macro-label">CARBS</span></div>
+                  <div class="macro"><span class="macro-value">{{ bowl.fat }}</span><span class="macro-label">FAT</span></div>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty-category">No bowls in this category yet.</p>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- Low Calories Section -->
+  @if (showLowCal()) {
+    <section class="bowls-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Low calories</h2>
+          <p class="section-description">Ideal options with less than 350kcal for effective weight loss or control</p>
+        </div>
+        <div class="bowls-grid">
+          @for (bowl of lowCalBowls(); track bowl.id) {
             <div class="bowl-card" [attr.id]="'bowl-' + bowl.id" [class.chatbot-target]="isFocusedBowl(bowl.id)" (click)="onBowlClick(bowl)">
               <div class="bowl-image">
                 <img [src]="bowl.image" [alt]="bowl.name + ' Bowl'">

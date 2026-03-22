@@ -16,6 +16,13 @@ import { Bowl } from '../../models/bowl.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OurBowlsComponent implements OnInit {
+  private readonly bowlPrefixOrder: Record<string, number> = {
+    B: 0,
+    H: 1,
+    L: 2,
+    V: 3
+  };
+
   activeFilter = signal<string>('all');
   showModal = signal(false);
   allBowls = signal<Bowl[]>([]);
@@ -26,9 +33,9 @@ export class OurBowlsComponent implements OnInit {
 
   filters = [
     { value: 'all', label: 'All' },
-    { value: 'low-cal', label: 'Low calories' },
     { value: 'balanced', label: 'Balanced' },
     { value: 'high-protein', label: 'High protein' },
+    { value: 'low-cal', label: 'Low calories' },
     { value: 'vegetarian', label: 'Vegetarian' }
   ];
 
@@ -67,7 +74,7 @@ export class OurBowlsComponent implements OnInit {
 
     this.bowlService.getBowls().subscribe({
       next: (bowls) => {
-        this.allBowls.set(bowls);
+        this.allBowls.set([...bowls].sort((a, b) => this.compareBowls(a, b)));
         this.isLoading.set(false);
 
         const targetId = this.focusedBowlId();
@@ -152,6 +159,33 @@ export class OurBowlsComponent implements OnInit {
       target.classList.add('chatbot-target-pulse');
       setTimeout(() => target.classList.remove('chatbot-target-pulse'), 1800);
     }, 120);
+  }
+
+  private compareBowls(a: Bowl, b: Bowl): number {
+    const parsedA = this.parseBowlCode(a.id || a.name);
+    const parsedB = this.parseBowlCode(b.id || b.name);
+
+    const prefixOrderA = this.bowlPrefixOrder[parsedA.prefix] ?? Number.MAX_SAFE_INTEGER;
+    const prefixOrderB = this.bowlPrefixOrder[parsedB.prefix] ?? Number.MAX_SAFE_INTEGER;
+
+    if (prefixOrderA !== prefixOrderB) {
+      return prefixOrderA - prefixOrderB;
+    }
+
+    if (parsedA.number !== parsedB.number) {
+      return parsedA.number - parsedB.number;
+    }
+
+    return (a.id || a.name).localeCompare(b.id || b.name);
+  }
+
+  private parseBowlCode(value: string): { prefix: string; number: number } {
+    const match = String(value || '').trim().toUpperCase().match(/^([A-Z]+)\s*(\d+)/);
+
+    return {
+      prefix: match?.[1] || '',
+      number: Number(match?.[2] || Number.MAX_SAFE_INTEGER)
+    };
   }
 
   // Delegate to CartService signals
