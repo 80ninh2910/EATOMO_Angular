@@ -41,7 +41,8 @@
             {{ showFilters ? 'Hide filters' : '+ Add filter' }}
           </button>
           <label class="search">
-            <input type="search" placeholder="Search products..." (input)="onSearchInput($event)" />
+            <input type="search" placeholder="Search products..." [(ngModel)]="appliedSearch" 
+  (ngModelChange)="currentPage = 1"/>
             <span class="search-icon">🔍</span>
           </label>
           <div class="bulk-actions">
@@ -317,6 +318,7 @@
   <div class="modal-box" (click)="$event.stopPropagation()">
     <h2 class="modal-title">{{ modalTitle }}</h2>
     <div class="modal-body">
+      <label>Product ID <input type="text" [(ngModel)]="form.id" [disabled]="editMode" required placeholder="VD: B15" /></label>
       <label>Name <input type="text" [(ngModel)]="form.name" required /></label>
       <label>Description <textarea [(ngModel)]="form.description"></textarea></label>
       <label>Price (đ) <input type="number" [(ngModel)]="form.price" min="0" /></label>

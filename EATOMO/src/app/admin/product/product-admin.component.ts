@@ -114,9 +114,13 @@ export class ProductAdminComponent implements OnInit {
       if (!this.appliedSearch) {
         return this.passesNumericFilters(product);
       }
+      // 1. Chuyển từ khóa bà gõ thành chữ thường và cắt khoảng trắng 2 đầu
+      const searchTerm = this.appliedSearch.toLowerCase().trim();
 
-      const haystack = `${product.name} ${product.category} ${product.group}`.toLowerCase();
-      return haystack.includes(this.appliedSearch) && this.passesNumericFilters(product);
+      // 2. Gom id, name, category, group lại thành 1 cục chữ thường để đem đi so sánh
+      const haystack = `${product.id} ${product.name} ${product.category} ${product.group}`.toLowerCase();
+      // 3. Kiểm tra xem cục đó có chứa chữ bà gõ không
+      return haystack.includes(searchTerm) && this.passesNumericFilters(product);
     });
   }
 
@@ -350,16 +354,32 @@ export class ProductAdminComponent implements OnInit {
         }
       });
     } else {
-      this.bowlService.createBowl(this.form).subscribe({
-        next: (bowl) => {
+      // TẠO PAYLOAD MỚI KHÔNG CÓ TRƯỜNG "id" ĐỂ GỬI XUỐNG BACKEND
+      const newProductPayload = {
+        id: this.form.id, // DÒNG NÀY QUAN TRỌNG NÈ
+        name: this.form.name,
+        description: this.form.description,
+        price: this.form.price,
+        calories: this.form.calories,
+        protein: this.form.protein,
+        carbs: this.form.carbs,
+        fat: this.form.fat,
+        category: this.form.category,
+        image: this.form.image,
+        inStock: this.form.inStock,
+        isFeatured: this.form.isFeatured
+      };
+
+      this.bowlService.createBowl(newProductPayload as any).subscribe({
+        next: (bowl: any) => { // Dùng any để hứng dữ liệu trả về linh hoạt
           this.products = [...this.products, this.mapBowlToProduct(bowl, this.products.length)];
           this.selectedProduct = this.products[this.products.length - 1];
           this.showModal = false;
           this.cdr.markForCheck();
         },
         error: (err) => {
-          console.error(err);
-          alert('Tạo sản phẩm thất bại.');
+          console.error('Lỗi khi tạo sản phẩm:', err);
+          alert('Tạo sản phẩm thất bại. Vui lòng kiểm tra lại thông tin (Đảm bảo giá tiền phải lớn hơn 0 nhé!).');
         }
       });
     }
@@ -394,7 +414,7 @@ export class ProductAdminComponent implements OnInit {
     this.editProduct();
   }
 
-  private mapBowlToProduct(bowl: Bowl, index: number): ProductItem {
+  private mapBowlToProduct(bowl: any, index: number): ProductItem {
     const status: ProductStatus = bowl.inStock === false ? 'archive' : index % 5 === 0 ? 'draft' : 'active';
     const updatedBy = ['Admin', 'Manager', 'Staff'][index % 3];
     return {
