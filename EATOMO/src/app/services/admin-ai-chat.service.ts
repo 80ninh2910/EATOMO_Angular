@@ -10,8 +10,9 @@ import {
   AdminHighRiskOrdersResponse,
   AdminModelMonitoringResponse
 } from '../models/admin-ai-chat.model';
+import { environment } from '../../environments/environment';
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root'

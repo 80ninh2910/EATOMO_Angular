@@ -13,12 +13,12 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Import routes
-const authRoutes       = require('./routes/auth.routes');
-const bowlRoutes       = require('./routes/bowl.routes');
-const orderRoutes      = require('./routes/order.routes');
-const adminRoutes      = require('./routes/admin.routes');
-const promotionRoutes  = require('./routes/promotion.routes');
-const chatRoutes       = require('./routes/chat.routes');
+const authRoutes = require('./routes/auth.routes');
+const bowlRoutes = require('./routes/bowl.routes');
+const orderRoutes = require('./routes/order.routes');
+const adminRoutes = require('./routes/admin.routes');
+const promotionRoutes = require('./routes/promotion.routes');
+const chatRoutes = require('./routes/chat.routes');
 const adminAiChatRoutes = require('./routes/admin-ai-chat.routes');
 
 // ───────── CORS ─────────
@@ -28,11 +28,11 @@ const ALLOWED_ORIGINS = [
   'http://localhost:4000',
   'http://127.0.0.1:4200',
   'http://127.0.0.1:4000',
-  // Production — Add your real Render/Vercel/Netlify URLs here
-  process.env.FRONTEND_URL,                 // set in Render env vars
-  'https://eatomo-angular.onrender.com',    // adjust if different
-  'https://eatomo-angular.vercel.app',
-].filter(Boolean); // remove undefined entries
+  // Production
+  process.env.FRONTEND_URL,
+  'https://eatomo-angular.onrender.com',
+  'https://eatomo-angular-fullstack.vercel.app',
+].filter(Boolean);
 
 app.use(cors({
   origin(origin, callback) {
@@ -61,13 +61,13 @@ app.get('/api', (req, res) => {
   res.json({ message: 'EATOMO API is running', version: '1.0.0' });
 });
 
-app.use('/api/auth',       authRoutes);
-app.use('/api/bowls',      bowlRoutes);
-app.use('/api/orders',     orderRoutes);
-app.use('/api/admin',      adminRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/bowls', bowlRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/promotions', promotionRoutes);
-app.use('/api/vouchers',   promotionRoutes);
-app.use('/api/chat',       chatRoutes);
+app.use('/api/vouchers', promotionRoutes);
+app.use('/api/chat', chatRoutes);
 app.use('/api/admin/ai-chat', adminAiChatRoutes);
 
 // ───────── Error handler ─────────

@@ -3,8 +3,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ChatAskResponse, ChatMessage } from '../models/chat.model';
+import { environment } from '../../environments/environment';
 
-const API_BASES = ['http://localhost:3000/api', 'http://localhost:3001/api'];
+const API_BASE = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class ChatService {
       history: history.map((m) => ({ role: m.role, content: m.content }))
     };
 
-    return this.http.post<ChatAskResponse>(`${API_BASES[0]}/chat/ask`, payload).pipe(
+    return this.http.post<ChatAskResponse>(`${API_BASE}/chat/ask`, payload).pipe(
       catchError((error: HttpErrorResponse) => {
         // Only retry on network/connectivity errors. If backend already responded
         // with an HTTP status, keep the original error to avoid cross-port drift.
@@ -26,7 +27,7 @@ export class ChatService {
           return throwError(() => error);
         }
 
-        return this.http.post<ChatAskResponse>(`${API_BASES[1]}/chat/ask`, payload);
+        return this.http.post<ChatAskResponse>(`${API_BASE}/chat/ask`, payload);
       })
     );
   }
