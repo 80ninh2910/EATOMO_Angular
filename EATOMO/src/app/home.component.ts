@@ -71,6 +71,15 @@ export class HomeComponent implements OnInit {
       next: (bowls) => {
         this.allBowls.set([...bowls].sort((a, b) => this.compareBowls(a, b)));
         this.isBowlsLoading.set(false);
+
+        // Trigger legacy JS observers after Angular renders the new DOM elements
+        setTimeout(() => {
+          if (typeof window !== 'undefined') {
+            const win = window as any;
+            if (win.setupBowlObserver) win.setupBowlObserver();
+            if (win.setupSectionObserver) win.setupSectionObserver();
+          }
+        }, 150);
       },
       error: (err) => {
         console.error('Bowl loading failed:', err);

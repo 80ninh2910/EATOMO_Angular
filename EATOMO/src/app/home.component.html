@@ -190,6 +190,13 @@
       <button class="filter-tab" [class.active]="activeFilter() === 'vegetarian'" (click)="filterBowls('vegetarian')">Vegetarian</button>
     </div>
 
+    @if (isBowlsLoading()) {
+      <div class="bowls-loading">
+        <div class="spinner"></div>
+        <p>Loading healthy bowls for you...</p>
+      </div>
+    }
+
     <div class="bowls-grid">
       @for (bowl of filteredBowls(); track bowl.id) {
       <div class="bowl-card" [attr.data-category]="bowl.category">

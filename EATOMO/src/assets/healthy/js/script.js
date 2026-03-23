@@ -13,8 +13,9 @@
     setupFilterTabs();
     setupStepCards();
     setupSmoothAnchors();
-    setupSectionObserver();
-    setupBowlObserver();
+    // Only call observers on static elements; dynamic ones will be handled by Angular
+    window.setupSectionObserver();
+    window.setupBowlObserver();
     setupDownloadRecipe();
     setupStepLinks();
     setupExperienceParallax();
@@ -135,7 +136,7 @@
     });
   }
 
-  function setupSectionObserver() {
+  window.setupSectionObserver = function () {
     const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry, index) => {
@@ -150,8 +151,11 @@
     }, observerOptions);
 
     document.querySelectorAll("section").forEach((section) => {
-      section.style.opacity = "0";
-      section.style.transform = "translateY(50px)";
+      // Don't re-initialize if already visible
+      if (section.style.opacity === "1") return;
+
+      // Removed: section.style.opacity = "0";
+      // Removed: section.style.transform = "translateY(50px)";
       section.style.transition =
         "opacity 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
       observer.observe(section);
@@ -171,7 +175,7 @@
     });
   }
 
-  function setupBowlObserver() {
+  window.setupBowlObserver = function () {
     const bowlCards = document.querySelectorAll(".bowl-card");
     if (!bowlCards.length) return;
 
@@ -189,8 +193,11 @@
     }, observerOptions);
 
     bowlCards.forEach((card) => {
-      card.style.opacity = "0";
-      card.style.transform = "translateY(50px) scale(0.9)";
+      // Don't re-hide if already shown
+      if (card.style.opacity === "1") return;
+
+      // Removed: card.style.opacity = "0";
+      // Removed: card.style.transform = "translateY(50px) scale(0.9)";
       card.style.transition =
         "opacity 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
       bowlObserver.observe(card);
