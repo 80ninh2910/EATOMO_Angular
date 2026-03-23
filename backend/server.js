@@ -12,7 +12,10 @@ const PREFERRED_PORT = Number(process.env.PORT) || 3000;
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Import routes
+// Routes
+if (!process.env.JWT_SECRET) {
+  console.warn('⚠️  WARNING: JWT_SECRET is not defined. Login will fail in this state.');
+}
 const authRoutes = require('./routes/auth.routes');
 const bowlRoutes = require('./routes/bowl.routes');
 const orderRoutes = require('./routes/order.routes');
@@ -33,6 +36,7 @@ const ALLOWED_ORIGINS = [
   'https://eatomo-angular.onrender.com',
   'https://eatomo-angular-fullstack.vercel.app',
   'https://eatomo-angular-git-vinh-80ninh2910s-projects.vercel.app',
+  'https://eatomo-angular.vercel.app'
 ].filter(Boolean);
 
 app.use(cors({
