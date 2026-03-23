@@ -32,17 +32,20 @@ const ALLOWED_ORIGINS = [
   process.env.FRONTEND_URL,
   'https://eatomo-angular.onrender.com',
   'https://eatomo-angular-fullstack.vercel.app',
+  'https://eatomo-angular-git-vinh-80ninh2910s-projects.vercel.app',
 ].filter(Boolean);
 
 app.use(cors({
   origin(origin, callback) {
-    // Allow non-browser tools (curl, Postman, etc.) — no Origin header
     if (!origin) return callback(null, true);
     if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
-    // Allow any localhost port for development convenience
-    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin)) {
+
+    // Cho phép tất cả localhost và các sub-domain của vercel.app
+    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin) ||
+      origin.endsWith('.vercel.app')) {
       return callback(null, true);
     }
+
     callback(new Error(`CORS blocked origin: ${origin}`));
   },
   credentials: true
