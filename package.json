@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "build": "npm run build --prefix EATOMO",
+    "start": "npm run start --prefix EATOMO"
+  },
   "dependencies": {
     "ejs": "^5.0.1"
   }
