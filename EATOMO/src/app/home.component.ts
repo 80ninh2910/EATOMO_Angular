@@ -6,6 +6,7 @@ import { FooterComponent } from './shared/footer/footer.component';
 import { HttpClient } from '@angular/common/http';
 import { BowlService } from './services/bowl.service';
 import { Bowl } from './models/bowl.model';
+import { retry, delay } from 'rxjs/operators';
 
 interface Review {
   name: string;
@@ -44,7 +45,7 @@ export class HomeComponent implements OnInit {
 
   ratingStars = [1, 2, 3, 4, 5];
 
-  constructor(private http: HttpClient, private bowlService: BowlService) {}
+  constructor(private http: HttpClient, private bowlService: BowlService) { }
 
   ngOnInit(): void {
     this.loadReviews();
@@ -63,12 +64,18 @@ export class HomeComponent implements OnInit {
   }
 
   loadBowls(): void {
-    this.bowlService.getBowls().subscribe({
+    // Thêm retry để xử lý vấn đề Cold Start của Render Free Tier
+    this.bowlService.getBowls().pipe(
+      retry({ count: 2, delay: 2000 })
+    ).subscribe({
       next: (bowls) => {
         this.allBowls.set([...bowls].sort((a, b) => this.compareBowls(a, b)));
         this.isBowlsLoading.set(false);
       },
-      error: () => this.isBowlsLoading.set(false)
+      error: (err) => {
+        console.error('Bowl loading failed:', err);
+        this.isBowlsLoading.set(false);
+      }
     });
   }
 

@@ -6,6 +6,7 @@ import { FooterComponent } from '../../shared/footer/footer.component';
 import { BowlService } from '../../services/bowl.service';
 import { CartService } from '../../services/cart.service';
 import { Bowl } from '../../models/bowl.model';
+import { retry } from 'rxjs/operators';
 
 @Component({
   selector: 'app-our-bowls',
@@ -54,7 +55,7 @@ export class OurBowlsComponent implements OnInit {
     private cartService: CartService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
@@ -72,7 +73,9 @@ export class OurBowlsComponent implements OnInit {
       }
     });
 
-    this.bowlService.getBowls().subscribe({
+    this.bowlService.getBowls().pipe(
+      retry({ count: 2, delay: 2000 })
+    ).subscribe({
       next: (bowls) => {
         this.allBowls.set([...bowls].sort((a, b) => this.compareBowls(a, b)));
         this.isLoading.set(false);
@@ -93,7 +96,7 @@ export class OurBowlsComponent implements OnInit {
     this.activeFilter.set(category);
   }
 
-  onBowlClick(bowl: Bowl): void {}
+  onBowlClick(bowl: Bowl): void { }
 
   addToBag(bowl: Bowl, event: Event): void {
     event.stopPropagation();
