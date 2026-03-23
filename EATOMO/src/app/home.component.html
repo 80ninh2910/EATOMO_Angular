@@ -2,15 +2,16 @@
 
 <!-- Toast Notification -->
 @if (toast()) {
-  <div class="home-toast" [class]="'toast-' + toast()!.type">
-    <i class="fas fa-info-circle"></i>
-    {{ toast()!.message }}
-  </div>
+<div class="home-toast" [class]="'toast-' + toast()!.type">
+  <i class="fas fa-info-circle"></i>
+  {{ toast()!.message }}
+</div>
 }
 
 <!-- Hero Video Section -->
 <section class="hero-video-section">
-  <video autoplay muted loop playsinline class="background-video">
+  <video autoplay muted loop playsinline class="background-video"
+    poster="assets/healthy/images/index/replace_home_temp.jpg">
     <source src="assets/healthy/videos/1015.mp4" type="video/mp4">
   </video>
   <div class="video-overlay"></div>
@@ -32,7 +33,8 @@
           <p></p>healthy relationships with food
         </h2>
         <p class="section-description" style="text-align: center; color: rgb(78, 107, 86);">
-          Our tasty and healthy bowls are packed with flavors, balanced in macronutrients, and paired with personalized guidance to help you truly connect with your food.
+          Our tasty and healthy bowls are packed with flavors, balanced in macronutrients, and paired with personalized
+          guidance to help you truly connect with your food.
         </p>
       </div>
 
@@ -68,7 +70,8 @@
   <div class="container">
     <div class="intro-content">
       <p class="intro-text">
-        Begin your healthy lifestyle journey with Eatomo. Discover and customize your own nutritious bowls, made with love and care, just for you.
+        Begin your healthy lifestyle journey with Eatomo. Discover and customize your own nutritious bowls, made with
+        love and care, just for you.
       </p>
     </div>
 
@@ -92,7 +95,8 @@
   <div class="container">
     <h2 class="section-title">Your healthy food soulmate</h2>
     <p class="section-description">
-      At EATOMO, we're dedicated to nurturing your healthy relationship with food. Let's start your food romance, discover and find your perfect match. Your happily-ever-after starts from here.
+      At EATOMO, we're dedicated to nurturing your healthy relationship with food. Let's start your food romance,
+      discover and find your perfect match. Your happily-ever-after starts from here.
     </p>
   </div>
   <img src="assets/healthy/images/index/Screenshot_2025-10-15_144944-removebg-preview.png" alt="" class="bg1">
@@ -122,7 +126,8 @@
         <img src="assets/healthy/images/index/protein-selection.jpg" alt="Protein Selection" class="step-image">
         <div class="step-content">
           <h4>About our sous-vide protein</h4>
-          <p>Meats are cooked in their own juices. We use Sous-Vide technique to slow cook the meats at a low temperature for irresistible tenderness and natural sweetness.</p>
+          <p>Meats are cooked in their own juices. We use Sous-Vide technique to slow cook the meats at a low
+            temperature for irresistible tenderness and natural sweetness.</p>
           <a routerLink="/build-your-own" class="step-link">Pick your fav</a>
         </div>
       </div>
@@ -183,18 +188,23 @@
     <h2 class="section-title">Sou-made bowls</h2>
 
     <div class="filter-tabs">
-      <button class="filter-tab" [class.active]="activeFilter() === 'all'" (click)="filterBowls('all')">BASED ON YOUR NEEDS</button>
-      <button class="filter-tab" [class.active]="activeFilter() === 'low-cal'" (click)="filterBowls('low-cal')">Low calories</button>
-      <button class="filter-tab" [class.active]="activeFilter() === 'balanced'" (click)="filterBowls('balanced')">Balanced</button>
-      <button class="filter-tab" [class.active]="activeFilter() === 'high-protein'" (click)="filterBowls('high-protein')">High protein</button>
-      <button class="filter-tab" [class.active]="activeFilter() === 'vegetarian'" (click)="filterBowls('vegetarian')">Vegetarian</button>
+      <button class="filter-tab" [class.active]="activeFilter() === 'all'" (click)="filterBowls('all')">BASED ON YOUR
+        NEEDS</button>
+      <button class="filter-tab" [class.active]="activeFilter() === 'low-cal'" (click)="filterBowls('low-cal')">Low
+        calories</button>
+      <button class="filter-tab" [class.active]="activeFilter() === 'balanced'"
+        (click)="filterBowls('balanced')">Balanced</button>
+      <button class="filter-tab" [class.active]="activeFilter() === 'high-protein'"
+        (click)="filterBowls('high-protein')">High protein</button>
+      <button class="filter-tab" [class.active]="activeFilter() === 'vegetarian'"
+        (click)="filterBowls('vegetarian')">Vegetarian</button>
     </div>
 
     @if (isBowlsLoading()) {
-      <div class="bowls-loading">
-        <div class="spinner"></div>
-        <p>Loading healthy bowls for you...</p>
-      </div>
+    <div class="bowls-loading">
+      <div class="spinner"></div>
+      <p>Loading healthy bowls for you...</p>
+    </div>
     }
 
     <div class="bowls-grid">
@@ -273,7 +283,8 @@
         <span class="section-label">OUR STORY, YOUR JOURNEY</span>
         <h2 class="section-title">We help people build healthy relationships with food</h2>
         <p class="story-description">
-          Since 2020, we've been crafting fresh bowls with balanced macros and honest ingredients. Every serving is a gentle nudge toward a healthier, happier you.
+          Since 2020, we've been crafting fresh bowls with balanced macros and honest ingredients. Every serving is a
+          gentle nudge toward a healthier, happier you.
         </p>
         <ul class="story-highlights">
           <li><span>Hand-picked produce daily</span></li>
@@ -314,8 +325,8 @@
         <div class="review-card">
           <div class="review-rating">
             @for (star of ratingStars; track star) {
-              <span>{{ star <= review.rating ? '★' : '☆' }}</span>
-            }
+            <span>{{ star <= review.rating ? '★' : '☆' }}</span>
+                }
           </div>
           <p class="review-comment">{{ review.comment }}</p>
           <p class="review-author">- {{ review.name }}</p>
