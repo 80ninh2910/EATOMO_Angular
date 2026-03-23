@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "npm run build --prefix EATOMO",
+    "build": "cd EATOMO && npm install && npm run build",
     "start": "npm run start --prefix EATOMO"
   },
   "dependencies": {
