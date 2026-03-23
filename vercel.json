@@ -1,0 +1,5 @@
+{
+    "buildCommand": "cd EATOMO && npm install && npm run build",
+    "outputDirectory": "EATOMO/dist/EATOMO/browser",
+    "framework": "angular"
+}
