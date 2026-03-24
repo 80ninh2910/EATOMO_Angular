@@ -5,7 +5,8 @@
       <span>EATOMO ADMIN</span>
     </div>
     <nav class="nav">
-      <a class="nav-link" routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Orders</a>
+      <a class="nav-link" routerLink="/admin" routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">Orders</a>
       <a class="nav-link" routerLink="/admin/product" routerLinkActive="active">Products</a>
       <a class="nav-link" routerLink="/admin/customer" routerLinkActive="active">Customers</a>
       <a class="nav-link" routerLink="/admin/promotion" routerLinkActive="active">Promotions</a>
@@ -26,10 +27,14 @@
       </div>
 
       <div class="tabs">
-        <button class="tab" type="button" [class.active]="activeTab === 'all'" (click)="filterTab('all')">All orders</button>
-        <button class="tab" type="button" [class.active]="activeTab === 'pending'" (click)="filterTab('pending')">Processing</button>
-        <button class="tab" type="button" [class.active]="activeTab === 'shipping'" (click)="filterTab('shipping')">Shipping</button>
-        <button class="tab" type="button" [class.active]="activeTab === 'delivered'" (click)="filterTab('delivered')">Delivered</button>
+        <button class="tab" type="button" [class.active]="activeTab === 'all'" (click)="filterTab('all')">All
+          orders</button>
+        <button class="tab" type="button" [class.active]="activeTab === 'pending'"
+          (click)="filterTab('pending')">Processing</button>
+        <button class="tab" type="button" [class.active]="activeTab === 'shipping'"
+          (click)="filterTab('shipping')">Shipping</button>
+        <button class="tab" type="button" [class.active]="activeTab === 'delivered'"
+          (click)="filterTab('delivered')">Delivered</button>
       </div>
 
       <div class="toolbar">
@@ -51,12 +56,16 @@
         </div>
         <div class="toolbar-right">
           <div class="bulk-actions">
-            <button class="btn ghost" type="button" [disabled]="selectedIds.size === 0" (click)="bulkConfirm()">Confirm</button>
-            <button class="btn ghost" type="button" [disabled]="selectedIds.size === 0" (click)="bulkShip()">Mark shipping</button>
-            <button class="btn ghost" type="button" [disabled]="selectedIds.size === 0" (click)="bulkExport()">Export</button>
+            <button class="btn ghost" type="button" [disabled]="selectedIds.size === 0"
+              (click)="bulkConfirm()">Confirm</button>
+            <button class="btn ghost" type="button" [disabled]="selectedIds.size === 0" (click)="bulkShip()">Mark
+              shipping</button>
+            <button class="btn ghost" type="button" [disabled]="selectedIds.size === 0"
+              (click)="bulkExport()">Export</button>
           </div>
           <button class="btn ghost" type="button" (click)="toggleColumnPanel()">Columns</button>
-          <button class="btn icon" type="button" title="List" [class.active]="viewMode === 'list'" (click)="changeView('list')">☰</button>
+          <button class="btn icon" type="button" title="List" [class.active]="viewMode === 'list'"
+            (click)="changeView('list')">☰</button>
         </div>
       </div>
 
@@ -78,12 +87,8 @@
           <thead>
             <tr>
               <th class="select-col">
-                <input
-                  type="checkbox"
-                  [checked]="isAllSelectedVisible()"
-                  (change)="toggleSelectAllVisible($event)"
-                  aria-label="Select all visible orders"
-                />
+                <input type="checkbox" [checked]="isAllSelectedVisible()" (change)="toggleSelectAllVisible($event)"
+                  aria-label="Select all visible orders" />
               </th>
               <th *ngIf="columnVisibility.id">ID</th>
               <th *ngIf="columnVisibility.createdAt">Created at</th>
@@ -97,29 +102,28 @@
               <th *ngIf="columnVisibility.updated">Updated</th>
             </tr>
           </thead>
-                    <tbody>
+          <tbody>
             <!-- Loading state -->
             <tr *ngIf="isLoading && !error">
-              <td [attr.colspan]="getDetailsColspan() + 1" style="text-align:center;padding:2rem;">Đang tải đơn hàng...</td>
+              <td [attr.colspan]="getDetailsColspan() + 1" style="text-align:center;padding:2rem;">Đang tải đơn hàng...
+              </td>
             </tr>
             <!-- Error state -->
             <tr *ngIf="error">
-              <td [attr.colspan]="getDetailsColspan() + 1" style="text-align:center;padding:2rem;color:red;">{{ error }}</td>
+              <td [attr.colspan]="getDetailsColspan() + 1" style="text-align:center;padding:2rem;color:red;">{{ error }}
+              </td>
             </tr>
             <!-- Empty state -->
             <tr *ngIf="!isLoading && !error && getVisibleOrderIds().length === 0">
-              <td [attr.colspan]="getDetailsColspan() + 1" style="text-align:center;padding:2rem;">Không có đơn hàng nào.</td>
+              <td [attr.colspan]="getDetailsColspan() + 1" style="text-align:center;padding:2rem;">Không có đơn hàng
+                nào.</td>
             </tr>
             <!-- Dynamic rows -->
             <ng-container *ngFor="let orderId of getVisibleOrderIds(); trackBy: trackById">
               <tr class="order-row" [class.is-open]="isOpen(orderId)">
                 <td class="row-toggle">
-                  <input
-                    type="checkbox"
-                    [checked]="isSelected(orderId)"
-                    (change)="toggleSelectOrder(orderId, $event)"
-                    [attr.aria-label]="'Select order ' + orderId"
-                  />
+                  <input type="checkbox" [checked]="isSelected(orderId)" (change)="toggleSelectOrder(orderId, $event)"
+                    [attr.aria-label]="'Select order ' + orderId" />
                   <button type="button" (click)="toggleOrder(orderId)">
                     {{ isOpen(orderId) ? '▾' : '▸' }}
                   </button>
@@ -128,22 +132,16 @@
                 <td *ngIf="columnVisibility.createdAt">{{ ordersMap[orderId].createdAt }}</td>
                 <td *ngIf="columnVisibility.customer">{{ ordersMap[orderId].customer }}</td>
                 <td *ngIf="columnVisibility.payment">
-                  <select
-                    class="status-select payment"
-                    [ngModel]="ordersMap[orderId].paymentStatus"
-                    (ngModelChange)="updateOrderStatus(orderId, 'payment', $event)"
-                  >
+                  <select class="status-select payment" [ngModel]="ordersMap[orderId].paymentStatus"
+                    (ngModelChange)="updateOrderStatus(orderId, 'payment', $event)">
                     <option value="paid">Paid</option>
                     <option value="pending">Unpaid</option>
                   </select>
                 </td>
                 <td *ngIf="columnVisibility.fulfillment">
-                  <select
-                    class="status-select fulfillment"
-                    [ngClass]="getFulfillmentClass(orderId)"
+                  <select class="status-select fulfillment" [ngClass]="getFulfillmentClass(orderId)"
                     [ngModel]="ordersMap[orderId].fulfillmentStatus"
-                    (ngModelChange)="updateOrderStatus(orderId, 'fulfillment', $event)"
-                  >
+                    (ngModelChange)="updateOrderStatus(orderId, 'fulfillment', $event)">
                     <option value="pending">Pending</option>
                     <option value="waiting">Not delivered</option>
                     <option value="shipping">Shipping</option>
@@ -170,11 +168,14 @@
                     <div>
                       <!-- Order items from backend -->
                       <div class="order-item" *ngFor="let item of getOrderItems(orderId)">
-                        <div class="avatar"><img src="/assets/healthy/images/index/bowl-b1.jpg" [alt]="item.bowlName" /></div>
+                        <div class="avatar"><img src="/assets/healthy/images/index/bowl-b1.jpg" [alt]="item.bowlName" />
+                        </div>
                         <div class="order-item-content">
                           <a class="order-item-title" href="#">{{ item.bowlName }}</a>
-                          <div class="order-item-meta">x {{ item.quantity }} • {{ item.unitPrice | number:'1.0-0' }} đ</div>
-                          <div class="order-item-total">Subtotal: <span class="money">{{ item.subtotal | number:'1.0-0' }} đ</span></div>
+                          <div class="order-item-meta">x {{ item.quantity }} • {{ item.unitPrice | number:'1.0-0' }} đ
+                          </div>
+                          <div class="order-item-total">Subtotal: <span class="money">{{ item.subtotal | number:'1.0-0'
+                              }} đ</span></div>
                         </div>
                       </div>
                       <div class="shipping-box">
@@ -230,7 +231,16 @@
             </ng-container>
           </tbody>
         </table>
-        <div class="table-summary" data-table-summary>Total: {{ getVisibleOrderIds().length }} orders</div>
+        <div class="table-summary">
+          <span>Total: {{ totalOrders }} orders</span>
+          <div class="pagination" *ngIf="totalPages > 1">
+            <button class="btn ghost" [disabled]="currentPage === 1"
+              (click)="onPageChange(currentPage - 1)">Previous</button>
+            <span class="page-info">Page {{ currentPage }} / {{ totalPages }}</span>
+            <button class="btn ghost" [disabled]="currentPage === totalPages"
+              (click)="onPageChange(currentPage + 1)">Next</button>
+          </div>
+        </div>
       </section>
     </div>
   </main>

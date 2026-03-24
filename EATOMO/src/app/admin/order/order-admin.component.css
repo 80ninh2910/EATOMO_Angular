@@ -200,7 +200,7 @@ img {
   width: 100%;
 }
 
-.toolbar-row > *,
+.toolbar-row>*,
 .toolbar-row input,
 .toolbar-row select,
 .toolbar-row button {
@@ -429,6 +429,27 @@ tbody td {
   padding-left: 16px;
   color: var(--muted);
   font-size: 12px;
+}
+
+.table-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--border);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.page-info {
+  font-weight: 500;
+  color: var(--text);
 }
 
 .row-toggle button {

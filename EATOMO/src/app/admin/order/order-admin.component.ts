@@ -43,10 +43,15 @@ export class OrderAdminComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   ordersMap: Record<string, OrderMeta> = {};
+  allOrderIds: string[] = [];
   isLoading = true;
   error = '';
 
   activeTab: 'all' | 'pending' | 'shipping' | 'delivered' = 'all';
+  currentPage = 1;
+  totalPages = 0;
+  totalOrders = 0;
+  limit = 20;
   viewMode: 'grid' | 'list' = 'list';
   showColumnPanel = false;
   filterPaymentMethod: 'all' | DisplayPaymentMethod = 'all';
@@ -86,7 +91,7 @@ export class OrderAdminComponent implements OnInit {
       }
       this.cdr.markForCheck();
     });
-    this.loadOrders();
+    this.loadOrders(1);
   }
 
   private loadHighRiskOrders(): void {
@@ -106,27 +111,50 @@ export class OrderAdminComponent implements OnInit {
     this.router.navigate(['/admin']);
   }
 
-  loadOrders(): void {
+  loadOrders(page: number = 1): void {
     this.isLoading = true;
     this.error = '';
-    this.orderService.getAllOrders().subscribe({
-      next: (data) => {
-        const orders: Order[] = Array.isArray(data) ? data : (data as any).orders ?? [];
+    this.currentPage = page;
+    this.orderService.getAllOrders({ page, limit: this.limit, status: this.activeTab !== 'all' ? this.mapTabToStatus(this.activeTab) : undefined }).subscribe({
+      next: (res) => {
+        const orders: Order[] = (res as any).orders ?? [];
+        this.totalOrders = (res as any).total ?? 0;
+        this.totalPages = (res as any).totalPages ?? 0;
+        this.currentPage = (res as any).page ?? page;
+
         this.ordersMap = {};
+        this.allOrderIds = [];
         orders.forEach(o => {
           const id = o.id ?? (o as any)._id ?? '';
-          if (id) this.ordersMap[id] = this.buildMeta(o, id);
+          if (id) {
+            this.ordersMap[id] = this.buildMeta(o, id);
+            this.allOrderIds.push(id);
+          }
         });
         this.isLoading = false;
         this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Load orders error:', err);
-        this.error = 'KhĂ´ng thá»ƒ táº£i danh sĂ¡ch Ä‘Æ¡n hĂ ng.';
+        this.error = 'Không thể tải danh sách đơn hàng.';
         this.isLoading = false;
         this.cdr.markForCheck();
       }
     });
+  }
+
+  private mapTabToStatus(tab: string): OrderStatus | undefined {
+    switch (tab) {
+      case 'pending': return 'pending';
+      case 'shipping': return 'delivering';
+      case 'delivered': return 'completed';
+      default: return undefined;
+    }
+  }
+
+  onPageChange(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.loadOrders(page);
   }
 
   private buildMeta(o: Order, id: string): OrderMeta {
@@ -220,7 +248,7 @@ export class OrderAdminComponent implements OnInit {
   }
 
   getVisibleOrderIds(): string[] {
-    return Object.keys(this.ordersMap).filter(id => this.shouldShowOrder(id));
+    return this.allOrderIds.filter(id => this.shouldShowOrder(id));
   }
 
   updateOrderStatus(orderId: string, type: 'payment' | 'fulfillment', value: string): void {
@@ -285,7 +313,10 @@ export class OrderAdminComponent implements OnInit {
   }
 
   isOpen(orderId: string): boolean { return this.openOrders.has(orderId); }
-  filterTab(tab: 'all' | 'pending' | 'shipping' | 'delivered'): void { this.activeTab = tab; }
+  filterTab(tab: 'all' | 'pending' | 'shipping' | 'delivered'): void {
+    this.activeTab = tab;
+    this.loadOrders(1);
+  }
   onSearchInput(e: Event): void {
     this.searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
     this.appliedSearchTerm = this.searchTerm.trim();
