@@ -218,13 +218,18 @@ exports.getAllOrders = async (req, res) => {
     const filter = {};
     if (status) filter.status = status;
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
 
-    const orders = await Order.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .lean();
+    const [orders, total] = await Promise.all([
+      Order.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
+        .lean(),
+      Order.countDocuments(filter)
+    ]);
 
     // Fetch user info
     const userIds = [...new Set(orders.map(o => o.userId.toString()))];
@@ -232,14 +237,19 @@ exports.getAllOrders = async (req, res) => {
     const userMap = {};
     users.forEach(u => { userMap[u._id.toString()] = u; });
 
-    res.json(orders.map(o => {
-      const user = userMap[o.userId.toString()] || {};
-      return {
-        ...o,
-        id: o._id,
-        customerName: user.fullName || user.username || 'Unknown'
-      };
-    }));
+    res.json({
+      orders: orders.map(o => {
+        const user = userMap[o.userId.toString()] || {};
+        return {
+          ...o,
+          id: o._id,
+          customerName: user.fullName || user.username || 'Unknown'
+        };
+      }),
+      total,
+      totalPages: Math.ceil(total / limitNum),
+      page: pageNum
+    });
   } catch (error) {
     console.error('Get all orders error:', error);
     res.status(500).json({ success: false, message: 'Failed to get orders', error: error.message });
