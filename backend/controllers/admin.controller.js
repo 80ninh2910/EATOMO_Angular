@@ -2,6 +2,8 @@ const Bowl = require('../models/Bowl');
 const Order = require('../models/Order');
 const User = require('../models/User');
 const AdminAction = require('../models/AdminAction');
+const Device = require('../models/Device');
+const { sendToMultipleTokens, getOrderStatusNotification } = require('../utils/fcm');
 
 // ═══════════════════════════════════════════
 //  DASHBOARD
@@ -287,7 +289,28 @@ exports.updateOrderStatus = async (req, res) => {
       details: { newStatus: status }
     });
 
-    res.json({ success: true, message: `Order status updated to ${status}` });
+    // Send FCM push notification to all user devices (fire and forget)
+    // Only notify on meaningful status transitions (not on pending)
+    if (status !== 'pending') {
+      try {
+        const devices = await Device.find({ userId: order.userId, isActive: true }).select('fcmToken');
+        const tokens = devices.map(d => d.fcmToken).filter(Boolean);
+
+        if (tokens.length > 0) {
+          const { title, body } = getOrderStatusNotification(order.orderNumber, status);
+          await sendToMultipleTokens(tokens, title, body, {
+            orderId: String(order._id),
+            orderNumber: order.orderNumber,
+            status
+          });
+        }
+      } catch (fcmErr) {
+        // FCM failure should NOT block the status update response
+        console.error('FCM notification failed (non-blocking):', fcmErr.message);
+      }
+    }
+
+    res.json({ success: true, message: `Order status updated to ${status}`, order: order.toJSON() });
   } catch (error) {
     console.error('Update order status error:', error);
     res.status(500).json({ success: false, message: 'Failed to update order status', error: error.message });

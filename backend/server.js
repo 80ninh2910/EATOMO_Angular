@@ -23,6 +23,7 @@ const adminRoutes = require('./routes/admin.routes');
 const promotionRoutes = require('./routes/promotion.routes');
 const chatRoutes = require('./routes/chat.routes');
 const adminAiChatRoutes = require('./routes/admin-ai-chat.routes');
+const deviceRoutes = require('./routes/device.routes');
 
 // ───────── CORS ─────────
 const ALLOWED_ORIGINS = [
@@ -68,6 +69,11 @@ app.get('/api', (req, res) => {
   res.json({ message: 'EATOMO API is running', version: '1.0.0' });
 });
 
+// Keep-alive ping — used by cron-job.org to prevent Render cold start
+app.get('/ping', (req, res) => {
+  res.json({ status: 'alive', ts: Date.now(), env: process.env.NODE_ENV || 'development' });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/bowls', bowlRoutes);
 app.use('/api/orders', orderRoutes);
@@ -76,6 +82,7 @@ app.use('/api/promotions', promotionRoutes);
 app.use('/api/vouchers', promotionRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/admin/ai-chat', adminAiChatRoutes);
+app.use('/api/devices', deviceRoutes);
 
 // ───────── Error handler ─────────
 app.use((err, req, res, next) => {

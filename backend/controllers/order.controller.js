@@ -125,12 +125,31 @@ exports.createOrder = async (req, res) => {
 };
 
 /**
- * GET /api/orders — Đơn hàng của user
+ * GET /api/orders — Đơn hàng của user (có phân trang)
+ * Query: ?page=1&limit=10
  */
 exports.getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user.id }).sort({ createdAt: -1 });
-    res.json(orders);
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(parseInt(req.query.limit) || 10, 50); // max 50
+    const skip = (page - 1) * limit;
+
+    const [orders, total] = await Promise.all([
+      Order.find({ userId: req.user.id })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Order.countDocuments({ userId: req.user.id })
+    ]);
+
+    res.json({
+      orders,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      hasNextPage: page < Math.ceil(total / limit)
+    });
   } catch (error) {
     console.error('Get my orders error:', error);
     res.status(500).json({ success: false, message: 'Failed to get orders', error: error.message });
@@ -157,6 +176,7 @@ exports.getOrderById = async (req, res) => {
 
 /**
  * PATCH /api/orders/:id/cancel — Hủy đơn hàng
+ * Chỉ cho phép hủy khi status = 'pending'
  */
 exports.cancelOrder = async (req, res) => {
   try {
@@ -167,10 +187,17 @@ exports.cancelOrder = async (req, res) => {
     );
 
     if (!order) {
-      return res.status(400).json({ success: false, message: 'Order not found or cannot be cancelled' });
+      return res.status(400).json({
+        success: false,
+        message: 'Order not found or cannot be cancelled. Only pending orders can be cancelled.'
+      });
     }
 
-    res.json({ success: true, message: 'Order cancelled' });
+    res.json({
+      success: true,
+      message: 'Order cancelled successfully',
+      order: order.toJSON()
+    });
   } catch (error) {
     console.error('Cancel order error:', error);
     res.status(500).json({ success: false, message: 'Failed to cancel order', error: error.message });

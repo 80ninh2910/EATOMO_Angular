@@ -149,3 +149,91 @@ exports.getProfile = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to get profile', error: error.message });
   }
 };
+
+/**
+ * PATCH /api/auth/profile
+ * Update editable user info (fullName, phone, address)
+ */
+exports.updateProfile = async (req, res) => {
+  try {
+    const allowed = ['fullName', 'phone', 'address'];
+    const updates = {};
+
+    for (const key of allowed) {
+      if (req.body[key] !== undefined) {
+        updates[key] = String(req.body[key]).trim();
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ success: false, message: 'No valid fields to update. Allowed: fullName, phone, address' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      updates,
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        fullName: user.fullName,
+        phone: user.phone,
+        address: user.address,
+        role: user.role,
+        createdAt: user.createdAt
+      }
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ success: false, message: 'Failed to update profile', error: error.message });
+  }
+};
+
+/**
+ * PATCH /api/auth/change-password
+ * Body: { currentPassword, newPassword }
+ */
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'currentPassword and newPassword are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+    }
+
+    // Fetch user WITH password field
+    const user = await User.findById(req.user.id).select('+password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Verify current password
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+    }
+
+    // Update password — pre-save hook will hash it
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ success: true, message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ success: false, message: 'Failed to change password', error: error.message });
+  }
+};
