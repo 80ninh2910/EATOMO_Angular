@@ -1,6 +1,7 @@
 const Bowl = require('../models/Bowl');
 const Order = require('../models/Order');
 const Voucher = require('../models/Voucher');
+const { canTransitionOrderStatus } = require('../utils/order-status');
 const {
   normalizeVoucherCode,
   buildVoucherValidation,
@@ -88,6 +89,14 @@ exports.createOrder = async (req, res) => {
       orderNumber,
       userId,
       status: 'pending',
+      trackingProgress: 10,
+      trackingUpdatedAt: new Date(),
+      statusHistory: [{
+        status: 'pending',
+        changedAt: new Date(),
+        changedBy: userId,
+        source: 'user'
+      }],
       items: orderItems,
       subtotal,
       tax,
@@ -110,6 +119,9 @@ exports.createOrder = async (req, res) => {
       id: order._id,
       orderNumber: order.orderNumber,
       status: order.status,
+      trackingProgress: order.trackingProgress,
+      trackingUpdatedAt: order.trackingUpdatedAt,
+      statusHistory: order.statusHistory,
       items: order.items,
       subtotal, tax, shippingFee, discountAmount, totalAmount,
       voucherCode: order.voucherCode,
@@ -180,18 +192,40 @@ exports.getOrderById = async (req, res) => {
  */
 exports.cancelOrder = async (req, res) => {
   try {
-    const order = await Order.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user.id, status: 'pending' },
-      { status: 'cancelled' },
-      { new: true }
-    );
+    const order = await Order.findOne({ _id: req.params.id, userId: req.user.id });
 
     if (!order) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
-        message: 'Order not found or cannot be cancelled. Only pending orders can be cancelled.'
+        message: 'Order not found'
       });
     }
+
+    if (!canTransitionOrderStatus(order.status, 'cancelled') || order.status !== 'pending') {
+      return res.status(409).json({
+        success: false,
+        message: 'Only pending orders can be cancelled.'
+      });
+    }
+
+    order.status = 'cancelled';
+    order.trackingProgress = 0;
+    order.trackingUpdatedAt = new Date();
+    order.statusHistory = order.statusHistory || [];
+    if (order.statusHistory.length === 0) {
+      order.statusHistory.push({
+        status: 'pending',
+        changedAt: order.createdAt || new Date(),
+        source: 'system'
+      });
+    }
+    order.statusHistory.push({
+      status: 'cancelled',
+      changedAt: new Date(),
+      changedBy: req.user.id,
+      source: 'user'
+    });
+    await order.save();
 
     res.json({
       success: true,

@@ -8,9 +8,7 @@ export interface CartItem {
   quantity: number;
   image?: string;
   // Thêm các thuộc tính khác tùy theo món ăn
-  proteins?: string[];
-  veggies?: string[];
-  sauces?: string[];
+  selectedFlavors?: string[];
 }
 
 @Injectable({

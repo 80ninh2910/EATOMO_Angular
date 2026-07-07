@@ -18,6 +18,7 @@ export interface Order {
   orderNumber: string;
   userId: string;
   status: OrderStatus;
+  statusHistory?: OrderStatusHistory[];
   items: OrderItem[];
   subtotal: number;
   tax: number;
@@ -33,6 +34,13 @@ export interface Order {
   createdAt: Date;
   updatedAt: Date;
   completedAt?: Date;
+}
+
+export interface OrderStatusHistory {
+  status: OrderStatus;
+  changedAt: Date;
+  changedBy?: string;
+  source: 'user' | 'admin' | 'system';
 }
 
 export interface CreateOrderRequest {

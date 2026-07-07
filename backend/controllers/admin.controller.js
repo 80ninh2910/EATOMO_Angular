@@ -4,6 +4,7 @@ const User = require('../models/User');
 const AdminAction = require('../models/AdminAction');
 const Device = require('../models/Device');
 const { sendToMultipleTokens, getOrderStatusNotification } = require('../utils/fcm');
+const { ORDER_STATUSES, canTransitionOrderStatus } = require('../utils/order-status');
 
 // ═══════════════════════════════════════════
 //  DASHBOARD
@@ -263,21 +264,56 @@ exports.getAllOrders = async (req, res) => {
  */
 exports.updateOrderStatus = async (req, res) => {
   try {
-    const { status } = req.body;
-    const validStatuses = ['pending', 'confirmed', 'preparing', 'delivering', 'completed', 'cancelled'];
+    const { status, trackingProgress } = req.body;
+    const validStatuses = ORDER_STATUSES;
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ success: false, message: `Invalid status. Valid: ${validStatuses.join(', ')}` });
     }
 
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    );
+    const order = await Order.findById(req.params.id);
 
     if (!order) {
       return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    const previousStatus = order.status;
+    if (!canTransitionOrderStatus(previousStatus, status)) {
+      return res.status(409).json({
+        success: false,
+        message: `Cannot transition order from ${previousStatus} to ${status}`
+      });
+    }
+
+    const statusChanged = previousStatus !== status;
+    const requestedProgress = normalizeTrackingProgress(trackingProgress);
+    const nextProgress = requestedProgress !== null ? requestedProgress : defaultProgressForStatus(status);
+    const progressChanged = typeof nextProgress === 'number' && order.trackingProgress !== nextProgress;
+    if (statusChanged) {
+      order.status = status;
+      order.statusHistory = order.statusHistory || [];
+      if (order.statusHistory.length === 0) {
+        order.statusHistory.push({
+          status: previousStatus,
+          changedAt: order.updatedAt || order.createdAt || new Date(),
+          source: 'system'
+        });
+      }
+      order.statusHistory.push({
+        status,
+        changedAt: new Date(),
+        changedBy: req.user.id,
+        source: 'admin'
+      });
+    }
+    if (progressChanged) {
+      order.trackingProgress = nextProgress;
+      order.trackingUpdatedAt = new Date();
+    } else if (statusChanged && !order.trackingUpdatedAt) {
+      order.trackingUpdatedAt = new Date();
+    }
+    if (statusChanged || progressChanged) {
+      await order.save();
     }
 
     // Log admin action
@@ -286,12 +322,18 @@ exports.updateOrderStatus = async (req, res) => {
       action: 'update_order_status',
       targetType: 'order',
       targetId: req.params.id,
-      details: { newStatus: status }
+      details: {
+        previousStatus,
+        newStatus: status,
+        statusChanged,
+        trackingProgress: order.trackingProgress,
+        progressChanged
+      }
     });
 
     // Send FCM push notification to all user devices (fire and forget)
     // Only notify on meaningful status transitions (not on pending)
-    if (status !== 'pending') {
+    if (statusChanged && status !== 'pending') {
       try {
         const devices = await Device.find({ userId: order.userId, isActive: true }).select('fcmToken');
         const tokens = devices.map(d => d.fcmToken).filter(Boolean);
@@ -316,6 +358,36 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to update order status', error: error.message });
   }
 };
+
+function normalizeTrackingProgress(value) {
+  if (value === undefined || value === null || value === '') {
+    return null;
+  }
+  const number = Number(value);
+  if (!Number.isFinite(number)) {
+    return null;
+  }
+  return Math.max(0, Math.min(100, Math.round(number)));
+}
+
+function defaultProgressForStatus(status) {
+  switch (status) {
+    case 'pending':
+      return 10;
+    case 'confirmed':
+      return 25;
+    case 'preparing':
+      return 50;
+    case 'delivering':
+      return 75;
+    case 'completed':
+      return 100;
+    case 'cancelled':
+      return 0;
+    default:
+      return null;
+  }
+}
 
 // ═══════════════════════════════════════════
 //  ADMIN BOWLS CRUD

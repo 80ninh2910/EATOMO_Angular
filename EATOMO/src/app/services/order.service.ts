@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Order, CreateOrderRequest, OrderStatus } from '../models/order.model';
 import { environment } from '../../environments/environment';
 
@@ -25,7 +26,9 @@ export class OrderService {
    * Lấy danh sách đơn hàng của user hiện tại
    */
   getMyOrders(): Observable<Order[]> {
-    return this.http.get<Order[]>(`${API_URL}/orders`);
+    return this.http.get<{ orders: Order[] }>(`${API_URL}/orders`).pipe(
+      map(response => response.orders || [])
+    );
   }
 
   /**

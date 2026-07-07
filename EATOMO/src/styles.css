@@ -2,25 +2,29 @@
 
 /* ===== CSS CUSTOM PROPERTIES ===== */
 :root {
-  --color-primary: #667eea;
-  --color-primary-dark: #764ba2;
+  --color-primary: #32CD32; /* Lime green */
+  --color-primary-dark: #228B22; 
+  --color-secondary: #FF4500; /* Burnt orange/red */
+  --color-accent: #FFD700; /* Bright yellow */
+  --color-pastel: #AEC6CF; /* Pastel blue */
   --color-success: #22c55e;
   --color-error: #ef4444;
-  --color-warning: #f59e0b;
-  --color-info: #3b82f6;
-  --color-text: #333333;
-  --color-text-muted: #999999;
-  --color-bg: #fafafa;
+  --color-warning: #FF4500;
+  --color-info: #AEC6CF;
+  --color-text: #1a1a1a;
+  --color-text-muted: #666666;
+  --color-bg: #F4F4F9;
   --color-bg-card: #ffffff;
-  --color-border: #eeeeee;
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.12);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.15);
-  --transition: 0.3s ease;
-  --font-base: Roboto, "Helvetica Neue", sans-serif;
+  --color-border: #dddddd;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 30px;
+  --shadow-sm: 4px 4px 0px rgba(0,0,0,1); /* Y2K harsh shadow */
+  --shadow-md: 8px 8px 0px rgba(0,0,0,1); /* Retro-pop shadow */
+  --shadow-lg: 12px 12px 0px rgba(0,0,0,1);
+  --transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --font-base: 'Fredoka', 'Quicksand', 'Helvetica Neue', sans-serif;
+  --font-display: 'Fredoka', cursive;
 }
 
 * {

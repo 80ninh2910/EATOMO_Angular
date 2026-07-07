@@ -11,10 +11,24 @@ const orderItemSchema = new mongoose.Schema({
   customSauces:    [String]
 }, { _id: false });
 
+const orderStatusHistorySchema = new mongoose.Schema({
+  status: {
+    type: String,
+    enum: ['pending', 'confirmed', 'preparing', 'delivering', 'completed', 'cancelled'],
+    required: true
+  },
+  changedAt: { type: Date, default: Date.now, required: true },
+  changedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  source: { type: String, enum: ['user', 'admin', 'system'], required: true }
+}, { _id: false });
+
 const orderSchema = new mongoose.Schema({
   orderNumber:     { type: String, unique: true, required: true },
   userId:          { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   status:          { type: String, enum: ['pending', 'confirmed', 'preparing', 'delivering', 'completed', 'cancelled'], default: 'pending' },
+  statusHistory:   { type: [orderStatusHistorySchema], default: [] },
+  trackingProgress: { type: Number, min: 0, max: 100, default: 10 },
+  trackingUpdatedAt: { type: Date, default: Date.now },
   items:           [orderItemSchema],
   subtotal:        { type: Number, default: 0 },
   tax:             { type: Number, default: 0 },
