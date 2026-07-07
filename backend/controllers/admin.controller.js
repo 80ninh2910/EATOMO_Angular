@@ -3,7 +3,7 @@ const Order = require('../models/Order');
 const User = require('../models/User');
 const AdminAction = require('../models/AdminAction');
 const Device = require('../models/Device');
-const { sendToMultipleTokens, getOrderStatusNotification } = require('../utils/fcm');
+const { sendToMultipleTokens, getOrderStatusNotification, getOrderProgressNotification } = require('../utils/fcm');
 const { ORDER_STATUSES, canTransitionOrderStatus } = require('../utils/order-status');
 
 // ═══════════════════════════════════════════
@@ -331,19 +331,23 @@ exports.updateOrderStatus = async (req, res) => {
       }
     });
 
-    // Send FCM push notification to all user devices (fire and forget)
-    // Only notify on meaningful status transitions (not on pending)
-    if (statusChanged && status !== 'pending') {
+    // Send FCM push notification to all user devices (non-blocking)
+    // Notify on status transitions and admin progress updates.
+    if ((statusChanged && status !== 'pending') || (!statusChanged && progressChanged)) {
       try {
         const devices = await Device.find({ userId: order.userId, isActive: true }).select('fcmToken');
         const tokens = devices.map(d => d.fcmToken).filter(Boolean);
 
         if (tokens.length > 0) {
-          const { title, body } = getOrderStatusNotification(order.orderNumber, status);
+          const { title, body } = statusChanged
+            ? getOrderStatusNotification(order.orderNumber, status)
+            : getOrderProgressNotification(order.orderNumber, order.trackingProgress);
           await sendToMultipleTokens(tokens, title, body, {
             orderId: String(order._id),
             orderNumber: order.orderNumber,
-            status
+            status: order.status,
+            trackingProgress: order.trackingProgress,
+            type: statusChanged ? 'order_status' : 'order_progress'
           });
         }
       } catch (fcmErr) {

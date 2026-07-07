@@ -1,5 +1,46 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const User = require('../models/User');
+const PasswordResetOtp = require('../models/PasswordResetOtp');
+const { sendPasswordResetEmail, isSmtpConfigured } = require('../utils/mail');
+
+const RESET_OTP_TTL_MINUTES = 10;
+const RESET_OTP_DIGITS = 4;
+const RESET_OTP_MAX_ATTEMPTS = 5;
+
+function normalizeEmail(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function generateOtp() {
+  const min = 10 ** (RESET_OTP_DIGITS - 1);
+  const max = (10 ** RESET_OTP_DIGITS) - 1;
+  return String(crypto.randomInt(min, max + 1));
+}
+
+function hashOtp(email, otp) {
+  const secret = process.env.JWT_SECRET || 'eatomo-reset-fallback';
+  return crypto
+    .createHmac('sha256', secret)
+    .update(`${normalizeEmail(email)}:${String(otp).trim()}`)
+    .digest('hex');
+}
+
+function canReturnDebugOtp() {
+  return process.env.RESET_OTP_DEBUG === 'true' || process.env.NODE_ENV !== 'production';
+}
+
+async function findValidResetOtp(email, otp) {
+  const normalizedEmail = normalizeEmail(email);
+  const otpHash = hashOtp(normalizedEmail, otp);
+  return PasswordResetOtp.findOne({
+    email: normalizedEmail,
+    otpHash,
+    used: false,
+    expiresAt: { $gt: new Date() },
+    attempts: { $lt: RESET_OTP_MAX_ATTEMPTS }
+  }).sort({ createdAt: -1 });
+}
 
 /**
  * POST /api/auth/register
@@ -120,6 +161,123 @@ exports.login = async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ success: false, message: 'Login failed', error: error.message });
+  }
+};
+
+/**
+ * POST /api/auth/forgot-password
+ * Body: { email }
+ */
+exports.forgotPassword = async (req, res) => {
+  try {
+    const email = normalizeEmail(req.body.email || req.body.username);
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+
+    const user = await User.findOne({ email });
+    const response = {
+      success: true,
+      message: 'If this email exists, a password reset code has been sent.'
+    };
+
+    if (!user) {
+      return res.json(response);
+    }
+
+    const otp = generateOtp();
+    await PasswordResetOtp.updateMany({ email, used: false }, { used: true });
+    await PasswordResetOtp.create({
+      email,
+      otpHash: hashOtp(email, otp),
+      expiresAt: new Date(Date.now() + RESET_OTP_TTL_MINUTES * 60 * 1000)
+    });
+
+    const emailSent = await sendPasswordResetEmail(email, otp);
+    response.emailSent = emailSent;
+    response.expiresInMinutes = RESET_OTP_TTL_MINUTES;
+
+    if (!emailSent && canReturnDebugOtp()) {
+      response.debugOtp = otp;
+      response.message = 'Password reset code generated. Email is not configured, so debugOtp is returned for testing.';
+    } else if (!emailSent && !isSmtpConfigured()) {
+      response.message = 'Password reset code generated, but email is not configured on server.';
+    }
+
+    res.json(response);
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ success: false, message: 'Failed to request password reset', error: error.message });
+  }
+};
+
+/**
+ * POST /api/auth/verify-reset-otp
+ * Body: { email, otp }
+ */
+exports.verifyResetOtp = async (req, res) => {
+  try {
+    const email = normalizeEmail(req.body.email);
+    const otp = String(req.body.otp || '').trim();
+
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: 'Email and OTP are required' });
+    }
+
+    const resetOtp = await findValidResetOtp(email, otp);
+    if (!resetOtp) {
+      await PasswordResetOtp.updateMany({ email, used: false }, { $inc: { attempts: 1 } });
+      return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+    }
+
+    res.json({ success: true, message: 'OTP verified successfully' });
+  } catch (error) {
+    console.error('Verify reset OTP error:', error);
+    res.status(500).json({ success: false, message: 'Failed to verify OTP', error: error.message });
+  }
+};
+
+/**
+ * POST /api/auth/reset-password
+ * Body: { email, otp, newPassword }
+ */
+exports.resetPassword = async (req, res) => {
+  try {
+    const email = normalizeEmail(req.body.email);
+    const otp = String(req.body.otp || '').trim();
+    const newPassword = String(req.body.newPassword || '');
+
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Email, OTP and newPassword are required' });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({ success: false, message: 'New password must be at least 8 characters' });
+    }
+
+    const resetOtp = await findValidResetOtp(email, otp);
+    if (!resetOtp) {
+      await PasswordResetOtp.updateMany({ email, used: false }, { $inc: { attempts: 1 } });
+      return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+    }
+
+    const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    resetOtp.used = true;
+    await resetOtp.save();
+    await PasswordResetOtp.updateMany({ email, used: false }, { used: true });
+
+    res.json({ success: true, message: 'Password reset successfully' });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ success: false, message: 'Failed to reset password', error: error.message });
   }
 };
 

@@ -24,8 +24,13 @@ function initFirebase() {
 
     if (!admin.apps.length) {
       // Option A: dùng service account JSON file
+      const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
       const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
-      if (serviceAccountPath) {
+      if (serviceAccountJson) {
+        admin.initializeApp({
+          credential: admin.credential.cert(JSON.parse(serviceAccountJson))
+        });
+      } else if (serviceAccountPath) {
         const serviceAccount = require(serviceAccountPath);
         admin.initializeApp({
           credential: admin.credential.cert(serviceAccount)
@@ -144,4 +149,12 @@ function getOrderStatusNotification(orderNumber, status) {
   };
 }
 
-module.exports = { sendToToken, sendToMultipleTokens, getOrderStatusNotification };
+function getOrderProgressNotification(orderNumber, trackingProgress) {
+  const progress = Math.max(0, Math.min(100, Number(trackingProgress) || 0));
+  return {
+    title: '📦 Cập nhật tiến trình đơn hàng',
+    body: `Đơn ${orderNumber} đã được cập nhật tiến trình: ${progress}%.`
+  };
+}
+
+module.exports = { sendToToken, sendToMultipleTokens, getOrderStatusNotification, getOrderProgressNotification };
