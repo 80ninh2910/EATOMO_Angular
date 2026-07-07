@@ -194,15 +194,31 @@ exports.forgotPassword = async (req, res) => {
       expiresAt: new Date(Date.now() + RESET_OTP_TTL_MINUTES * 60 * 1000)
     });
 
-    const emailSent = await sendPasswordResetEmail(email, otp);
+    let emailSent = false;
+    let emailError = null;
+    try {
+      emailSent = await sendPasswordResetEmail(email, otp);
+    } catch (sendError) {
+      emailError = sendError;
+      console.error('Password reset email failed:', sendError.message);
+    }
     response.emailSent = emailSent;
     response.expiresInMinutes = RESET_OTP_TTL_MINUTES;
 
     if (!emailSent && canReturnDebugOtp()) {
       response.debugOtp = otp;
       response.message = 'Password reset code generated. Email is not configured, so debugOtp is returned for testing.';
+      if (emailError) {
+        response.emailError = emailError.message;
+      }
     } else if (!emailSent && !isSmtpConfigured()) {
       response.message = 'Password reset code generated, but email is not configured on server.';
+    } else if (!emailSent && emailError) {
+      return res.status(502).json({
+        success: false,
+        message: 'Password reset code generated, but email delivery failed',
+        error: emailError.message
+      });
     }
 
     res.json(response);
