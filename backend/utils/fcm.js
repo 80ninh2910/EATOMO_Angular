@@ -31,6 +31,15 @@ function parseServiceAccount() {
     serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
   }
 
+  const missingFields = ['project_id', 'client_email', 'private_key']
+    .filter((field) => !serviceAccount[field]);
+  if (missingFields.length > 0) {
+    throw new Error(
+      `Firebase service account is missing ${missingFields.join(', ')}. ` +
+      'Use Firebase Console > Project settings > Service accounts > Generate new private key, not google-services.json.'
+    );
+  }
+
   return serviceAccount;
 }
 

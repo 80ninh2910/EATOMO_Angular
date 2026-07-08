@@ -100,15 +100,7 @@ app.use((req, res) => {
 });
 
 // ───────── Start server ─────────
-async function start() {
-  try {
-    await connectDB();
-  } catch (err) {
-    console.error('❌ Cannot start server without database connection.');
-    console.error('   MONGO_URI:', process.env.MONGO_URI);
-    process.exit(1);
-  }
-
+function start() {
   const maxRetries = 10;
 
   const listenWithFallback = (port, retriesLeft) => {
@@ -119,6 +111,13 @@ async function start() {
       if (port !== PREFERRED_PORT) {
         console.log(`ℹ️ Preferred port ${PREFERRED_PORT} was busy, switched to ${port}.\n`);
       }
+      connectDB().then((connected) => {
+        if (!connected) {
+          console.error('MongoDB connection failed after server start.');
+        }
+      }).catch((err) => {
+        console.error('MongoDB connection crashed after server start:', err.message);
+      });
     });
 
     server.on('error', (error) => {
