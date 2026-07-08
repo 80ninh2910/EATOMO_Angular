@@ -10,7 +10,6 @@
  * Hoặc dùng biến môi trường GOOGLE_APPLICATION_CREDENTIALS (đường dẫn tới JSON key)
  */
 
-let admin = null;
 let messaging = null;
 let lastInitError = null;
 
@@ -51,33 +50,34 @@ function initFirebase() {
 
   try {
     lastInitError = null;
-    admin = require('firebase-admin');
+    const { initializeApp, getApps, cert, applicationDefault } = require('firebase-admin/app');
+    const { getMessaging } = require('firebase-admin/messaging');
 
-    if (!admin.apps.length) {
+    if (!getApps().length) {
       // Option A: dùng service account JSON file
       const serviceAccount = parseServiceAccount();
       const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
       if (serviceAccount) {
-        admin.initializeApp({
-          credential: admin.credential.cert(serviceAccount),
+        initializeApp({
+          credential: cert(serviceAccount),
           projectId: process.env.FIREBASE_PROJECT_ID || serviceAccount.project_id
         });
       } else if (serviceAccountPath) {
         const serviceAccount = require(serviceAccountPath);
-        admin.initializeApp({
-          credential: admin.credential.cert(serviceAccount),
+        initializeApp({
+          credential: cert(serviceAccount),
           projectId: process.env.FIREBASE_PROJECT_ID || serviceAccount.project_id
         });
       } else {
         // Option B: dùng Application Default Credentials (Render / Cloud environment)
-        admin.initializeApp({
-          credential: admin.credential.applicationDefault(),
+        initializeApp({
+          credential: applicationDefault(),
           projectId: process.env.FIREBASE_PROJECT_ID
         });
       }
     }
 
-    messaging = admin.messaging();
+    messaging = getMessaging();
     console.log('✅ Firebase Admin initialized');
     return messaging;
   } catch (err) {
