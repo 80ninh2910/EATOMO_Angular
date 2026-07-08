@@ -23,8 +23,12 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Delivery address and phone are required' });
     }
 
-    // Fetch bowl details
-    const bowlIds = items.map(i => i.bowlId);
+    // Fetch catalog bowl details. Build Your Own items use generated
+    // ids like custom-bowl-<timestamp>, so they are stored directly
+    // from the request instead of being validated against Bowl.
+    const bowlIds = items
+      .map(i => String(i.bowlId || '').trim())
+      .filter(id => id && !isCustomBowlId(id));
     const bowls = await Bowl.find({ _id: { $in: bowlIds } });
     const bowlMap = {};
     bowls.forEach(b => { bowlMap[b._id] = b; });
@@ -34,22 +38,53 @@ exports.createOrder = async (req, res) => {
     const orderItems = [];
 
     for (const item of items) {
-      const bowl = bowlMap[item.bowlId];
+      const bowlId = String(item.bowlId || '').trim();
+      const quantity = normalizeQuantity(item.quantity);
+
+      if (!bowlId) {
+        return res.status(400).json({ success: false, message: 'bowlId is required for each order item' });
+      }
+      if (quantity <= 0) {
+        return res.status(400).json({ success: false, message: 'quantity must be greater than 0' });
+      }
+
+      if (isCustomBowlId(bowlId)) {
+        const unitPrice = normalizeMoney(item.unitPrice);
+        const itemSubtotal = normalizeMoney(item.subtotal) || unitPrice * quantity;
+        if (unitPrice <= 0 || itemSubtotal <= 0) {
+          return res.status(400).json({ success: false, message: `Invalid custom bowl price for ${bowlId}` });
+        }
+
+        subtotal += itemSubtotal;
+        orderItems.push({
+          bowlId,
+          bowlName: item.bowlName || 'Build Your Own Bowl',
+          unitPrice,
+          quantity,
+          subtotal: itemSubtotal,
+          customProteins: item.customProteins || [],
+          customVeggies: item.customVeggies || [],
+          customSauces: item.customSauces || []
+        });
+        continue;
+      }
+
+      const bowl = bowlMap[bowlId];
       if (!bowl) {
-        return res.status(400).json({ success: false, message: `Bowl ${item.bowlId} not found` });
+        return res.status(400).json({ success: false, message: `Bowl ${bowlId} not found` });
       }
       if (!bowl.inStock) {
         return res.status(400).json({ success: false, message: `${bowl.name} is out of stock` });
       }
 
-      const itemSubtotal = bowl.price * item.quantity;
+      const itemSubtotal = bowl.price * quantity;
       subtotal += itemSubtotal;
 
       orderItems.push({
         bowlId: bowl._id,
         bowlName: bowl.name,
         unitPrice: bowl.price,
-        quantity: item.quantity,
+        quantity,
         subtotal: itemSubtotal,
         customProteins: item.customProteins || [],
         customVeggies: item.customVeggies || [],
@@ -237,3 +272,17 @@ exports.cancelOrder = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to cancel order', error: error.message });
   }
 };
+
+function isCustomBowlId(value) {
+  return String(value || '').trim().startsWith('custom-bowl-');
+}
+
+function normalizeQuantity(value) {
+  const quantity = Number(value);
+  return Number.isFinite(quantity) ? Math.max(0, Math.floor(quantity)) : 0;
+}
+
+function normalizeMoney(value) {
+  const amount = Number(value);
+  return Number.isFinite(amount) ? Math.max(0, amount) : 0;
+}
