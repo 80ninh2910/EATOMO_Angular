@@ -12,6 +12,27 @@
 
 let admin = null;
 let messaging = null;
+let lastInitError = null;
+
+function parseServiceAccount() {
+  const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+  const serviceAccountBase64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
+
+  if (!serviceAccountJson && !serviceAccountBase64) {
+    return null;
+  }
+
+  const raw = serviceAccountBase64
+    ? Buffer.from(serviceAccountBase64, 'base64').toString('utf8')
+    : serviceAccountJson;
+  const serviceAccount = JSON.parse(raw.trim());
+
+  if (serviceAccount.private_key) {
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+  }
+
+  return serviceAccount;
+}
 
 /**
  * Khởi tạo Firebase Admin SDK (lazy init — chỉ init khi cần)
@@ -20,20 +41,23 @@ function initFirebase() {
   if (messaging) return messaging;
 
   try {
+    lastInitError = null;
     admin = require('firebase-admin');
 
     if (!admin.apps.length) {
       // Option A: dùng service account JSON file
-      const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+      const serviceAccount = parseServiceAccount();
       const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
-      if (serviceAccountJson) {
+      if (serviceAccount) {
         admin.initializeApp({
-          credential: admin.credential.cert(JSON.parse(serviceAccountJson))
+          credential: admin.credential.cert(serviceAccount),
+          projectId: process.env.FIREBASE_PROJECT_ID || serviceAccount.project_id
         });
       } else if (serviceAccountPath) {
         const serviceAccount = require(serviceAccountPath);
         admin.initializeApp({
-          credential: admin.credential.cert(serviceAccount)
+          credential: admin.credential.cert(serviceAccount),
+          projectId: process.env.FIREBASE_PROJECT_ID || serviceAccount.project_id
         });
       } else {
         // Option B: dùng Application Default Credentials (Render / Cloud environment)
@@ -50,6 +74,7 @@ function initFirebase() {
   } catch (err) {
     console.warn('⚠️  Firebase Admin not initialized:', err.message);
     console.warn('   Push notifications will be disabled. Install firebase-admin and configure credentials.');
+    lastInitError = err.message;
     return null;
   }
 }
@@ -60,8 +85,10 @@ function getFirebaseStatus() {
     initialized: Boolean(fcmMessaging),
     projectId: process.env.FIREBASE_PROJECT_ID || null,
     hasServiceAccountJson: Boolean(process.env.FIREBASE_SERVICE_ACCOUNT_JSON),
+    hasServiceAccountBase64: Boolean(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64),
     hasServiceAccountPath: Boolean(process.env.FIREBASE_SERVICE_ACCOUNT_PATH),
-    hasGoogleApplicationCredentials: Boolean(process.env.GOOGLE_APPLICATION_CREDENTIALS)
+    hasGoogleApplicationCredentials: Boolean(process.env.GOOGLE_APPLICATION_CREDENTIALS),
+    lastError: lastInitError
   };
 }
 
