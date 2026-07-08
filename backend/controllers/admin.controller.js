@@ -376,8 +376,10 @@ exports.getFcmHealth = async (req, res) => {
       firebaseInitialized: status.initialized,
       projectId: status.projectId,
       hasServiceAccountJson: status.hasServiceAccountJson,
+      hasServiceAccountBase64: status.hasServiceAccountBase64,
       hasServiceAccountPath: status.hasServiceAccountPath,
-      hasGoogleApplicationCredentials: status.hasGoogleApplicationCredentials
+      hasGoogleApplicationCredentials: status.hasGoogleApplicationCredentials,
+      lastError: status.lastError
     });
   } catch (error) {
     res.status(500).json({
