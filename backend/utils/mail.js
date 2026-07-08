@@ -1,13 +1,35 @@
 let nodemailer = null;
+let resend = null;
+
+function isResendConfigured() {
+  return Boolean(process.env.RESEND_API_KEY && process.env.MAIL_FROM);
+}
 
 function isSmtpConfigured() {
-  return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
+  return isResendConfigured() || Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
 }
 
 async function sendPasswordResetEmail(to, otp) {
   if (!isSmtpConfigured()) {
-    console.warn('Password reset email skipped: SMTP_HOST, SMTP_USER, or SMTP_PASS is not configured.');
+    console.warn('Password reset email skipped: RESEND_API_KEY/MAIL_FROM or SMTP credentials are not configured.');
     return false;
+  }
+
+  if (isResendConfigured()) {
+    if (!resend) {
+      const { Resend } = require('resend');
+      resend = new Resend(process.env.RESEND_API_KEY);
+    }
+
+    await resend.emails.send({
+      from: process.env.MAIL_FROM,
+      to,
+      subject: 'EATOMO password reset code',
+      text: `Your EATOMO password reset code is ${otp}. This code expires in 10 minutes.`,
+      html: `<p>Your EATOMO password reset code is <strong>${otp}</strong>.</p><p>This code expires in 10 minutes.</p>`
+    });
+
+    return true;
   }
 
   if (!nodemailer) {
