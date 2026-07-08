@@ -7,7 +7,8 @@ const Device = require('../models/Device');
  */
 exports.registerDevice = async (req, res) => {
   try {
-    const { fcmToken, platform = 'android', deviceId = '' } = req.body;
+    const { platform = 'android', deviceId = '' } = req.body;
+    const fcmToken = req.body.fcmToken || req.body.token;
 
     if (!fcmToken || !fcmToken.trim()) {
       return res.status(400).json({ success: false, message: 'fcmToken is required' });

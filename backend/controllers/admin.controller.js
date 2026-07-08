@@ -3,7 +3,12 @@ const Order = require('../models/Order');
 const User = require('../models/User');
 const AdminAction = require('../models/AdminAction');
 const Device = require('../models/Device');
-const { sendToMultipleTokens, getOrderStatusNotification, getOrderProgressNotification } = require('../utils/fcm');
+const {
+  getFirebaseStatus,
+  sendToMultipleTokens,
+  getOrderStatusNotification,
+  getOrderProgressNotification
+} = require('../utils/fcm');
 const { ORDER_STATUSES, canTransitionOrderStatus } = require('../utils/order-status');
 
 // ═══════════════════════════════════════════
@@ -360,6 +365,27 @@ exports.updateOrderStatus = async (req, res) => {
   } catch (error) {
     console.error('Update order status error:', error);
     res.status(500).json({ success: false, message: 'Failed to update order status', error: error.message });
+  }
+};
+
+exports.getFcmHealth = async (req, res) => {
+  try {
+    const status = getFirebaseStatus();
+    res.json({
+      success: true,
+      firebaseInitialized: status.initialized,
+      projectId: status.projectId,
+      hasServiceAccountJson: status.hasServiceAccountJson,
+      hasServiceAccountPath: status.hasServiceAccountPath,
+      hasGoogleApplicationCredentials: status.hasGoogleApplicationCredentials
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      firebaseInitialized: false,
+      message: 'Failed to initialize Firebase Admin',
+      error: error.message
+    });
   }
 };
 

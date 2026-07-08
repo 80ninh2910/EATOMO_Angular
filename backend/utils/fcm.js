@@ -54,6 +54,17 @@ function initFirebase() {
   }
 }
 
+function getFirebaseStatus() {
+  const fcmMessaging = initFirebase();
+  return {
+    initialized: Boolean(fcmMessaging),
+    projectId: process.env.FIREBASE_PROJECT_ID || null,
+    hasServiceAccountJson: Boolean(process.env.FIREBASE_SERVICE_ACCOUNT_JSON),
+    hasServiceAccountPath: Boolean(process.env.FIREBASE_SERVICE_ACCOUNT_PATH),
+    hasGoogleApplicationCredentials: Boolean(process.env.GOOGLE_APPLICATION_CREDENTIALS)
+  };
+}
+
 /**
  * Gửi push notification đến một FCM token
  * @param {string} token - FCM device token
@@ -157,4 +168,18 @@ function getOrderProgressNotification(orderNumber, trackingProgress) {
   };
 }
 
-module.exports = { sendToToken, sendToMultipleTokens, getOrderStatusNotification, getOrderProgressNotification };
+function getNewOrderNotification(orderNumber) {
+  return {
+    title: 'New order received',
+    body: `Order ${orderNumber} is waiting for confirmation.`
+  };
+}
+
+module.exports = {
+  getFirebaseStatus,
+  sendToToken,
+  sendToMultipleTokens,
+  getNewOrderNotification,
+  getOrderStatusNotification,
+  getOrderProgressNotification
+};

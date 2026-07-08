@@ -1,6 +1,9 @@
 const Bowl = require('../models/Bowl');
+const Device = require('../models/Device');
 const Order = require('../models/Order');
+const User = require('../models/User');
 const Voucher = require('../models/Voucher');
+const { sendToMultipleTokens, getNewOrderNotification } = require('../utils/fcm');
 const { canTransitionOrderStatus } = require('../utils/order-status');
 const {
   normalizeVoucherCode,
@@ -148,6 +151,26 @@ exports.createOrder = async (req, res) => {
 
     if (appliedVoucher) {
       await Voucher.findByIdAndUpdate(appliedVoucher._id, { $inc: { currentUses: 1 } });
+    }
+
+    try {
+      const admins = await User.find({ role: 'admin' }).select('_id');
+      const adminIds = admins.map(admin => admin._id);
+      if (adminIds.length > 0) {
+        const devices = await Device.find({ userId: { $in: adminIds }, isActive: true }).select('fcmToken');
+        const tokens = devices.map(d => d.fcmToken).filter(Boolean);
+        if (tokens.length > 0) {
+          const { title, body } = getNewOrderNotification(order.orderNumber);
+          await sendToMultipleTokens(tokens, title, body, {
+            orderId: String(order._id),
+            orderNumber: order.orderNumber,
+            status: order.status,
+            type: 'new_order'
+          });
+        }
+      }
+    } catch (fcmErr) {
+      console.error('FCM admin new order notification failed (non-blocking):', fcmErr.message);
     }
 
     res.status(201).json({

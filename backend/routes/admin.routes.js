@@ -12,6 +12,7 @@ router.get('/dashboard/stats', adminController.getDashboardStats);
 router.get('/dashboard/revenue', adminController.getRevenueChart);
 router.get('/dashboard/top-products', adminController.getTopProducts);
 router.get('/dashboard/recent-orders', adminController.getRecentOrders);
+router.get('/fcm/health', adminController.getFcmHealth);
 
 // Orders
 router.get('/orders', adminController.getAllOrders);
