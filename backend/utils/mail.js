@@ -21,7 +21,7 @@ async function sendPasswordResetEmail(to, otp) {
       resend = new Resend(process.env.RESEND_API_KEY);
     }
 
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: process.env.MAIL_FROM,
       to,
       subject: 'EATOMO password reset code',
@@ -29,6 +29,15 @@ async function sendPasswordResetEmail(to, otp) {
       html: `<p>Your EATOMO password reset code is <strong>${otp}</strong>.</p><p>This code expires in 10 minutes.</p>`
     });
 
+    if (result.error) {
+      const errorMessage = result.error.message || JSON.stringify(result.error);
+      const error = new Error(`Resend email failed: ${errorMessage}`);
+      error.provider = 'resend';
+      error.statusCode = result.error.statusCode || result.error.status || 502;
+      throw error;
+    }
+
+    console.log(`Password reset email queued via Resend: id=${result.data && result.data.id ? result.data.id : 'unknown'}`);
     return true;
   }
 
